@@ -7,5 +7,6 @@ import org.springframework.boot.runApplication
 class RushBApplication
 
 fun main(args: Array<String>) {
-	runApplication<RushBApplication>(*args)
+	runApplication<RushBApplication>(*args) {
+	}
 }
