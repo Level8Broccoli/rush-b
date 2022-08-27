@@ -125,3 +125,16 @@ thumb
 sketch
 
 # End of https://www.toptal.com/developers/gitignore/api/intellij,react
+
+
+/workspace.xml
+*.iml
+/.idea/
+/out/
+/target/
+/.settings/
+/bin/
+/classes/
+*.classpath
+*.project
+/.idea/
