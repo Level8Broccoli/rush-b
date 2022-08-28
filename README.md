@@ -13,9 +13,9 @@ Eine Demo-Installation ist hier verfügbar: [https://rush-b.herokuapp.com/](http
 
 ## Projektübersicht
 ### Meilensteine
-| Meilenstein | Beschreibung                                                           | Status |
-|----|------------------------------------------------------------------------|:-------------:|
-| M1  | [Anforderungsanalyse](doc/M1.md)                | ![70%](https://progress-bar.dev/70)           |
-| M2  | [Erster Entwurf](doc/M2.md)                                    |  ![0%](https://progress-bar.dev/0)           |
-| M3  | [Komplette Implementierung](doc/M3.md)                |  ![0%](https://progress-bar.dev/0)           |
-| M4  | [Finalisierung](doc/M4.md)                              | ![0%](https://progress-bar.dev/0)           |
+| Meilenstein | Beschreibung                            | Status |
+|----|--------------------------------------------------|:-------------:|
+| M1  | [Anforderungsanalyse](doc/M1.md)                | ![70%](https://progress-bar.dev/70)  |
+| M2  | [Erster Entwurf](doc/M2.md)                     | ![0%](https://progress-bar.dev/0)    |
+| M3  | [Komplette Implementierung](doc/M3.md)          | ![0%](https://progress-bar.dev/0)    |
+| M4  | [Finalisierung](doc/M4.md)                      | ![0%](https://progress-bar.dev/0)    |
