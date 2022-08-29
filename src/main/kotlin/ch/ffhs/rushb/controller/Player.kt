@@ -6,11 +6,13 @@ import ch.ffhs.rushb.model.CharacterState
 
 class Player (private val character: CharacterDto) {
 
+    private val level = Level(character.level)
+
     // ---------------- MOVING BY USER INPUT ----------------
 
     /**
      * This method is used to change the horizontal speed of the character by user input.
-     * @param x: the user input; negative results in left hand oriented movement, positive in right hand oriented movement
+     * @param x: the user input; -1.0 in left hand oriented movement, 1.0 in right hand oriented movement
      */
     fun setVelocityX(x: Double) {
         character.xVelocity = x
@@ -27,12 +29,12 @@ class Player (private val character: CharacterDto) {
      * This method is used to command a jump by user input. A jump can be applied only if the character is currently standing on ground.
      */
     fun setVelocityY() {
-        if (true) {     // TODO: check if character is standing on ground to apply jump
+        if (level.collidesBottom(character)) {
             character.yVelocity = -character.jumpForce
         }
     }
 
-    // ---------------- COLLISION DETECTION ----------------
+    // ---------------- GAME LOOP ----------------
 
     /**
      * This method is applied by the game loop in short time intervals, in order to create the illusion of animation. It has following tasks:
@@ -41,39 +43,27 @@ class Player (private val character: CharacterDto) {
      * - updating the character state accordingly
      */
     fun applyGameLoop() {
-        if (true) {         // TODO: check if character has no ground underneath --> falling into the void
+        if (level.isBelowGroundLevel(character)) {                                      // falling below ground level
             move(character.xVelocity * character.speed, character.yVelocity * character.speed)
             character.yVelocity += character.weight
         } else {
-            if (true) {     // TODO: check for collision on left side and xVelocity < 0 (stop if hit wall on left and walking)
+            val x_delta = getDeltaX(character)
+            val y_delta = getDeltaY(character)
+
+            if (x_delta == 0.0 && character.xVelocity != 0.0) {                         // if no horizontal movement possible, set velocity accordingly
                 character.xVelocity = 0.0
             }
-            if (true) {     // TODO: check for collision on right side and xVelocity > 0 (stop if hit wall on right and walking)
-                character.xVelocity = 0.0
-            }
-            if (true) {     // TODO: check if character is on ground
-                if (character.yVelocity < 0) {  // jump detected
-                    move(character.xVelocity * character.speed, character.yVelocity * character.speed)
-                } else {    // on ground
-                    move(character.xVelocity * character.speed, 0.0)
-                    character.yVelocity = 1.0
+
+            if (level.collidesBottom(character)) {                                      // character is on proper ground
+                if (character.yVelocity < 0) {      // jump detected
+                    move(x_delta, y_delta)
+                } else {                            // still hanging around on ground
+                    move(x_delta, 0.0)
+                    character.yVelocity = character.yVelocityInitial                    // set to initial yVelocity
                 }
-            } else {        // jump handling
-                val yDistance: Double
-                val velocity = character.yVelocity * character.speed
-                val yDelta: Double
-                if (character.yVelocity < 0) {
-                    yDistance = 0.0 // TODO: get negative of distance to the top
-                    yDelta = Math.max(velocity, yDistance)
-                    if (yDelta == yDistance) {
-                        character.yVelocity = 1 + character.weight
-                    }
-                } else {
-                    yDistance = 0.0 // TODO: get distance to bottom
-                    yDelta = Math.min(velocity, yDistance)
-                }
-                move(character.xVelocity * character.speed, yDelta)
-                character.yVelocity += character.weight
+            } else {                                // jump handling
+                move(x_delta, y_delta)
+                character.yVelocity += character.weight                                 // applying gravity
             }
         }
 
@@ -92,33 +82,58 @@ class Player (private val character: CharacterDto) {
 
     }
 
+    // ---------------- DETECT MOVES OF CHARACTER ----------------
+
+    /**
+     * Method to check for horizontal movement of character.
+     */
+    private fun getDeltaX(character: CharacterDto): Double {
+        val distance: Double
+        var delta = 0.0
+        val velocity = character.xVelocity * character.speed
+
+        if (character.xVelocity < 0) {          // going left
+            distance = -level.getDistanceToLeft(character)
+            delta = velocity.coerceAtLeast(distance)    // max
+        } else if (character.xVelocity > 0) {   // going right
+            distance = level.getDistanceToRight(character)
+            delta = velocity.coerceAtMost(distance)     // min
+        }
+        return delta
+    }
+
+    /**
+     * Method to check for vertical movement of character.
+     */
+    private fun getDeltaY(character: CharacterDto): Double {
+        val distance: Double
+        var delta = 0.0
+        val velocity = character.yVelocity * character.speed
+
+        if (character.yVelocity < 0) {      // going up
+            distance = -level.getDistanceToTop(character)
+            delta = velocity.coerceAtLeast(distance)    // max
+            if (delta == distance) {
+                character.yVelocity = character.yVelocityInitial                // set to initial yVelocity when head was hit
+            }
+        } else {                            // going down
+            distance = level.getDistanceToBottom(character)
+            delta = velocity.coerceAtMost(distance)     // min
+        }
+        return delta
+    }
+
     // ---------------- MOVING TRIGGERED BY GAME LOOP ----------------
 
-    // game loop will apply this function, in order to get walks, jumps and falls animated
+    /**
+     * Function to move characters x and y coordinate
+     */
     private fun move(x: Double, y: Double) {
         character.x += x
         character.y += y
-        if (false) {    // TODO: check if character is below ground level
+        if (level.isBelowGroundLevel(character)) {
             // TODO: set dead
         }
-    }
-
-    // ---------------- BOUNDING BOX ----------------
-
-    private fun getTop(): Double {
-        return character.x + character.height
-    }
-
-    private fun getBottom(): Double {
-        return character.x
-    }
-
-    private fun getLeft(): Double {
-        return character.y
-    }
-
-    private fun getRight(): Double {
-        return character.y + character.width
     }
 
 }
