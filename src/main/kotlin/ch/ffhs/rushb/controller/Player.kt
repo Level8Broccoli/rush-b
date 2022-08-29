@@ -50,18 +50,16 @@ class Player (private val character: CharacterDto) {
             val x_delta = getDeltaX(character)
             val y_delta = getDeltaY(character)
 
+            move(x_delta, y_delta)
+
             if (x_delta == 0.0 && character.xVelocity != 0.0) {                         // if no horizontal movement possible, set velocity accordingly
                 character.xVelocity = 0.0
             }
 
-            move(x_delta, y_delta)
-
-            if (level.collidesBottom(character)) {                                      // character is on proper ground
-                if (character.yVelocity >= 0) {
-                    character.yVelocity = character.yVelocityInitial                    // set to initial yVelocity if not jump is detected
-                }
-            } else {                                                                    // jump handling
-                character.yVelocity += character.weight                                 // applying gravity
+            if (!level.collidesBottom(character)) {                                 // if character is not on ground
+                character.yVelocity += character.weight                             // apply gravity
+            } else if (character.yVelocity >= 0) {                                  // if on ground & no jump detected
+                character.yVelocity = character.yVelocityInitial                    // set to initial yVelocity
             }
         }
 
