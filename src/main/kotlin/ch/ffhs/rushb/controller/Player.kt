@@ -54,15 +54,13 @@ class Player (private val character: CharacterDto) {
                 character.xVelocity = 0.0
             }
 
+            move(x_delta, y_delta)
+
             if (level.collidesBottom(character)) {                                      // character is on proper ground
-                if (character.yVelocity < 0) {      // jump detected
-                    move(x_delta, y_delta)
-                } else {                            // still hanging around on ground
-                    move(x_delta, 0.0)
-                    character.yVelocity = character.yVelocityInitial                    // set to initial yVelocity
+                if (character.yVelocity >= 0) {
+                    character.yVelocity = character.yVelocityInitial                    // set to initial yVelocity if not jump is detected
                 }
-            } else {                                // jump handling
-                move(x_delta, y_delta)
+            } else {                                                                    // jump handling
                 character.yVelocity += character.weight                                 // applying gravity
             }
         }
