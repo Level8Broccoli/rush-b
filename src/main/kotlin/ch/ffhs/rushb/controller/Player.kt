@@ -43,7 +43,7 @@ class Player (private val character: CharacterDto) {
      * - updating the character state accordingly
      */
     fun applyGameLoop() {
-        if (level.isBelowGroundLevel(character)) {                                      // falling below ground level
+        if (level.isBelowGroundLevel(character)) {                                  // falling below ground level
             move(character.xVelocity * character.speed, character.yVelocity * character.speed)
             character.yVelocity += character.weight
         } else {
@@ -52,7 +52,7 @@ class Player (private val character: CharacterDto) {
 
             move(x_delta, y_delta)
 
-            if (x_delta == 0.0 && character.xVelocity != 0.0) {                         // if no horizontal movement possible, set velocity accordingly
+            if (x_delta == 0.0 && character.xVelocity != 0.0) {                     // if no horizontal movement possible, set velocity accordingly
                 character.xVelocity = 0.0
             }
 
@@ -110,7 +110,7 @@ class Player (private val character: CharacterDto) {
             distance = -level.getDistanceToTop(character)
             delta = velocity.coerceAtLeast(distance)    // max
             if (delta == distance) {
-                character.yVelocity = character.yVelocityInitial                // set to initial yVelocity when head was hit
+                character.yVelocity =  -1 * character.yVelocity                // reverse yVelocity when head was hit
             }
         } else {                            // going down
             distance = level.getDistanceToBottom(character)
