@@ -42,11 +42,13 @@ class Level (private val tileMap: TileMap) {
         val yOffset = (character.bottom() % tileSize)
         var distance = MAX_VALUE
         if (isColCoordinateValid(colLeft) && isColCoordinateValid(colRight) && isRowCoordinateValid(row)) {
+            var tempDistance = 0.0
             for (i in row until tileMap.tiles[0].size) {
                 if (tileMap.tiles[colLeft][i] > 0 || tileMap.tiles[colRight][i] > 0) {  // solid tile found
-                    distance = (i * tileSize) + yOffset
+                    distance = tempDistance
                     break
                 }
+                tempDistance = (i * tileSize) + yOffset
             }
         }
         return distance
@@ -59,11 +61,13 @@ class Level (private val tileMap: TileMap) {
         val yOffset = (character.top() % tileSize)
         var distance = MAX_VALUE
         if (isColCoordinateValid(colLeft) && isColCoordinateValid(colRight) && isRowCoordinateValid(row)) {
+            var tempDistance = 0.0
             for (i in row downTo 0) {
                 if (tileMap.tiles[colLeft][i] > 0 || tileMap.tiles[colRight][i] > 0) {  // solid tile found
-                    distance = (i * tileSize) + yOffset
+                    distance = tempDistance
                     break
                 }
+                tempDistance = (i * tileSize) + yOffset
             }
         }
         return distance
@@ -76,11 +80,13 @@ class Level (private val tileMap: TileMap) {
         val xOffset = (character.left() % tileSize)
         var distance = MAX_VALUE
         if (isRowCoordinateValid(rowTop) && isRowCoordinateValid(rowBottom) && isColCoordinateValid(col)) {
+            var tempDistance = 0.0
             for (i in col downTo 0) {
                 if (tileMap.tiles[i][rowTop] > 0 || tileMap.tiles[i][rowBottom] > 0) {  // solid tile found
-                    distance = (i * tileSize) + xOffset
+                    distance = tempDistance
                     break
                 }
+                tempDistance = (i * tileSize) + xOffset
             }
         }
         return distance
@@ -93,11 +99,13 @@ class Level (private val tileMap: TileMap) {
         val xOffset = (character.right() % tileSize)
         var distance = MAX_VALUE
         if (isRowCoordinateValid(rowTop) && isRowCoordinateValid(rowBottom) && isColCoordinateValid(col)) {
+            var tempDistance = 0.0
             for (i in col until tileMap.tiles.size) {
                 if (tileMap.tiles[i][rowTop] > 0 || tileMap.tiles[i][rowBottom] > 0) {  // solid tile found
-                    distance = (i * tileSize) + xOffset
+                    distance = tempDistance
                     break
                 }
+                tempDistance =(i * tileSize) + xOffset
             }
         }
         return distance

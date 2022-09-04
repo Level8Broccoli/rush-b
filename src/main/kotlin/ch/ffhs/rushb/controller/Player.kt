@@ -43,26 +43,24 @@ class Player (private val character: CharacterDto) {
      * - updating the character state accordingly
      */
     fun applyGameLoop() {
-        if (level.isBelowGroundLevel(character)) {                                  // falling below ground level
-            move(character.xVelocity * character.speed, character.yVelocity * character.speed)
-            character.yVelocity += character.weight
-        } else {
-            val x_delta = getDeltaX(character)
-            val y_delta = getDeltaY(character)
+        // ---------- moving ----------
+        val x_delta = getDeltaX(character)
+        val y_delta = getDeltaY(character)
 
-            move(x_delta, y_delta)
+        move(x_delta, y_delta)
 
-            if (x_delta == 0.0 && character.xVelocity != 0.0) {                     // if no horizontal movement possible, set velocity accordingly
-                character.xVelocity = 0.0
-            }
-
-            if (!level.collidesBottom(character)) {                                 // if character is not on ground
-                character.yVelocity += character.weight                             // apply gravity
-            } else if (character.yVelocity >= 0) {                                  // if on ground & no jump detected
-                character.yVelocity = character.yVelocityInitial                    // set to initial yVelocity
-            }
+        // ---------- updating velocity ----------
+        if (x_delta == 0.0 && character.xVelocity != 0.0) {                     // if no horizontal movement possible, set velocity accordingly
+            character.xVelocity = 0.0
         }
 
+        if (!level.collidesBottom(character)) {                                 // if character is not on ground
+            character.yVelocity += character.weight                             // apply gravity
+        } else if (character.yVelocity >= 0) {                                  // if on ground & no jump detected
+            character.yVelocity = character.yVelocityInitial                    // set to initial yVelocity
+        }
+
+        // ---------- updating state & orientation ----------
         if (character.yVelocity < 0) {
             character.state = CharacterState.JUMPING
         } else if (character.yVelocity > 0) {
