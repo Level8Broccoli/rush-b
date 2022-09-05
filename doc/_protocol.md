@@ -110,7 +110,7 @@ content-length: 174
 {
   "users": [
     {
-      "id": 190,
+      "id": "190",
       "score": 0,
       "available": true
     }
@@ -309,22 +309,22 @@ content-length:174
   "level": [ [ 0, 1, 0, 0 ], [ 1, 1, 0, 0 ], [ 0, 1, 0, 0 ], [ 1, 0, 0, 0 ] ],
   "timer": 59,
   "player1": {
-    "id": 190,
+    "id": "190",
     "x": 2,
     "y": 3,
     "state": 4,
-    "orientation": LEFT,
+    "orientation": 1,
     "hasBrush": false,
     "score": 5,
     "color": "FFFFFF",
     "paintedArea": [ [ 0, 1, 0, 0], [ 1, 1, 0, 0], [ 0, 1, 0, 0], [ 1, 0, 0, 0 ] ]
   },
   "player2": {
-    "id": 7,
+    "id": "7",
     "x": 1,
     "y": 0,
     "state": 8,
-    "orientation": LEFT,
+    "orientation": 1,
     "hasBrush": false,
     "score": 0,
     "color": "000000",
