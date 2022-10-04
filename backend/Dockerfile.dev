@@ -1,0 +1,12 @@
+FROM openjdk:17.0.1
+
+ENV DIRPATH=/app/
+WORKDIR $DIRPATH
+
+COPY mvnw pom.xml $DIRPATH
+COPY .mvn .mvn
+COPY src src
+
+RUN chmod +x mvnw
+RUN ./mvnw install -DskipTests
+ENTRYPOINT ["./mvnw","spring-boot:run"]

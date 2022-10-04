@@ -1,0 +1,10 @@
+FROM node:18-alpine
+
+ENV DIRPATH=/app/
+WORKDIR $DIRPATH
+
+COPY package.json package-lock.json $DIRPATH
+RUN npm install
+COPY . .
+
+CMD ["npm", "run", "dev"]

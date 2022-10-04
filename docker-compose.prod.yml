@@ -1,0 +1,8 @@
+version: "3"
+
+services:
+  rushb:
+    container_name: rushb
+    build: .
+    ports:
+      - "8080:8080"
