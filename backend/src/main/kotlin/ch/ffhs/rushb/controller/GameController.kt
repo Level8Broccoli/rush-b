@@ -45,8 +45,9 @@ class GameController : TextWebSocketHandler() {
         }
     }
 
-    private fun emit(session: WebSocketSession, msg: Message) =
+    private fun emit(session: WebSocketSession, msg: Message) {
         session.sendMessage(TextMessage(ObjectMapper().writeValueAsBytes(msg)))
+    }
 
     private fun broadcast(msg: Message) = sessionList.forEach { emit(it.key, msg) }
     private fun broadcastToOthers(me: WebSocketSession, msg: Message) =

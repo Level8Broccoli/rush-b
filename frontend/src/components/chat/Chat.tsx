@@ -1,31 +1,32 @@
 import {h} from "preact";
 import {useEffect, useState} from "preact/compat";
-import webSocket from "../../websocket/websocket";
 
 
-export function Chat() {
+export function Chat(props: {socketRef: { current: WebSocket; }}) {
     const [messages, setMessages] = useState<String[]>(["Start of Log"]);
     const [message, setMessage] = useState("");
+    const socket = props.socketRef.current;
 
     useEffect(() => {
-        webSocket.onopen = function () {
+        /*
+        socket.onopen = function () {
             setMessages((prev) => ([...prev, "Connected to backend"]))
-            webSocket.send(JSON.stringify({type: "subscribe", data: String(Math.floor(Math.random() * 12))}))
-        };
+            socket.send(JSON.stringify({type: "subscribe", data: String(Math.floor(Math.random() * 12))}))
+        };*/
 
-        webSocket.onmessage = function (e: { data: string; }) {
+        socket.onmessage = function (e: { data: string; }) {
             setMessages((prev) => ([...prev, "Message received: " + e.data]))
         };
-
-        webSocket.onclose = function () {
+/*
+        socket.onclose = function () {
             setMessages((prev) => ([...prev, "Connection closed"]))
-        };
+        };*/
     }, [])
 
     const onSubmit = (e: Event) => {
         e.preventDefault()
         if (message.length) {
-            webSocket.send(JSON.stringify({type: "message", data: message}))
+            socket.send(JSON.stringify({type: "message", data: message}))
             setMessage("")
         }
     }
