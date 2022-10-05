@@ -41,3 +41,14 @@ docker compose -f docker-compose.prod.yml up
 ```
 
 - Bundled App will be available on port `8080`
+
+
+```
+npm i --prefix .\frontend\
+npm run dev --prefix .\frontend\
+
+http://localhost:5173/
+
+
+
+```

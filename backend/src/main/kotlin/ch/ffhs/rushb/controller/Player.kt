@@ -4,7 +4,7 @@ import ch.ffhs.rushb.model.CharacterDto
 import ch.ffhs.rushb.model.CharacterOrientation
 import ch.ffhs.rushb.model.CharacterState
 
-class Player (private val character: CharacterDto) {
+class Player(private val character: CharacterDto) {
 
     private val level = Level(character.level)
 
