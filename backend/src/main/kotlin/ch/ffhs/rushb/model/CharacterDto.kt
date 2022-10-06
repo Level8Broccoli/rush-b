@@ -5,33 +5,31 @@ data class CharacterDto (
     val color: String,
     val score: Int,
     val level: TileMap = TileMap.ONE,
-    var x: Double,
-    var y: Double,
+    var position: VectorDto,
     var state : CharacterState = CharacterState.IDLE,
     var orientation: CharacterOrientation = CharacterOrientation.FACE,
     val width: Double = 16.0,
     val height: Double = 16.0,
-    var xVelocity: Double = 0.0,
     val yVelocityInitial: Double = 1.0,
-    var yVelocity: Double = yVelocityInitial,
+    var velocity: VectorDto = VectorDto(0.0, yVelocityInitial),
     val weight: Double = 0.25,
     val jumpForce: Double = 0.25,
     val speed: Double = 2.0
     ) {
 
     fun top(): Double {
-        return y
+        return position.y
     }
 
     fun bottom(): Double {
-        return y + height
+        return position.y + height
     }
 
     fun left(): Double {
-        return x
+        return position.x
     }
 
     fun right(): Double {
-        return x + width
+        return position.x + width
     }
 }

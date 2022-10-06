@@ -12,11 +12,11 @@ export function Keylogger(props: {
 
     }, [])
 
-    const onKeyPress = (e: KeyboardEvent) => {
+    const onKeyDown = (e: KeyboardEvent) => {
         console.log(e.key)
         keys.current.join(e.key)
     }
     return (
-        <div style={"backgroundColor:red"} onKeyPress={onKeyPress} id="keylogger" />
+        <div style={"backgroundColor:red"} onKeyDown={onKeyDown} id="keylogger" />
     )
 }

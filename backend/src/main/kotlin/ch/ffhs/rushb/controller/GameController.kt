@@ -34,6 +34,10 @@ class GameController : TextWebSocketHandler() {
                 broadcast(Message("message", json.get("data").asText()))
             }
 
+            "keyPress" -> {
+                broadcast(Message("keyPress", json.get("data").asText()))
+            }
+
             "register-as-player" -> {
                 sessionList[session]?.player = MockPlayer(json.get("data").asText())
                 broadcast(Message("subscriber", sessionList.values))

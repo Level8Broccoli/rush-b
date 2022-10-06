@@ -44,7 +44,7 @@ docker compose -f docker-compose.prod.yml up
 
 
 ```
-npm i --prefix .\frontend\
+npm i --prefix .\frontend\ i
 npm run dev --prefix .\frontend\
 
 http://localhost:5173/

@@ -15,7 +15,7 @@ class Player(private val character: CharacterDto) {
      * @param x: the user input; -1.0 in left hand oriented movement, 1.0 in right hand oriented movement
      */
     fun setVelocityX(x: Double) {
-        character.xVelocity = x
+        character.velocity.x = x
         if (x > 0) {
             character.orientation = CharacterOrientation.RIGHT
         } else if (x < 0) {
@@ -30,7 +30,7 @@ class Player(private val character: CharacterDto) {
      */
     fun setVelocityY() {
         if (level.collidesBottom(character)) {
-            character.yVelocity = -character.jumpForce
+            character.velocity.y = -character.jumpForce
         }
     }
 
@@ -50,22 +50,22 @@ class Player(private val character: CharacterDto) {
         move(x_delta, y_delta)
 
         // ---------- updating velocity ----------
-        if (x_delta == 0.0 && character.xVelocity != 0.0) {                     // if no horizontal movement possible, set velocity accordingly
-            character.xVelocity = 0.0
+        if (x_delta == 0.0 && character.velocity.x != 0.0) {                     // if no horizontal movement possible, set velocity accordingly
+            character.velocity.x = 0.0
         }
 
         if (!level.collidesBottom(character)) {                                 // if character is not on ground
-            character.yVelocity += character.weight                             // apply gravity
-        } else if (character.yVelocity >= 0) {                                  // if on ground & no jump detected
-            character.yVelocity = character.yVelocityInitial                    // set to initial yVelocity
+            character.velocity.y += character.weight                             // apply gravity
+        } else if (character.velocity.y >= 0) {                                  // if on ground & no jump detected
+            character.velocity.y = character.yVelocityInitial                    // set to initial yVelocity
         }
 
         // ---------- updating state & orientation ----------
-        if (character.yVelocity < 0) {
+        if (character.velocity.y < 0) {
             character.state = CharacterState.JUMPING
-        } else if (character.yVelocity > 0) {
+        } else if (character.velocity.y > 0) {
             character.state = CharacterState.FALLING
-        } else if (character.xVelocity != 0.0) {
+        } else if (character.velocity.x != 0.0) {
             character.state = CharacterState.WALKING
         } else {
             character.state = CharacterState.IDLE
@@ -84,12 +84,12 @@ class Player(private val character: CharacterDto) {
     private fun getDeltaX(character: CharacterDto): Double {
         val distance: Double
         var delta = 0.0
-        val velocity = character.xVelocity * character.speed
+        val velocity = character.velocity.x * character.speed
 
-        if (character.xVelocity < 0) {          // going left
+        if (character.velocity.x < 0) {          // going left
             distance = -level.getDistanceToLeft(character)
             delta = velocity.coerceAtLeast(distance)    // max
-        } else if (character.xVelocity > 0) {   // going right
+        } else if (character.velocity.x > 0) {   // going right
             distance = level.getDistanceToRight(character)
             delta = velocity.coerceAtMost(distance)     // min
         }
@@ -102,13 +102,13 @@ class Player(private val character: CharacterDto) {
     private fun getDeltaY(character: CharacterDto): Double {
         val distance: Double
         var delta = 0.0
-        val velocity = character.yVelocity * character.speed
+        val velocity = character.velocity.y * character.speed
 
-        if (character.yVelocity < 0) {      // going up
+        if (character.velocity.y < 0) {      // going up
             distance = -level.getDistanceToTop(character)
             delta = velocity.coerceAtLeast(distance)    // max
             if (delta == distance) {
-                character.yVelocity =  -1 * character.yVelocity                // reverse yVelocity when head was hit
+                character.velocity.y =  -1 * character.velocity.y                // reverse yVelocity when head was hit
             }
         } else {                            // going down
             distance = level.getDistanceToBottom(character)
@@ -123,8 +123,8 @@ class Player(private val character: CharacterDto) {
      * Function to move characters x and y coordinate
      */
     private fun move(x: Double, y: Double) {
-        character.x += x
-        character.y += y
+        character.position.x += x
+        character.position.y += y
         if (level.isBelowGroundLevel(character)) {
             // TODO: set dead
         }

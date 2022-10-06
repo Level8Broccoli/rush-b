@@ -2,9 +2,9 @@ import {h} from "preact";
 import {useEffect, useRef, useState} from "preact/compat";
 import Canvas from "./components/canvas/Canvas";
 import {Chat} from "./components/chat/Chat";
-import {Keylogger} from "./helpers/keylogger/keylogger";
+import {Keylogger} from "./shared/keylogger/keylogger";
 import SockJS from "sockjs-client/dist/sockjs";
-import webSocket from "./helpers/websocket/websocket";
+import webSocket from "./shared/websocket/websocket";
 
 export function App() {
     //const webSocket = new SockJS(`${import.meta.env.DEV ? '//localhost:8080' : ''}/ws`);
@@ -29,7 +29,7 @@ export function App() {
     return (
         <>
             <h1 onKeyPress={onKeyPress}>rush-b</h1>
-            <Canvas  />
+            <Canvas  socketRef={socketRef} />
             <Chat  socketRef={socketRef}/>
             <Keylogger   keyRef={pressedKeyRef}/>
         </>
