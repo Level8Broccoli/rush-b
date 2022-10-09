@@ -1,18 +1,31 @@
 package ch.ffhs.rushb.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import org.springframework.scheduling.annotation.EnableScheduling
+import org.springframework.scheduling.annotation.Scheduled
+import org.springframework.stereotype.Controller
 import org.springframework.web.socket.CloseStatus
 import org.springframework.web.socket.TextMessage
 import org.springframework.web.socket.WebSocketSession
 import org.springframework.web.socket.handler.TextWebSocketHandler
 import java.util.concurrent.atomic.AtomicLong
-import kotlin.collections.HashMap
+
 
 data class Subscriber(val id: Long, var player: MockPlayer?)
 data class MockPlayer(val name: String)
 data class Message(val msgType: String, val data: Any)
 
+@EnableScheduling
+@Controller
 class GameController : TextWebSocketHandler() {
+
+    companion object {
+        lateinit var instance: GameController
+    }
+
+    init {
+        instance = this
+    }
 
     private val sessionList = HashMap<WebSocketSession, Subscriber>()
     private var uid = AtomicLong(0)
@@ -20,17 +33,21 @@ class GameController : TextWebSocketHandler() {
 
     override fun afterConnectionClosed(session: WebSocketSession, status: CloseStatus) {
         broadcastToOthers(session, Message("left", session))
-        sessionList -= session
+        instance.sessionList -= session
     }
 
+    @Scheduled(fixedRate = 100)
+    fun sendGameStatus() {
+        broadcast(Message("move", game.getCharacter1().toString()))
+    }
 
     override fun handleTextMessage(session: WebSocketSession, message: TextMessage) {
         val json = ObjectMapper().readTree(message.payload)
         when (json.get("type").asText()) {
             "subscribe" -> {
                 val subscriber = Subscriber(uid.getAndIncrement(), null)
-                sessionList += mapOf(session to subscriber)
-                broadcast(Message("subscriber", sessionList.values))
+                instance.sessionList += mapOf(session to subscriber)
+                broadcast(Message("subscriber", instance.sessionList.values))
             }
 
             "message" -> {
@@ -50,8 +67,8 @@ class GameController : TextWebSocketHandler() {
             }
 
             "register-as-player" -> {
-                sessionList[session]?.player = MockPlayer(json.get("data").asText())
-                broadcast(Message("subscriber", sessionList.values))
+                instance.sessionList[session]?.player = MockPlayer(json.get("data").asText())
+                broadcast(Message("subscriber", instance.sessionList.values))
             }
 
             else -> {
@@ -64,9 +81,9 @@ class GameController : TextWebSocketHandler() {
         session.sendMessage(TextMessage(ObjectMapper().writeValueAsBytes(msg)))
     }
 
-    private fun broadcast(msg: Message) = sessionList.forEach { emit(it.key, msg) }
+    private fun broadcast(msg: Message) = instance.sessionList.forEach { emit(it.key, msg) }
 
     private fun broadcastToOthers(me: WebSocketSession, msg: Message) =
-        sessionList.filterNot { it.key == me }.forEach { emit(it.key, msg) }
+        instance.sessionList.filterNot { it.key == me }.forEach { emit(it.key, msg) }
 }
 
