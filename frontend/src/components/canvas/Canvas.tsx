@@ -1,6 +1,6 @@
 import {createRef, h} from 'preact';
 import {useEffect, useRef, useState} from "preact/compat";
-import style from 'style.css'
+import style from '../../style.css'
 
 type Props = {
     socketRef: { current: WebSocket; }
@@ -48,7 +48,7 @@ export default function Canvas(props: Props) : JSX.Element {
     }
 
     return (
-        <canvas tabIndex={0} onKeyDown={recordKeyStroke} ref={canvasRef} style={{ width: 600, height: 300 }} />
+        <canvas tabIndex={0} onKeyDown={recordKeyStroke} ref={canvasRef} />
     )
 }
 

@@ -1,10 +1,6 @@
 package ch.ffhs.rushb.controller
 
-import ch.ffhs.rushb.model.*
 import com.fasterxml.jackson.databind.ObjectMapper
-import org.springframework.context.annotation.Configuration
-import org.springframework.scheduling.annotation.EnableScheduling
-import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.web.socket.CloseStatus
 import org.springframework.web.socket.TextMessage
 import org.springframework.web.socket.WebSocketSession
@@ -16,25 +12,11 @@ data class Subscriber(val id: Long, var player: MockPlayer?)
 data class MockPlayer(val name: String)
 data class Message(val msgType: String, val data: Any)
 
-@Configuration
-@EnableScheduling
 class GameController : TextWebSocketHandler() {
 
     private val sessionList = HashMap<WebSocketSession, Subscriber>()
     private var uid = AtomicLong(0)
-    private val characterDto = CharacterDto(
-        "test-id",
-        "red",
-        VectorDto(16.0,0.0)
-    )
-    private val player = Player(characterDto);
-
-
-    @Scheduled(fixedRate = 200)
-    fun fixedRateScheduledTask() {
-        player.applyGameLoop()
-        broadcast(Message("move", player.character.toString())) // TODO; find out why this is not working
-    }
+    private val game = Game()
 
     override fun afterConnectionClosed(session: WebSocketSession, status: CloseStatus) {
         broadcastToOthers(session, Message("left", session))
@@ -58,14 +40,13 @@ class GameController : TextWebSocketHandler() {
             "keyPress" -> {
                 val key = json.get("data").asText();
                 if (key == "ArrowLeft") {
-                    player.setVelocityX(-1.0);
+                    game.getPlayer1().setVelocityX(-1.0);
                 } else if (key == "ArrowRight") {
-                    player.setVelocityX(1.0);
+                    game.getPlayer1().setVelocityX(1.0);
                 } else if (key == "ArrowUp") {
-                    player.setVelocityY();
+                    game.getPlayer1().setVelocityY();
                 }
-                player.applyGameLoop()
-                broadcast(Message("move", player.character.toString()))
+                broadcast(Message("move", game.getCharacter1().toString()))
             }
 
             "register-as-player" -> {

@@ -1,12 +1,16 @@
 package ch.ffhs.rushb.controller
 
-import ch.ffhs.rushb.model.CharacterDto
-import ch.ffhs.rushb.model.CharacterOrientation
-import ch.ffhs.rushb.model.CharacterState
+import ch.ffhs.rushb.model.*
 
-class Player(val character: CharacterDto) {
+class Player(val id : String,
+             val color: String,
+             var position: VectorDto,
+             val tileMap: TileMap
+) {
 
-    private val level = Level(character.level)
+    val level = Level(tileMap)
+    val character = CharacterDto(id, color, position)
+
 
     // ---------------- MOVING BY USER INPUT ----------------
 

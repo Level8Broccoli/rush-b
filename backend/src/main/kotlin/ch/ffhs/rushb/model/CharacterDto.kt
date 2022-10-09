@@ -3,11 +3,10 @@ package ch.ffhs.rushb.model
 data class CharacterDto (
     val id : String,
     val color: String,
-    var position: VectorDto,
+    var position: VectorDto
     ) {
     val width: Double = 16.0
     val height: Double = 16.0
-    val level: TileMap = TileMap.ONE
     var state : CharacterState = CharacterState.IDLE
     var orientation: CharacterOrientation = CharacterOrientation.FACE
     val score: Int = 0
