@@ -1,6 +1,5 @@
 import {createRef, h} from 'preact';
 import {useEffect, useRef, useState} from "preact/compat";
-import style from '../../style.css'
 
 type Props = {
     socketRef: { current: WebSocket; }

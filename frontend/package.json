@@ -9,7 +9,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@preact/cli-plugin-sass": "0.0.4-alpha.0",
     "@types/sockjs-client": "^1.5.1",
     "preact": "^10.10.6",
     "sockjs-client": "^1.6.1"
