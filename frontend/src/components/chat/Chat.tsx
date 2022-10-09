@@ -1,5 +1,5 @@
 import { h } from "preact";
-import { useEffect, useState } from "preact/compat";
+import { useState } from "preact/compat";
 
 type Props = {
   socketRef: { current: WebSocket };
@@ -8,14 +8,12 @@ type Props = {
 
 export function Chat(props: Props): JSX.Element {
   const [message, setMessage] = useState("");
-  const socket = props.socketRef.current;
-
-  useEffect(() => {}, []);
-
   const onSubmit = (e: Event) => {
     e.preventDefault();
     if (message.length) {
-      socket.send(JSON.stringify({ type: "message", data: message }));
+      props.socketRef.current.send(
+        JSON.stringify({ type: "message", data: message })
+      );
       setMessage("");
     }
   };

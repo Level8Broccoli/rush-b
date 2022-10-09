@@ -1,5 +1,5 @@
 import { createRef, h } from "preact";
-import { useEffect, useRef, useState } from "preact/compat";
+import { useEffect, useState } from "preact/compat";
 
 type Props = {
   socketRef: { current: WebSocket };
@@ -9,14 +9,18 @@ type Props = {
 
 export default function Canvas(props: Props): JSX.Element {
   const [message, setMessage] = useState("");
-  const socket = props.socketRef.current;
-  const dataRef = useRef([]);
-  const canvasRef = createRef();
+  const canvasRef = createRef<HTMLCanvasElement>();
 
   useEffect(() => {
+    if (canvasRef.current === null) {
+      return;
+    }
     const ctx = canvasRef.current.getContext("2d");
     const tileFactor = 0.8;
     const tileSize = props.tileMap.tileSize * tileFactor;
+    if (ctx === null) {
+      return;
+    }
 
     ctx.clearRect(0, 0, 800, 800);
     props.tileMap.tiles.forEach((colElement, col) => {
@@ -53,7 +57,9 @@ export default function Canvas(props: Props): JSX.Element {
     e.preventDefault();
     setMessage(e.key);
     if (message.length) {
-      socket.send(JSON.stringify({ type: "keyPress", data: message }));
+      props.socketRef.current.send(
+        JSON.stringify({ type: "keyPress", data: message })
+      );
       setMessage("");
     }
   };

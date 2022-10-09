@@ -4,17 +4,18 @@ import Canvas from "./components/canvas/Canvas";
 import { Chat } from "./components/chat/Chat";
 import webSocket from "./shared/websocket/websocket";
 import { tileMapEnum } from "./shared/model/tileMap.enum";
+import { isMessage } from "./shared/utils/parse";
 
 export function App() {
   const socketRef = useRef(webSocket);
   const [messages, setMessages] = useState<String[]>([]);
   const [tileMap, setTileMap] = useState(tileMapEnum.ONE);
-  const [character, setCharacter] = useState<{
-    id: string;
-    color: string;
-    x: number;
-    y: number;
-  }>({ id: "", color: "", x: -100, y: -100 });
+  const [character, setCharacter] = useState({
+    id: "",
+    color: "",
+    x: -100,
+    y: -100,
+  });
 
   useEffect(() => {
     webSocket.onopen = function () {
@@ -26,7 +27,10 @@ export function App() {
       );
     };
     webSocket.onmessage = function (e: { data: string }) {
-      const msg = JSON.parse(e.data);
+      const msg = JSON.parse(e.data) as unknown;
+      if (!isMessage(msg)) {
+        return;
+      }
       if (msg["msgType"] === "message" || msg["msgType"] === "keyPress") {
         setMessages((prev) => [...prev, msg["data"]]);
       } else if (msg["msgType"] === "tileMap") {
