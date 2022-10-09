@@ -10,6 +10,7 @@ export default function Canvas(props: {socketRef: { current: WebSocket; }}) {
     const socket = props.socketRef.current;
 
     const dataRef = useRef([])
+
     function getData() {
         const data = dataRef.current
         let point
