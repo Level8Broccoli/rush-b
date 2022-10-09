@@ -1,26 +1,18 @@
 import {h} from "preact";
 import {useEffect, useState} from "preact/compat";
 
+type Props = {
+    socketRef: { current: WebSocket; }
+    messages: String[]
+}
 
-export function Chat(props: {socketRef: { current: WebSocket; }}) {
-    const [messages, setMessages] = useState<String[]>(["Start of Log"]);
+export function Chat(props: Props): JSX.Element {
+
     const [message, setMessage] = useState("");
     const socket = props.socketRef.current;
 
     useEffect(() => {
-        /*
-        socket.onopen = function () {
-            setMessages((prev) => ([...prev, "Connected to backend"]))
-            socket.send(JSON.stringify({type: "subscribe", data: String(Math.floor(Math.random() * 12))}))
-        };*/
 
-        socket.onmessage = function (e: { data: string; }) {
-            setMessages((prev) => ([...prev, "Message received: " + e.data]))
-        };
-/*
-        socket.onclose = function () {
-            setMessages((prev) => ([...prev, "Connection closed"]))
-        };*/
     }, [])
 
     const onSubmit = (e: Event) => {
@@ -34,7 +26,7 @@ export function Chat(props: {socketRef: { current: WebSocket; }}) {
     return (
         <>
             <ul>
-                {messages.map((m) => <li>{m}</li>)}
+                {props.messages.map((m) => <li>{m}</li>)}
             </ul>
             <form action="" onSubmit={onSubmit}>
                 <input name="message" value={message} type="text" onInput={(e) => {

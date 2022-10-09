@@ -1,14 +1,14 @@
 import { h } from 'preact';
 import {useRef, useState} from "preact/compat";
-import style from './style.css'
-import useCanvas from "../../shared/hooks/useCanvas";
 
+type Props = {
+    socketRef: { current: WebSocket; }
+}
 
-export default function Canvas(props: {socketRef: { current: WebSocket; }}) {
+export default function Canvas(props: Props) : JSX.Element {
 
     const [message, setMessage] = useState("");
     const socket = props.socketRef.current;
-
     const dataRef = useRef([])
 
     function getData() {

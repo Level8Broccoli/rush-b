@@ -3,23 +3,22 @@ import {useEffect, useRef, useState} from "preact/compat";
 import Canvas from "./components/canvas/Canvas";
 import {Chat} from "./components/chat/Chat";
 import {Keylogger} from "./shared/keylogger/keylogger";
-import SockJS from "sockjs-client/dist/sockjs";
 import webSocket from "./shared/websocket/websocket";
 
 export function App() {
-    //const webSocket = new SockJS(`${import.meta.env.DEV ? '//localhost:8080' : ''}/ws`);
     let stringList: String[] = [];
     const socketRef = useRef(webSocket);
     const pressedKeyRef = useRef(stringList);
+    const [messages, setMessages] = useState<String[]>(["Start of Log"]);
 
     useEffect(() => {
         webSocket.onopen = function () {
-            console.log("open")
             webSocket.send(JSON.stringify({type: "subscribe", data: String(Math.floor(Math.random() * 12))}))
         };
-
+        webSocket.onmessage = function (e: { data: string; }) {
+            setMessages((prev) => ([...prev, "Message received: " + e.data]))
+        };
         webSocket.onclose = function () {
-            console.log("close")
         };
     }, [])
     const onKeyPress = (e: KeyboardEvent) => {
@@ -30,7 +29,7 @@ export function App() {
         <>
             <h1 onKeyPress={onKeyPress}>rush-b</h1>
             <Canvas  socketRef={socketRef} />
-            <Chat  socketRef={socketRef}/>
+            <Chat  socketRef={socketRef} messages={messages}/>
             <Keylogger   keyRef={pressedKeyRef}/>
         </>
     )
