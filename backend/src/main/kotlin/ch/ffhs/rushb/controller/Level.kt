@@ -1,6 +1,7 @@
 package ch.ffhs.rushb.controller
 
-import ch.ffhs.rushb.model.CharacterDto
+import ch.ffhs.rushb.model.Character
+import ch.ffhs.rushb.model.GameObject
 import ch.ffhs.rushb.model.TileMap
 import java.lang.Double.MAX_VALUE
 
@@ -12,30 +13,30 @@ class Level (private val tileMap: TileMap) {
 
     // ---------------- COLLISION DETECTION ----------------
 
-    fun collidesBottom(character: CharacterDto): Boolean {
+    fun collidesBottom(character: GameObject): Boolean {
         return getDistanceToBottom(character) == 0.0
     }
 
-    fun collidesTop(character: CharacterDto): Boolean {
+    fun collidesTop(character: GameObject): Boolean {
         return getDistanceToTop(character) == 0.0
     }
 
-    fun collidesLeft(character: CharacterDto): Boolean {
+    fun collidesLeft(character: GameObject): Boolean {
         return getDistanceToLeft(character) == 0.0
     }
 
-    fun collidesRight(character: CharacterDto): Boolean {
+    fun collidesRight(character: GameObject): Boolean {
         return getDistanceToRight(character) == 0.0
     }
 
-    fun isBelowGroundLevel(character: CharacterDto): Boolean {
+    fun isBelowGroundLevel(character: GameObject): Boolean {
         return getDistanceToBottom(character) == MAX_VALUE && character.bottom() > tileMap.tiles[0].size * tileSize
     }
 
 
     // ---------------- COMPUTES DISTANCE TO NEXT SOLID TILE ----------------
 
-    fun getDistanceToBottom(character: CharacterDto): Double {
+    fun getDistanceToBottom(character: GameObject): Double {
         val colLeft = (character.left() / tileSize).toInt()
         val colRight = (character.right() / tileSize).toInt()
         val row = (character.bottom() / tileSize).toInt()
@@ -60,7 +61,7 @@ class Level (private val tileMap: TileMap) {
         return distance
     }
 
-    fun getDistanceToTop(character: CharacterDto): Double {
+    fun getDistanceToTop(character: GameObject): Double {
         val colLeft = (character.left() / tileSize).toInt()
         val colRight = (character.right() / tileSize).toInt()
         val row = (character.top() / tileSize).toInt()
@@ -85,7 +86,7 @@ class Level (private val tileMap: TileMap) {
         return distance
     }
 
-    fun getDistanceToLeft(character: CharacterDto): Double {
+    fun getDistanceToLeft(character: GameObject): Double {
         val rowTop = (character.top() / tileSize).toInt()
         val rowBottom = ((character.bottom()-1) / tileSize).toInt()
         val col = (character.left() / tileSize).toInt()
@@ -110,7 +111,7 @@ class Level (private val tileMap: TileMap) {
         return distance
     }
 
-    fun getDistanceToRight(character: CharacterDto): Double {
+    fun getDistanceToRight(character: GameObject): Double {
         val rowTop = (character.top() / tileSize).toInt()
         val rowBottom = ((character.bottom()-1) / tileSize).toInt()
         val col = (character.right() / tileSize).toInt()

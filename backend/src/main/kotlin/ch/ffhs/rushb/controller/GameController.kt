@@ -72,6 +72,7 @@ class GameController : TextWebSocketHandler() {
                         // TODO: hit
                     } else if (key.asText() == "QKey") {
                         // TODO: quit
+
                     }
                 }
                 broadcast(Message("move", instance.game.getCharacter1().toString()))
