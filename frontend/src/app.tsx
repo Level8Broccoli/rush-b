@@ -15,7 +15,9 @@ export function App() {
   const [connectionStatus, setConnectionStatus] = useState(
     ConnectionStatus.CLOSED
   );
-  const [send, setSend] = useState<SendMessage>(console.error);
+  const [send, setSend] = useState<SendMessage>((type, data) =>
+    console.error("not yet connected", { type, data })
+  );
   const [messages, setMessages] = useState<string[]>([]);
   const [tileMap, setTileMap] = useState(tileMapEnum.ONE);
   const [character, setCharacter] = useState({
@@ -46,7 +48,7 @@ export function App() {
         }
       },
     });
-    setSend(sendMessage);
+    setSend(() => sendMessage);
   }, []);
 
   return (
@@ -54,7 +56,7 @@ export function App() {
       <h1>rush-b</h1>
       <div style="display: grid; grid-template-columns: 1fr 20rem; gap: 1rem; padding: 3rem;">
         <Canvas send={send} tileMap={tileMap} character={character} />
-        <div style="background-color: lightgray; border-radius: 0.3rem; padding: 0.3rem;">
+        <div style="background-color: lightgray; border-radius: 0.3rem; padding-inline: 1rem;">
           <Logs connectionStatus={connectionStatus} logs={messages} />
           <Chat send={send} />
         </div>

@@ -47,11 +47,12 @@ function initWebSocket({
     };
     webSocket.onclose = function () {
       onConnectionChange(ConnectionStatus.CLOSED);
-      setTimeout(connect, Math.random() * 5000);
+      setTimeout(connect, Math.random() * 60_000);
     };
 
     sendMessage = function (type: MessageType, data: string | string[]): void {
-      if (webSocket.readyState) webSocket.send(JSON.stringify({ type, data }));
+      if (webSocket.readyState === ConnectionStatus.OPEN)
+        webSocket.send(JSON.stringify({ type, data }));
     };
   }
 
