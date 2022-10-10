@@ -34,7 +34,6 @@ export default function Canvas(props: Props): JSX.Element {
       return;
     }
 
-    ctx.clearRect(0, 0, 800, 800);
     props.tileMap.tiles.forEach((colElement, col) => {
       colElement.forEach((rowElement, row) => {
         const dx = col * tileSize;
