@@ -1,14 +1,25 @@
 import { createRef, h } from "preact";
 import { useEffect, useState } from "preact/compat";
+import { SendMessage } from "../../shared/websocket/websocket";
 
 type Props = {
-  socketRef: { current: WebSocket };
+  send: SendMessage;
   tileMap: { tileSize: number; tiles: number[][] };
-  character: { id: string; color: string; width: number; height: number; x: number; y: number; score: number; state: string; orientation: string };
+  character: {
+    id: string;
+    color: string;
+    width: number;
+    height: number;
+    x: number;
+    y: number;
+    score: number;
+    state: string;
+    orientation: string;
+  };
 };
 
 export default function Canvas(props: Props): JSX.Element {
-  const [message, setMessage] = useState<String[]>([]);
+  const [message, setMessage] = useState<string[]>([]);
   const canvasRef = createRef<HTMLCanvasElement>();
 
   useEffect(() => {
@@ -27,20 +38,10 @@ export default function Canvas(props: Props): JSX.Element {
       colElement.forEach((rowElement, row) => {
         if (props.tileMap.tiles[col][row] == 1) {
           ctx.fillStyle = "black"; //randomColor;
-          ctx.fillRect(
-            col * tileSize,
-            row * tileSize,
-            tileSize,
-            tileSize
-          );
+          ctx.fillRect(col * tileSize, row * tileSize, tileSize, tileSize);
         } else {
           ctx.fillStyle = "white";
-          ctx.fillRect(
-            col * tileSize,
-            row * tileSize,
-            tileSize,
-            tileSize
-          );
+          ctx.fillRect(col * tileSize, row * tileSize, tileSize, tileSize);
         }
       });
     });
@@ -49,7 +50,7 @@ export default function Canvas(props: Props): JSX.Element {
       props.character.x * tileFactor,
       props.character.y * tileFactor,
       props.character.width * tileFactor,
-        props.character.height * tileFactor
+      props.character.height * tileFactor
     );
   }, [props.character]);
 
@@ -59,23 +60,26 @@ export default function Canvas(props: Props): JSX.Element {
       setMessage((prev) => [...prev, e.code]);
     }
     if (message.length) {
-      props.socketRef.current.send(
-        JSON.stringify({ type: "keyPress", data: message })
-      );
+      props.send("keyPress", message);
     }
   };
 
   const onKeyUp = (e: KeyboardEvent) => {
     e.preventDefault();
     if (message.includes(e.code)) {
-      setMessage((prev) => [...prev].filter(item => item !== e.code));
+      setMessage((prev) => [...prev].filter((item) => item !== e.code));
     }
     if (message.length) {
-      props.socketRef.current.send(
-          JSON.stringify({ type: "keyPress", data: message })
-      );
+      props.send("keyPress", message);
     }
-  }
+  };
 
-  return <canvas tabIndex={0} onKeyDown={onKeyDown} onKeyUp={onKeyUp} ref={canvasRef} />;
+  return (
+    <canvas
+      tabIndex={0}
+      onKeyDown={onKeyDown}
+      onKeyUp={onKeyUp}
+      ref={canvasRef}
+    />
+  );
 }

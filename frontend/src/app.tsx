@@ -1,14 +1,22 @@
 import { h } from "preact";
-import { useEffect, useRef, useState } from "preact/compat";
+import { useEffect, useState } from "preact/compat";
 import Canvas from "./components/canvas/Canvas";
 import { Chat } from "./components/chat/Chat";
-import webSocket from "./shared/websocket/websocket";
+import {
+  ConnectionStatus,
+  initWebSocket,
+  SendMessage,
+} from "./shared/websocket/websocket";
 import { tileMapEnum } from "./shared/model/tileMap.enum";
 import { isMessage } from "./shared/utils/parse";
+import Logs from "./components/log/Logs";
 
 export function App() {
-  const socketRef = useRef(webSocket);
-  const [messages, setMessages] = useState<String[]>([]);
+  const [connectionStatus, setConnectionStatus] = useState(
+    ConnectionStatus.CLOSED
+  );
+  const [send, setSend] = useState<SendMessage>(console.error);
+  const [messages, setMessages] = useState<string[]>([]);
   const [tileMap, setTileMap] = useState(tileMapEnum.ONE);
   const [character, setCharacter] = useState({
     id: "",
@@ -19,39 +27,38 @@ export function App() {
     y: -100,
     score: 0,
     state: "",
-    orientation: ""
+    orientation: "",
   });
 
   useEffect(() => {
-    webSocket.onopen = function () {
-      webSocket.send(
-        JSON.stringify({
-          type: "subscribe",
-          data: String(Math.floor(Math.random() * 12)),
-        })
-      );
-    };
-    webSocket.onmessage = function (e: { data: string }) {
-      const msg = JSON.parse(e.data) as unknown;
-      if (!isMessage(msg)) {
-        return;
-      }
-      if (msg["msgType"] === "message" || msg["msgType"] === "keyPress") {
-        setMessages((prev) => [...prev, msg["data"]]);
-      } else if (msg["msgType"] === "tileMap") {
-        setTileMap(tileMapEnum[msg["data"] as keyof typeof tileMapEnum]);
-      } else if (msg["msgType"] === "move") {
-        setCharacter(JSON.parse(msg["data"]));
-      }
-    };
-    webSocket.onclose = function () {};
+    const sendMessage = initWebSocket({
+      onConnectionChange: setConnectionStatus,
+      onMessageReceived: (data) => {
+        if (!isMessage(data)) {
+          return;
+        }
+        if (data["msgType"] === "message" || data["msgType"] === "keyPress") {
+          setMessages((prev) => [...prev, data["data"]]);
+        } else if (data["msgType"] === "tileMap") {
+          setTileMap(tileMapEnum[data["data"] as keyof typeof tileMapEnum]);
+        } else if (data["msgType"] === "move") {
+          setCharacter(JSON.parse(data["data"]));
+        }
+      },
+    });
+    setSend(sendMessage);
   }, []);
 
   return (
-    <>
+    <div style="padding: 1rem;">
       <h1>rush-b</h1>
-      <Canvas socketRef={socketRef} tileMap={tileMap} character={character} />
-      <Chat socketRef={socketRef} messages={messages} />
-    </>
+      <div style="display: grid; grid-template-columns: 1fr 20rem; gap: 1rem; padding: 3rem;">
+        <Canvas send={send} tileMap={tileMap} character={character} />
+        <div style="background-color: lightgray; border-radius: 0.3rem; padding: 0.3rem;">
+          <Logs connectionStatus={connectionStatus} logs={messages} />
+          <Chat send={send} />
+        </div>
+      </div>
+    </div>
   );
 }
