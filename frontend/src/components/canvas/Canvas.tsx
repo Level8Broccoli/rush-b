@@ -4,11 +4,11 @@ import { useEffect, useState } from "preact/compat";
 type Props = {
   socketRef: { current: WebSocket };
   tileMap: { tileSize: number; tiles: number[][] };
-  character: { id: string; color: string; x: number; y: number };
+  character: { id: string; color: string; width: number; height: number; x: number; y: number; score: number; state: string; orientation: string };
 };
 
 export default function Canvas(props: Props): JSX.Element {
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState<String[]>([]);
   const canvasRef = createRef<HTMLCanvasElement>();
 
   useEffect(() => {
@@ -16,7 +16,7 @@ export default function Canvas(props: Props): JSX.Element {
       return;
     }
     const ctx = canvasRef.current.getContext("2d");
-    const tileFactor = 0.8;
+    const tileFactor = 0.5;
     const tileSize = props.tileMap.tileSize * tileFactor;
     if (ctx === null) {
       return;
@@ -28,41 +28,54 @@ export default function Canvas(props: Props): JSX.Element {
         if (props.tileMap.tiles[col][row] == 1) {
           ctx.fillStyle = "black"; //randomColor;
           ctx.fillRect(
-            col * tileSize * tileFactor,
-            row * tileSize * tileFactor,
-            tileSize * tileFactor,
-            tileSize * tileFactor
+            col * tileSize,
+            row * tileSize,
+            tileSize,
+            tileSize
           );
         } else {
           ctx.fillStyle = "white";
           ctx.fillRect(
-            col * tileSize * tileFactor,
-            row * tileSize * tileFactor,
-            tileSize * tileFactor,
-            tileSize * tileFactor
+            col * tileSize,
+            row * tileSize,
+            tileSize,
+            tileSize
           );
         }
       });
     });
     ctx.fillStyle = props.character.color;
     ctx.fillRect(
-      props.character.x,
-      props.character.y,
-      tileSize * tileFactor,
-      tileSize * tileFactor
+      props.character.x * tileFactor,
+      props.character.y * tileFactor,
+      props.character.width * tileFactor,
+        props.character.height * tileFactor
     );
   }, [props.character]);
 
-  const recordKeyStroke = (e: KeyboardEvent) => {
+  const onKeyDown = (e: KeyboardEvent) => {
     e.preventDefault();
-    setMessage(e.key);
+    if (!message.includes(e.code)) {
+      setMessage((prev) => [...prev, e.code]);
+    }
     if (message.length) {
       props.socketRef.current.send(
         JSON.stringify({ type: "keyPress", data: message })
       );
-      setMessage("");
     }
   };
 
-  return <canvas tabIndex={0} onKeyDown={recordKeyStroke} ref={canvasRef} />;
+  const onKeyUp = (e: KeyboardEvent) => {
+    e.preventDefault();
+    if (message.includes(e.code)) {
+      setMessage((prev) => [...prev].filter(item => item !== e.code));
+    }
+    if (message.length) {
+      props.socketRef.current.send(
+          JSON.stringify({ type: "keyPress", data: message })
+      );
+    }
+  }
+
+  return <canvas tabIndex={0} onKeyDown={onKeyDown} onKeyUp={onKeyUp} ref={canvasRef} />;
 }

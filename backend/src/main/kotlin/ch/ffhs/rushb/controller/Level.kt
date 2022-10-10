@@ -48,7 +48,13 @@ class Level (private val tileMap: TileMap) {
                     distance = tempDistance
                     break
                 }
-                tempDistance = (i * tileSize) + yOffset
+                tempDistance += 1
+            }
+        }
+        if (distance < MAX_VALUE) {
+            distance = distance * tileSize - yOffset
+            if (distance < 1) {
+                distance = 0.0
             }
         }
         return distance
@@ -67,7 +73,13 @@ class Level (private val tileMap: TileMap) {
                     distance = tempDistance
                     break
                 }
-                tempDistance = (i * tileSize) + yOffset
+                tempDistance += 1
+            }
+        }
+        if (distance < MAX_VALUE) {
+            distance = distance * tileSize - yOffset
+            if (distance < 1) {
+                distance = 0.0
             }
         }
         return distance
@@ -75,9 +87,9 @@ class Level (private val tileMap: TileMap) {
 
     fun getDistanceToLeft(character: CharacterDto): Double {
         val rowTop = (character.top() / tileSize).toInt()
-        val rowBottom = (character.bottom() / tileSize).toInt()
+        val rowBottom = ((character.bottom()-1) / tileSize).toInt()
         val col = (character.left() / tileSize).toInt()
-        val xOffset = (character.left() % tileSize)
+        val xOffset = ((character.left()) % tileSize)
         var distance = MAX_VALUE
         if (isRowCoordinateValid(rowTop) && isRowCoordinateValid(rowBottom) && isColCoordinateValid(col)) {
             var tempDistance = 0.0
@@ -86,7 +98,13 @@ class Level (private val tileMap: TileMap) {
                     distance = tempDistance
                     break
                 }
-                tempDistance = (i * tileSize) + xOffset
+                tempDistance += 1
+            }
+        }
+        if (distance < MAX_VALUE) {
+            distance = distance * tileSize
+            if (distance < 1) {
+                distance = 0.0
             }
         }
         return distance
@@ -94,7 +112,7 @@ class Level (private val tileMap: TileMap) {
 
     fun getDistanceToRight(character: CharacterDto): Double {
         val rowTop = (character.top() / tileSize).toInt()
-        val rowBottom = (character.bottom() / tileSize).toInt()
+        val rowBottom = ((character.bottom()-1) / tileSize).toInt()
         val col = (character.right() / tileSize).toInt()
         val xOffset = (character.right() % tileSize)
         var distance = MAX_VALUE
@@ -105,7 +123,13 @@ class Level (private val tileMap: TileMap) {
                     distance = tempDistance
                     break
                 }
-                tempDistance =(i * tileSize) + xOffset
+                tempDistance += 1
+            }
+        }
+        if (distance < MAX_VALUE) {
+            distance = distance * tileSize + xOffset
+            if (distance < 1) {
+                distance = 0.0
             }
         }
         return distance

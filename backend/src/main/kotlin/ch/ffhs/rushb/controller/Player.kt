@@ -1,6 +1,7 @@
 package ch.ffhs.rushb.controller
 
 import ch.ffhs.rushb.model.*
+import java.lang.Double.MAX_VALUE
 
 class Player(val id : String,
              val color: String,
@@ -56,12 +57,20 @@ class Player(val id : String,
         // ---------- updating velocity ----------
         if (x_delta == 0.0 && character.velocity.x != 0.0) {                     // if no horizontal movement possible, set velocity accordingly
             character.velocity.x = 0.0
+        } else {
+            character.velocity.x *= 0.5                                         // slide
+            if (character.velocity.x < 0.05 && character.velocity.x > -0.05) {
+                character.velocity.x = 0.0
+            }
         }
 
         if (!level.collidesBottom(character)) {                                 // if character is not on ground
-            character.velocity.y += character.weight                             // apply gravity
-        } else if (character.velocity.y >= 0) {                                  // if on ground & no jump detected
-            character.velocity.y = character.yVelocityInitial                    // set to initial yVelocity
+            character.velocity.y += character.weight                            // apply gravity
+        } else {                                                                // if on ground
+            if (character.velocity.y > character.yVelocityInitial) {           // if on ground & no jump detected
+                character.velocity.y = character.yVelocityInitial               // set to initial yVelocity
+            } else {
+            }
         }
 
         // ---------- updating state & orientation ----------

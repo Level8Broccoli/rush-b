@@ -1,12 +1,7 @@
 package ch.ffhs.rushb.controller
 
 import ch.ffhs.rushb.model.*
-import org.springframework.context.annotation.Configuration
-import org.springframework.scheduling.annotation.EnableScheduling
-import org.springframework.scheduling.annotation.Scheduled
 
-@Configuration
-@EnableScheduling
 class Game {
 
     private val player1 = Player(
@@ -22,10 +17,9 @@ class Game {
         TileMap.ONE
     );
 
-    @Scheduled(fixedRate = 200)
-    fun fixedRateScheduledTask() {
+    fun applyGameLoop() {
         player1.applyGameLoop()
-        player2.applyGameLoop()
+        //player2.applyGameLoop()
         //TODO: make players interact
     }
 

@@ -8,6 +8,7 @@ import org.springframework.web.socket.CloseStatus
 import org.springframework.web.socket.TextMessage
 import org.springframework.web.socket.WebSocketSession
 import org.springframework.web.socket.handler.TextWebSocketHandler
+import java.lang.RuntimeException
 import java.util.concurrent.atomic.AtomicLong
 
 
@@ -29,23 +30,25 @@ class GameController : TextWebSocketHandler() {
 
     private val sessionList = HashMap<WebSocketSession, Subscriber>()
     private var uid = AtomicLong(0)
-    private val game = Game()
+    private var game = Game()
 
     override fun afterConnectionClosed(session: WebSocketSession, status: CloseStatus) {
         broadcastToOthers(session, Message("left", session))
         instance.sessionList -= session
     }
 
-    @Scheduled(fixedRate = 100)
+    @Scheduled(fixedRate = 200)
     fun sendGameStatus() {
-        broadcast(Message("move", game.getCharacter1().toString()))
+        instance.game.applyGameLoop()
+        val moveData = instance.game.getCharacter1().toString()
+        broadcast(Message("move", moveData))
     }
 
     override fun handleTextMessage(session: WebSocketSession, message: TextMessage) {
         val json = ObjectMapper().readTree(message.payload)
         when (json.get("type").asText()) {
             "subscribe" -> {
-                val subscriber = Subscriber(uid.getAndIncrement(), null)
+                val subscriber = Subscriber(instance.uid.getAndIncrement(), null)
                 instance.sessionList += mapOf(session to subscriber)
                 broadcast(Message("subscriber", instance.sessionList.values))
             }
@@ -55,15 +58,23 @@ class GameController : TextWebSocketHandler() {
             }
 
             "keyPress" -> {
-                val key = json.get("data").asText();
-                if (key == "ArrowLeft") {
-                    game.getPlayer1().setVelocityX(-1.0);
-                } else if (key == "ArrowRight") {
-                    game.getPlayer1().setVelocityX(1.0);
-                } else if (key == "ArrowUp") {
-                    game.getPlayer1().setVelocityY();
+                val keys = json.get("data").asIterable()
+                for (key in keys) {
+                    if (key.asText() == "ArrowLeft") {
+                        instance.game.getPlayer1().setVelocityX(-1.0);
+                    } else if (key.asText() == "ArrowRight") {
+                        instance.game.getPlayer1().setVelocityX(1.0);
+                    } else if (key.asText() == "ArrowUp" || key.asText() == "SPACE") {
+                        instance.game.getPlayer1().setVelocityY();
+                    } else if (key.asText() == "EKey") {
+                        // TODO: paint
+                    } else if (key.asText() == "RKey") {
+                        // TODO: hit
+                    } else if (key.asText() == "QKey") {
+                        // TODO: quit
+                    }
                 }
-                broadcast(Message("move", game.getCharacter1().toString()))
+                broadcast(Message("move", instance.game.getCharacter1().toString()))
             }
 
             "register-as-player" -> {
@@ -77,13 +88,23 @@ class GameController : TextWebSocketHandler() {
         }
     }
 
-    private fun emit(session: WebSocketSession, msg: Message) {
-        session.sendMessage(TextMessage(ObjectMapper().writeValueAsBytes(msg)))
+
+
+    private fun broadcast(msg: Message) {
+        instance.sessionList.forEach { emit(it.key, msg) }
     }
 
-    private fun broadcast(msg: Message) = instance.sessionList.forEach { emit(it.key, msg) }
-
-    private fun broadcastToOthers(me: WebSocketSession, msg: Message) =
+    private fun broadcastToOthers(me: WebSocketSession, msg: Message) {
         instance.sessionList.filterNot { it.key == me }.forEach { emit(it.key, msg) }
+    }
+
+    @Synchronized private fun emit(session: WebSocketSession, msg: Message) {
+        try {
+            session.sendMessage(TextMessage(ObjectMapper().writeValueAsBytes(msg)))
+        } catch (e: RuntimeException) { // org.springframework.web.socket.sockjs.SockJsTransportFailureException
+            println(e)
+        }
+    }
+
 }
 

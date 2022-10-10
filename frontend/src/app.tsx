@@ -13,8 +13,13 @@ export function App() {
   const [character, setCharacter] = useState({
     id: "",
     color: "",
+    width: 0,
+    height: 0,
     x: -100,
     y: -100,
+    score: 0,
+    state: "",
+    orientation: ""
   });
 
   useEffect(() => {
