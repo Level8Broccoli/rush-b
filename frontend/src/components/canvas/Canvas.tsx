@@ -1,6 +1,7 @@
 import { createRef, h } from "preact";
 import { useEffect, useState } from "preact/compat";
 import { SendMessage } from "../../shared/websocket/websocket";
+import { drawSprite, SPRITES } from "./Sprite";
 
 type Props = {
   send: SendMessage;
@@ -36,22 +37,22 @@ export default function Canvas(props: Props): JSX.Element {
     ctx.clearRect(0, 0, 800, 800);
     props.tileMap.tiles.forEach((colElement, col) => {
       colElement.forEach((rowElement, row) => {
+        const dx = col * tileSize;
+        const dy = row * tileSize;
+        const dWidth = tileSize;
+        const dHeight = tileSize;
         if (props.tileMap.tiles[col][row] == 1) {
-          ctx.fillStyle = "black"; //randomColor;
-          ctx.fillRect(col * tileSize, row * tileSize, tileSize, tileSize);
+          drawSprite(ctx, SPRITES.TERRAIN, dx, dy, dWidth, dHeight);
         } else {
-          ctx.fillStyle = "white";
-          ctx.fillRect(col * tileSize, row * tileSize, tileSize, tileSize);
+          drawSprite(ctx, SPRITES.BACKGROUND, dx, dy, dWidth, dHeight);
         }
       });
     });
-    ctx.fillStyle = props.character.color;
-    ctx.fillRect(
-      props.character.x * tileFactor,
-      props.character.y * tileFactor,
-      props.character.width * tileFactor,
-      props.character.height * tileFactor
-    );
+    const dx = props.character.x * tileFactor;
+    const dy = props.character.y * tileFactor;
+    const dWidth = props.character.width * tileFactor;
+    const dHeight = props.character.height * tileFactor;
+    drawSprite(ctx, SPRITES.CHARACTER, dx, dy, dWidth, dHeight);
   }, [props.character]);
 
   const onKeyDown = (e: KeyboardEvent) => {
