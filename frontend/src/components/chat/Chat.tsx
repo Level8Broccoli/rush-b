@@ -1,9 +1,9 @@
 import { h } from "preact";
 import { useState } from "preact/compat";
+import { SendMessage } from "../../shared/websocket/websocket";
 
 type Props = {
-  socketRef: { current: WebSocket };
-  messages: String[];
+  send: SendMessage;
 };
 
 export function Chat(props: Props): JSX.Element {
@@ -11,33 +11,24 @@ export function Chat(props: Props): JSX.Element {
   const onSubmit = (e: Event) => {
     e.preventDefault();
     if (message.length) {
-      props.socketRef.current.send(
-        JSON.stringify({ type: "message", data: message })
-      );
+      props.send("message", message);
       setMessage("");
     }
   };
 
   return (
-    <>
-      <ul>
-        {props.messages.map((m) => (
-          <li>{m}</li>
-        ))}
-      </ul>
-      <form action="" onSubmit={onSubmit}>
-        <input
-          name="message"
-          value={message}
-          type="text"
-          onInput={(e) => {
-            if (e.target instanceof HTMLInputElement) {
-              setMessage(e.target.value);
-            }
-          }}
-        />
-        <button type="submit">Send</button>
-      </form>
-    </>
+    <form action="" onSubmit={onSubmit}>
+      <input
+        name="message"
+        value={message}
+        type="text"
+        onInput={(e) => {
+          if (e.target instanceof HTMLInputElement) {
+            setMessage(e.target.value);
+          }
+        }}
+      />
+      <button type="submit">Send</button>
+    </form>
   );
 }
