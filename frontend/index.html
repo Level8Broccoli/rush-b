@@ -8,12 +8,32 @@
       type="image/x-icon"
     />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,700;1,700&family=Josefin+Slab:ital,wght@0,300;0,700;1,300;1,700&display=swap"
+      rel="stylesheet"
+    />
     <title>rush-b</title>
     <style>
-      canvas {
-        display: block;
-        width: 600px;
-        height: 300px;
+      :root {
+          --font-heading: 'Josefin Sans', sans-serif;
+          --font-body: 'Josefin Slab', serif;
+          font-size: calc(1rem + .5vw);
+      }
+
+      html {
+          font-family: var(--font-body);
+      }
+
+      h1, h2, h3, h4, h5, h6 {
+          font-family: var(--font-heading);
+      }
+
+      canvas {W
+          display: block;
+          width: 600px;
+          height: 300px;
       }
     </style>
   </head>
