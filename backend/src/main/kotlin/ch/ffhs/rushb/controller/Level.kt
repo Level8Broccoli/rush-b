@@ -140,11 +140,11 @@ class Level (private val tileMap: TileMap) {
     // ---------------- VALIDITY CHECKS ----------------
 
     private fun isColCoordinateValid(colIndex: Int): Boolean {
-        return colIndex >= 0 && colIndex <= tileMap.tiles.size
+        return colIndex >= 0 && colIndex < tileMap.tiles.size
     }
 
     private fun isRowCoordinateValid(rowIndex: Int): Boolean {
-        return rowIndex >= 0 && rowIndex <= tileMap.tiles[0].size
+        return rowIndex >= 0 && rowIndex < tileMap.tiles[0].size
     }
 
 }
