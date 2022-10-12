@@ -14,14 +14,7 @@ class Game {
     private val player2 = AgentPlayer(Character(
         "dummy-player",
         "purple",
-        Vector(32.0, 0.0)),
-        level
-    );
-
-    private val npc1 = AgentNpc(Npc(
-        "npc1",
-        "pink",
-        Vector(65.0, 0.0)),
+        Vector(200.0, 0.0)),
         level
     );
 
@@ -30,7 +23,42 @@ class Game {
     init {
         gameObjects.add(player1)
         gameObjects.add(player2)
-        gameObjects.add(npc1)
+        gameObjects.add(AgentNpc(Npc(
+            "npc1",
+            "pink",
+            Vector(100.0, 0.0)),
+            level
+        ))
+        gameObjects.add(AgentNpc(Npc(
+            "npc2",
+            "pink",
+            Vector(120.0, 0.0)),
+            level
+        ))
+        gameObjects.add(AgentNpc(Npc(
+            "npc3",
+            "pink",
+            Vector(125.0, 0.0)),
+            level
+        ))
+        gameObjects.add(AgentNpc(Npc(
+            "npc4",
+            "pink",
+            Vector(135.0, 0.0)),
+            level
+        ))
+        gameObjects.add(AgentNpc(Npc(
+            "npc4",
+            "pink",
+            Vector(140.0, 0.0)),
+            level
+        ))
+        gameObjects.add(AgentNpc(Npc(
+            "npc5",
+            "pink",
+            Vector(160.0, 0.0)),
+            level
+        ))
     }
 
     fun applyGameLoop() {
