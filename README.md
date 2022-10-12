@@ -9,7 +9,7 @@ Brush yourself up! Rush-B ist ein einzigartiges "capture the flag", bzw. "captur
 2. [Projektübersicht](#projektübersicht)
 
 ## Applikation
-Eine Demo-Installation ist hier verfügbar: [https://rush-b.herokuapp.com/](https://rush-b.herokuapp.com/).
+Eine Demo-Installation ist hier verfügbar: [https://skeleton-teest-jh3gbpyb3q-od.a.run.app/](https://skeleton-teest-jh3gbpyb3q-od.a.run.app/).
 
 ## Projektübersicht
 ### Meilensteine
@@ -42,13 +42,18 @@ docker compose -f docker-compose.prod.yml up
 
 - Bundled App will be available on port `8080`
 
-
+## Start Dev Environment locally without docker
 ```
 npm i --prefix .\frontend\ i
 npm run dev --prefix .\frontend\
-
+```
+OR
+```
+cd frontend
+npm i
+npm run dev
+```
+THEN:
+```
 http://localhost:5173/
-
-
-
 ```

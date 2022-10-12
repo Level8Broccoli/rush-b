@@ -1,5 +1,6 @@
 package ch.ffhs.rushb.controller
 
+import ch.kaiki.nn.neuralnet.NeuralNetwork
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.scheduling.annotation.EnableScheduling
 import org.springframework.scheduling.annotation.Scheduled
@@ -37,7 +38,7 @@ class GameController : TextWebSocketHandler() {
         instance.sessionList -= session
     }
 
-    @Scheduled(fixedRate = 200)
+    @Scheduled(fixedRate = 300)
     fun sendGameStatus() {
         instance.game.applyGameLoop()
         val moveData = instance.game.getCharacter1().toString()
@@ -74,10 +75,8 @@ class GameController : TextWebSocketHandler() {
                         // TODO: hit
                     } else if (key.asText() == "QKey") {
                         // TODO: quit
-
                     }
                 }
-                broadcast(Message("move", instance.game.getCharacter1().toString()))
             }
 
             "register-as-player" -> {
