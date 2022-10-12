@@ -54,6 +54,7 @@ export function App() {
   return (
     <div style="padding: 1rem;">
       <h1>rush-b</h1>
+      <small><em>by Lena & Oliver</em></small>
       <div style="display: grid; grid-template-columns: 1fr 20rem; gap: 1rem; padding: 3rem;">
         <Canvas send={send} tileMap={tileMap} character={character} />
         <div style="background-color: lightgray; border-radius: 0.3rem; padding-inline: 1rem;">
