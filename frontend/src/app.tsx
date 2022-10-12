@@ -20,16 +20,20 @@ export function App() {
   );
   const [messages, setMessages] = useState<string[]>([]);
   const [tileMap, setTileMap] = useState(tileMapEnum.ONE);
-  const [character, setCharacter] = useState({
+  const [game, setGame] = useState({
     id: "",
-    color: "",
-    width: 0,
-    height: 0,
-    x: -100,
-    y: -100,
-    score: 0,
-    state: "",
-    orientation: "",
+    level: "",
+    characters: [{
+      id: "",
+      color: "",
+      width: 0,
+      height: 0,
+      x: -100,
+      y: -100,
+      score: 0,
+      state: "",
+      orientation: ""
+    }],
   });
 
   useEffect(() => {
@@ -43,8 +47,8 @@ export function App() {
           setMessages((prev) => [...prev, data["data"]]);
         } else if (data["msgType"] === "tileMap") {
           setTileMap(tileMapEnum[data["data"] as keyof typeof tileMapEnum]);
-        } else if (data["msgType"] === "move") {
-          setCharacter(JSON.parse(data["data"]));
+        } else if (data["msgType"] === "game") {
+          setGame(JSON.parse(data["data"]));
         }
       },
     });
@@ -56,7 +60,7 @@ export function App() {
       <h1>rush-b</h1>
       <small><em>by Lena & Oliver</em></small>
       <div style="display: grid; grid-template-columns: 1fr 20rem; gap: 1rem; padding: 3rem;">
-        <Canvas send={send} tileMap={tileMap} character={character} />
+        <Canvas send={send} tileMap={tileMap} game={game} />
         <div style="background-color: lightgray; border-radius: 0.3rem; padding-inline: 1rem;">
           <Logs connectionStatus={connectionStatus} logs={messages} />
           <Chat send={send} />

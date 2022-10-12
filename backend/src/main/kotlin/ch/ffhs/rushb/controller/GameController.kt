@@ -41,8 +41,8 @@ class GameController : TextWebSocketHandler() {
     @Scheduled(fixedRate = 200)
     fun sendGameStatus() {
         instance.game.applyGameLoop()
-        val moveData = instance.game.getCharacter1().toString()
-        broadcast(Message("move", moveData))
+        val gameData = instance.game.toString()
+        broadcast(Message("game", gameData))
     }
 
     override fun handleTextMessage(session: WebSocketSession, message: TextMessage) {

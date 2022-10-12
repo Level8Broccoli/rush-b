@@ -3,24 +3,25 @@ package ch.ffhs.rushb.controller
 import ch.ffhs.rushb.model.*
 
 class Game {
+    private val id = "game 0"
     private val level = Level(TileMap.ONE)
     private val player1 = AgentPlayer(Character(
-        "test-id",
+        "you",
         "red",
-        VectorDto(16.0, 0.0)),
+        Vector(16.0, 0.0)),
         level
     );
     private val player2 = AgentPlayer(Character(
         "dummy-player",
         "purple",
-        VectorDto(32.0, 0.0)),
+        Vector(32.0, 0.0)),
         level
     );
 
     private val npc1 = AgentNpc(Npc(
         "npc1",
-        "lightblue",
-        VectorDto(65.0, 0.0)),
+        "pink",
+        Vector(65.0, 0.0)),
         level
     );
 
@@ -28,15 +29,19 @@ class Game {
 
     init {
         gameObjects.add(player1)
-        //gameObjects.add(player2)
-        //gameObjects.add(npc1)
+        gameObjects.add(player2)
+        gameObjects.add(npc1)
     }
 
     fun applyGameLoop() {
-        player1.applyGameLoop()
-        //player2.applyGameLoop()
-        //npc1.applyGameLoop()
-        //TODO: make players interact
+        for (i in 0 until gameObjects.size) {
+            for (j in i+1 until gameObjects.size) {
+                gameObjects.get(i).validateIntersect(gameObjects.get(j))
+            }
+        }
+        for (obj in gameObjects) {
+            obj.applyGameLoop()
+        }
     }
 
     fun getPlayer1(): AgentPlayer {
@@ -45,6 +50,21 @@ class Game {
 
     fun getCharacter1(): GameObject {
         return player1.character;
+    }
+
+    override fun toString(): String {
+        var out = "{\"id\": \"" + id +
+                "\" , \"level\": \"" + level +
+                "\" , \"characters\": ["
+
+        for (i in 0 until gameObjects.size) {
+            out += gameObjects.get(i).toString()
+            if (i < gameObjects.size-1) {
+                out += ","
+            }
+        }
+        out += "]}"
+        return out
     }
 
 }

@@ -3,7 +3,7 @@ package ch.ffhs.rushb.model
 open class Npc (
     id : String,
     color: String,
-    position: VectorDto
+    position: Vector
 ) : GameObject (id, color, position)
 
 {

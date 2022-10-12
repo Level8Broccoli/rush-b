@@ -137,4 +137,18 @@ abstract class Agent(open val character: GameObject,
         }
     }
 
+    /**
+     * Checks if two characters intersect. If yes, collision detection is applied to change the velocity vector.
+     */
+    fun validateIntersect(other: Agent) {
+        if (character.intersects(other.character)) {
+            character.collide(other.character)
+        }
+    }
+
+    override fun toString(): String {
+        return character.toString()
+    }
+
+
 }

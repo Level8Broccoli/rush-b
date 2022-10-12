@@ -3,7 +3,7 @@ package ch.ffhs.rushb.model
 class Character (
     id : String,
     color: String,
-    position: VectorDto
+    position: Vector
 ) : GameObject (id, color, position)
 
 {

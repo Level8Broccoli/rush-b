@@ -3,20 +3,27 @@ import { useEffect, useState } from "preact/compat";
 import { SendMessage } from "../../shared/websocket/websocket";
 import { drawSprite, SPRITES } from "./Sprite";
 
+interface character {
+  id: string,
+  color: string;
+  width: number;
+  height: number;
+  x: number;
+  y: number;
+  score: number;
+  state: string;
+  orientation: string;
+}
+
 type Props = {
   send: SendMessage;
   tileMap: { tileSize: number; tiles: number[][] };
-  character: {
-    id: string;
-    color: string;
-    width: number;
-    height: number;
-    x: number;
-    y: number;
-    score: number;
-    state: string;
-    orientation: string;
-  };
+  game: {
+  id: string;
+  level: string;
+  characters: character[]
+}
+
 };
 
 export default function Canvas(props: Props): JSX.Element {
@@ -51,14 +58,17 @@ export default function Canvas(props: Props): JSX.Element {
         }
       });
     });
-    const dx = props.character.x * tileFactor;
-    const dy = props.character.y * tileFactor;
-    const dWidth = props.character.width * tileFactor;
-    const dHeight = props.character.height * tileFactor;
-    //drawSprite(ctx, SPRITES.CHARACTER, dx, dy, dWidth, dHeight);
-      ctx.fillStyle = props.character.color;
+    props.game.characters.forEach((character)=>{
+      const dx = character.x * tileFactor;
+      const dy = character.y * tileFactor;
+      const dWidth = character.width * tileFactor;
+      const dHeight = character.height * tileFactor;
+      //drawSprite(ctx, SPRITES.CHARACTER, dx, dy, dWidth, dHeight);
+      ctx.fillStyle = character.color;
       ctx.fillRect(dx,dy,dWidth,dHeight)
-  }, [props.character]);
+    })
+
+  }, [props.game]);
 
   const onKeyDown = (e: KeyboardEvent) => {
     e.preventDefault();
