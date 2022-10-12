@@ -8,10 +8,10 @@ class Character (
 
 {
     init {
-        width = 8.0
-        height = 32.0
+        width = 10.0
+        height = 28.0
         weight = 0.25
         jumpForce = 2.0
-        speed = 8.0
+        speed = 12.0
     }
 }

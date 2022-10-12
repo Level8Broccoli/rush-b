@@ -38,7 +38,7 @@ class GameController : TextWebSocketHandler() {
         instance.sessionList -= session
     }
 
-    @Scheduled(fixedRate = 300)
+    @Scheduled(fixedRate = 200)
     fun sendGameStatus() {
         instance.game.applyGameLoop()
         val moveData = instance.game.getCharacter1().toString()
@@ -48,7 +48,6 @@ class GameController : TextWebSocketHandler() {
     override fun handleTextMessage(session: WebSocketSession, message: TextMessage) {
         val json = ObjectMapper().readTree(message.payload)
 
-        println("[Received WS Data] Session: ${session.getId()} | Type: ${json.get("type")} | Data: ${json.get("data")}")
         when (json.get("type").asText()) {
             "subscribe" -> {
                 val subscriber = Subscriber(instance.uid.getAndIncrement(), null)
@@ -69,11 +68,11 @@ class GameController : TextWebSocketHandler() {
                         instance.game.getPlayer1().setVelocityX(1.0);
                     } else if (key.asText() == "ArrowUp" || key.asText() == "SPACE") {
                         instance.game.getPlayer1().setVelocityY();
-                    } else if (key.asText() == "EKey") {
+                    } else if (key.asText() == "KeyE") {
                         // TODO: paint
-                    } else if (key.asText() == "RKey") {
+                    } else if (key.asText() == "KeyR") {
                         // TODO: hit
-                    } else if (key.asText() == "QKey") {
+                    } else if (key.asText() == "KeyQ") {
                         // TODO: quit
                     }
                 }

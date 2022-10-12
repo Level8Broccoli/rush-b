@@ -41,9 +41,13 @@ export default function Canvas(props: Props): JSX.Element {
         const dWidth = tileSize;
         const dHeight = tileSize;
         if (props.tileMap.tiles[col][row] == 1) {
-          drawSprite(ctx, SPRITES.TERRAIN, dx, dy, dWidth, dHeight);
+          //drawSprite(ctx, SPRITES.TERRAIN, dx, dy, dWidth, dHeight);
+            ctx.fillStyle = "black";
+            ctx.fillRect(dx,dy,dWidth,dHeight)
         } else {
-          drawSprite(ctx, SPRITES.BACKGROUND, dx, dy, dWidth, dHeight);
+          //drawSprite(ctx, SPRITES.BACKGROUND, dx, dy, dWidth, dHeight);
+            ctx.fillStyle = "lightblue";
+            ctx.fillRect(dx,dy,dWidth,dHeight)
         }
       });
     });
@@ -51,7 +55,9 @@ export default function Canvas(props: Props): JSX.Element {
     const dy = props.character.y * tileFactor;
     const dWidth = props.character.width * tileFactor;
     const dHeight = props.character.height * tileFactor;
-    drawSprite(ctx, SPRITES.CHARACTER, dx, dy, dWidth, dHeight);
+    //drawSprite(ctx, SPRITES.CHARACTER, dx, dy, dWidth, dHeight);
+      ctx.fillStyle = props.character.color;
+      ctx.fillRect(dx,dy,dWidth,dHeight)
   }, [props.character]);
 
   const onKeyDown = (e: KeyboardEvent) => {

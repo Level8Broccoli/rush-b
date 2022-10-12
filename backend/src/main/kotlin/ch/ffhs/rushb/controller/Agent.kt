@@ -1,6 +1,7 @@
 package ch.ffhs.rushb.controller
 
 import ch.ffhs.rushb.model.*
+import kotlin.math.abs
 
 abstract class Agent(open val character: GameObject,
                  open val level: Level
@@ -51,7 +52,7 @@ abstract class Agent(open val character: GameObject,
         if (x_delta == 0.0 && character.velocity.x != 0.0) {                     // if no horizontal movement possible, set velocity accordingly
             character.velocity.x = 0.0
         } else {
-            character.velocity.x *= 0.5                                         // slide
+            character.velocity.x *= 0.25                                         // slide
             if (character.velocity.x < 0.05 && character.velocity.x > -0.05) {
                 character.velocity.x = 0.0
             }
@@ -113,7 +114,7 @@ abstract class Agent(open val character: GameObject,
         if (character.velocity.y < 0) {      // going up
             distance = -level.getDistanceToTop(character)
             delta = velocity.coerceAtLeast(distance)    // max
-            if (delta == distance) {
+            if (distance >= -0.05 && velocity < -0.05) {
                 character.velocity.y =  -1 * character.velocity.y                // reverse yVelocity when head was hit
             }
         } else {                            // going down

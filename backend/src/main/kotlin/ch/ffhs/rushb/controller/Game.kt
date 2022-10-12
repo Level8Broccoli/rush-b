@@ -28,14 +28,14 @@ class Game {
 
     init {
         gameObjects.add(player1)
-        gameObjects.add(player2)
-        gameObjects.add(npc1)
+        //gameObjects.add(player2)
+        //gameObjects.add(npc1)
     }
 
     fun applyGameLoop() {
         player1.applyGameLoop()
-        player2.applyGameLoop()
-        npc1.applyGameLoop()
+        //player2.applyGameLoop()
+        //npc1.applyGameLoop()
         //TODO: make players interact
     }
 
