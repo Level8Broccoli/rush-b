@@ -47,7 +47,6 @@ class GameController : TextWebSocketHandler() {
 
     override fun handleTextMessage(session: WebSocketSession, message: TextMessage) {
         val json = ObjectMapper().readTree(message.payload)
-
         when (json.get("type").asText()) {
             "subscribe" -> {
                 val subscriber = Subscriber(instance.uid.getAndIncrement(), null)

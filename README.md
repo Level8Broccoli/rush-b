@@ -9,14 +9,14 @@ Brush yourself up! Rush-B ist ein einzigartiges "capture the flag", bzw. "captur
 2. [Projektübersicht](#projektübersicht)
 
 ## Applikation
-Eine Demo-Installation ist hier verfügbar: [https://skeleton-teest-jh3gbpyb3q-od.a.run.app/](https://skeleton-teest-jh3gbpyb3q-od.a.run.app/).
+Eine Demo-Installation ist hier verfügbar: [https://rush-b.ch/](https://rush-b.ch/).
 
 ## Projektübersicht
 ### Meilensteine
 | Meilenstein | Beschreibung                            | Status |
 |----|--------------------------------------------------|:-------------:|
 | M1  | [Anforderungsanalyse](doc/M1.md)                | ![100%](https://progress-bar.dev/100)  |
-| M2  | [Erster Entwurf](doc/M2.md)                     | ![0%](https://progress-bar.dev/0)    |
+| M2  | [Erster Entwurf](doc/M2.md)                     | ![100%](https://progress-bar.dev/100)    |
 | M3  | [Komplette Implementierung](doc/M3.md)          | ![0%](https://progress-bar.dev/0)    |
 | M4  | [Finalisierung](doc/M4.md)                      | ![0%](https://progress-bar.dev/0)    |
 
@@ -52,6 +52,7 @@ OR
 cd frontend
 npm i
 npm run dev
+
 ```
 THEN:
 ```

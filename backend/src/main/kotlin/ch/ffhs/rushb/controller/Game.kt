@@ -23,6 +23,7 @@ class Game {
     init {
         gameObjects.add(player1)
         gameObjects.add(player2)
+
         gameObjects.add(AgentNpc(Npc(
             "npc1",
             "pink",
@@ -82,7 +83,7 @@ class Game {
 
     override fun toString(): String {
         var out = "{\"id\": \"" + id +
-                "\" , \"level\": \"" + level +
+                "\" , \"level\": \"" + level.toString() +
                 "\" , \"characters\": ["
 
         for (i in 0 until gameObjects.size) {

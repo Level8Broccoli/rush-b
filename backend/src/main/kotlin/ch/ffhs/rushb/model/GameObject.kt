@@ -53,21 +53,24 @@ abstract class GameObject (
     }
 
     private fun center() : Vector {
-        return Vector(position.x + (width/2), position.y + (height/2))
+        return Vector(position.x + (width/2), position.y - (height/2))
     }
 
     open fun collide(other: GameObject) {
+
         // source: https://spicyyoghurt.com/tutorials/html5-javascript-game-development/collision-detection-physics
-        val vCollision = Vector(other.velocity.x - this.velocity.x, other.velocity.y - this.velocity.y)
+        val vCollision = Vector(other.velocity.x*other.speed - this.velocity.x * this.speed, other.velocity.y * other.speed - this.velocity.y * this.speed)
         val center1 = this.center()
         val center2 = other.center()
-        val distance = sqrt((center2.x-center1.x)*(center2.x-center1.x) + (center2.y-center1.y)*(center2.y-center1.y))
+        val distance = kotlin.math.sqrt((center2.x - center1.x) * (center2.x - center1.x) + (center2.y - center1.y) * (center2.y - center1.y))
         val vCollisionNorm = Vector(vCollision.x / distance, vCollision.y / distance)
-        //val relVelocity = Vector(this.velocity.x - other.velocity.x, this.velocity.y - other.velocity.y)
-        //val speed = relVelocity.x * vCollisionNorm.x + relVelocity.y * vCollisionNorm.y
-        //this.velocity.subtract(Vector(vCollisionNorm.x * speed, vCollisionNorm.y * speed))
-        //other.velocity.add(Vector(vCollisionNorm.x * speed, vCollisionNorm.y * speed))
-        this.velocity.add(Vector(vCollisionNorm.x, vCollisionNorm.y))
-        other.velocity.subtract(Vector(vCollisionNorm.x, vCollisionNorm.y))
+        val relVelocity = Vector(this.velocity.x * this.speed - other.velocity.x * other.speed, this.velocity.y * this.speed - other.velocity.y * other.speed)
+        val speed = relVelocity.x * vCollisionNorm.x + relVelocity.y * vCollisionNorm.y
+        this.velocity.subtract(Vector(vCollisionNorm.x * speed / this.speed, vCollisionNorm.y * speed / this.speed))
+        other.velocity.add(Vector(vCollisionNorm.x * speed / other.speed, vCollisionNorm.y * speed / other.speed))
+
+        //println("colliding: " + this.id + " and " + other.id + ", vCollisionNorm: " + vCollisionNorm + " my vel: " + this.velocity.toString())
     }
+
+
 }

@@ -124,6 +124,10 @@ abstract class Agent(open val character: GameObject,
         return delta
     }
 
+    fun getDelta() : Vector {
+        return Vector(getDeltaX(), getDeltaY())
+    }
+
     // ---------------- MOVING TRIGGERED BY GAME LOOP ----------------
 
     /**
