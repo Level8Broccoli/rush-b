@@ -93,20 +93,14 @@ class Game(
     }
 
     override fun toJSON(): String {
-        var out = """
+        val characterJSON = gameObjects.map { it.toJSON() }.joinToString(",")
+        val out = """
             {
                 "id": "$id" , 
                 "level": "${level.tileMap.name}" , 
-                "characters": [
-            """.trimIndent()
-
-        for (i in 0 until gameObjects.size) {
-            out += gameObjects[i].toJSON()
-            if (i < gameObjects.size - 1) {
-                out += ","
+                "characters": [$characterJSON]
             }
-        }
-        out += "]}"
+            """.trimIndent()
         return out.replace("NaN", "-100.0")
     }
 }
