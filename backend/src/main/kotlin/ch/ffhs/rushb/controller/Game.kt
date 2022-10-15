@@ -36,6 +36,7 @@ class Game {
             Vector(120.0, 0.0)),
             level
         ))
+
         gameObjects.add(AgentNpc(Npc(
             CharacterType.NINJA_FROG.name,
             "pink",

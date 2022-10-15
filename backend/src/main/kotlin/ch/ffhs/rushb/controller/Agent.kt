@@ -140,22 +140,9 @@ abstract class Agent(open val character: GameObject,
      * Checks if two characters intersect. If yes, collision detection is applied to change the velocity vector.
      */
     fun validateIntersect(other: Agent) {
-        // save current position
-        val pos = this.character.position.get()
-        val otherPos = other.character.position.get()
-
-        // make a move
-        this.move(this.getDelta())
-        other.move(other.getDelta())
-
-        // check intersection and adapt velocity if necessary
         if (intersects(other)) {
             collide(other)
         }
-
-        // reset move
-        this.character.position = pos
-        other.character.position = otherPos
     }
 
     override fun toString(): String {
@@ -163,7 +150,12 @@ abstract class Agent(open val character: GameObject,
     }
 
     open fun intersects(other: Agent) : Boolean {
-        return !(other.character.position.x > this.character.position.x + this.character.width || other.character.position.x + other.character.width < this.character.position.x || other.character.position.y > this.character.position.y + this.character.height || other.character.position.y + other.character.height < this.character.position.x)
+        val obj1 = this.character
+        val obj2 = other.character
+        return !(obj2.position.x > obj1.position.x + obj1.width ||
+                obj1.position.x > obj2.position.x + obj2.width ||
+                obj2.position.y > obj1.position.y + obj1.height ||
+                obj1.position.y > obj2.position.y + obj2.height)
     }
 
     private fun center() : Vector {
@@ -171,22 +163,22 @@ abstract class Agent(open val character: GameObject,
     }
 
     open fun collide(other: Agent) {
-        val vCollision = Vector(other.character.velocity.x - this.character.velocity.x, other.character.velocity.y - this.character.velocity.y)
+        val obj1 = this.character
+        val obj2 = other.character
+
+        val vCollision = Vector(obj2.position.x - obj1.position.x, obj2.position.y - obj1.position.y)
         val center1 = this.center()
         val center2 = other.center()
-        var distance = kotlin.math.sqrt((center2.x - center1.x) * (center2.x - center1.x) + (center2.y - center1.y) * (center2.y - center1.y))
-        if (distance == 0.0) {
-            distance = 1.0     // avoid division by 0
-        }
-        val vCollisionNorm = Vector(vCollision.x / distance, vCollision.y / distance)
-        val relVelocity = Vector(this.character.velocity.x - other.character.velocity.x, this.character.velocity.y  - other.character.velocity.y)
+        var distance = Math.min(kotlin.math.sqrt(Math.pow(center2.x - center1.x, 2.0)  + Math.pow(center2.y - center1.y, 2.0)), 1.0)    // apply min to avoid division by 0.0
+        val vCollisionNorm = vCollision.div(distance)
+        val relVelocity = Vector(obj1.velocity.x * obj1.speed - obj2.velocity.x * obj2.speed, obj1.velocity.y * obj1.speed  - obj2.velocity.y * obj2.speed)
 
         val speed = Math.min(Math.abs(relVelocity.x * vCollisionNorm.x + relVelocity.y * vCollisionNorm.y), 2.0)
-        val newVelocity = Vector(vCollisionNorm.x * speed , vCollisionNorm.y * speed)
-        val newOtherVelocity = Vector(vCollisionNorm.x * speed , vCollisionNorm.y * speed )
-        this.character.velocity.add(newVelocity)
-        other.character.velocity.subtract(newOtherVelocity)
-
+        val impulse = 2.0 * speed / (obj1.weight + obj2.weight)
+        val newVelocity = Vector(vCollisionNorm.x, vCollisionNorm.y).mul(impulse * Math.min(obj1.weight, 1.0)).div(obj1.speed)
+        val newOtherVelocity = Vector(vCollisionNorm.x, vCollisionNorm.y).mul(impulse * Math.min(obj2.weight, 1.0)).div(obj2.speed)
+        obj1.velocity.subtract(newVelocity)
+        obj2.velocity.add(newOtherVelocity)
     }
 
 

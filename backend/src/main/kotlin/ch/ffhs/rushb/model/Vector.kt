@@ -11,6 +11,14 @@ class Vector(
         return Vector(x, y)
     }
 
+    fun mul(d: Double): Vector {
+        return Vector(x * d, y *d)
+    }
+
+    fun div(d: Double): Vector {
+        return Vector(x / d, y / d)
+    }
+
     fun add(v: Vector) {
         this.x += v.x;
         this.y += v.y;
