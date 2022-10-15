@@ -1,19 +1,21 @@
 package ch.ffhs.rushb.model
 
+import ch.ffhs.rushb.behavior.INITIAL_VELOCITY
+import ch.ffhs.rushb.behavior.Movable
 import ch.ffhs.rushb.behavior.Serializable
 
 class Npc(
     id: String,
     color: String,
-    position: Vector,
-) : GameObject(id, color, position), Serializable {
-    init {
-        width = 8.0
-        height = 8.0
-        weight = 0.25
-        jumpForce = 1.0
-        speed = 4.0
-    }
+    override var position: Vector,
+) : GameObject(id, color), Serializable, Movable {
+    override var orientation = Orientation.FACE
+    override var velocity = Vector(0.0, INITIAL_VELOCITY.y)
+    override var width = 8.0
+    override var height = 8.0
+    override var weight = 0.25
+    override var jumpForce = 1.0
+    override var speed = 4.0
 
     override fun toJSON(): String {
         return "{\"id\": \"" + id +

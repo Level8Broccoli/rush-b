@@ -1,9 +1,10 @@
 package ch.ffhs.rushb.controller
 
+import ch.ffhs.rushb.behavior.INITIAL_VELOCITY
 import ch.ffhs.rushb.behavior.Serializable
-import ch.ffhs.rushb.model.CharacterOrientation
 import ch.ffhs.rushb.model.CharacterState
 import ch.ffhs.rushb.model.GameObject
+import ch.ffhs.rushb.model.Orientation
 import ch.ffhs.rushb.model.Vector
 
 abstract class Agent(
@@ -20,11 +21,11 @@ abstract class Agent(
     fun setVelocityX(x: Double) {
         character.velocity.x = x
         if (x > 0) {
-            character.orientation = CharacterOrientation.RIGHT
+            character.orientation = Orientation.RIGHT
         } else if (x < 0) {
-            character.orientation = CharacterOrientation.LEFT
+            character.orientation = Orientation.LEFT
         } else {
-            character.orientation = CharacterOrientation.FACE
+            character.orientation = Orientation.FACE
         }
     }
 
@@ -64,8 +65,8 @@ abstract class Agent(
         if (!level.collidesBottom(character)) {                                 // if character is not on ground
             character.velocity.y += character.weight                            // apply gravity
         } else {                                                                // if on ground
-            if (character.velocity.y > character.yVelocityInitial) {           // if on ground & no jump detected
-                character.velocity.y = character.yVelocityInitial               // set to initial yVelocity
+            if (character.velocity.y > INITIAL_VELOCITY.y) {           // if on ground & no jump detected
+                character.velocity.y = INITIAL_VELOCITY.y               // set to initial yVelocity
             } else {
             }
         }
@@ -79,7 +80,7 @@ abstract class Agent(
             character.state = CharacterState.WALKING
         } else {
             character.state = CharacterState.IDLE
-            character.orientation = CharacterOrientation.FACE
+            character.orientation = Orientation.FACE
         }
 
         // TODO: implement painting / punching state if not to be indicated otherwise
