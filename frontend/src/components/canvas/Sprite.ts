@@ -38,7 +38,31 @@ export const SPRITES: SpriteCollection = {
   },
 };
 
-export function drawSprite(
+type ImageStorage = {
+  [path: string]: HTMLImageElement;
+};
+const imageStorage: ImageStorage = {};
+
+async function loadImage(path: string): Promise<HTMLImageElement> {
+  let image = new Image();
+  let promise = new Promise<HTMLImageElement>((resolve, reject) => {
+    image.onload = () => resolve(image);
+    image.onerror = reject;
+  });
+  image.src = path;
+  return promise;
+}
+
+async function getImage(path: string): Promise<HTMLImageElement> {
+  if (imageStorage[path]) {
+    return imageStorage[path];
+  }
+  const image = await loadImage(path);
+  imageStorage[path] = image;
+  return image;
+}
+
+export async function drawSprite(
   ctx: CanvasRenderingContext2D,
   sprite: Sprite,
   dx: number,
@@ -46,22 +70,21 @@ export function drawSprite(
   dWidth: number,
   dHeight: number
 ) {
-  const image = new Image();
-  image.src = [
+  const path = [
     ...sprite.path.split("/").filter((s) => s.length > 0),
     sprite.image,
   ].join("/");
-  image.onload = function () {
-    ctx.drawImage(
-      image,
-      sprite.x,
-      sprite.y,
-      sprite.width,
-      sprite.height,
-      dx,
-      dy,
-      dWidth,
-      dHeight
-    );
-  };
+  const image = await getImage(path);
+
+  ctx.drawImage(
+    image,
+    sprite.x,
+    sprite.y,
+    sprite.width,
+    sprite.height,
+    dx,
+    dy,
+    dWidth,
+    dHeight
+  );
 }
