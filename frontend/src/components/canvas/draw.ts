@@ -33,7 +33,9 @@ function drawCharacters(context: CanvasContext, characters: Character[]) {
     const dHeight = scale(c.height / NORM_FACTOR);
     ctx.fillStyle = c.color;
     ctx.fillRect(dx, dy, dWidth, dHeight);
-    await drawSprite(ctx, SPRITES.CHARACTER, dx, dy, dWidth, dHeight);
+    const sprite = SPRITES[c.id as keyof typeof SPRITES]
+    console.log (sprite)
+    await drawSprite(ctx, sprite, dx, dy, dWidth, dHeight);
   });
 }
 

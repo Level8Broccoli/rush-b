@@ -1,7 +1,6 @@
 package ch.ffhs.rushb.controller
 
 import ch.ffhs.rushb.model.*
-import kotlin.math.abs
 
 abstract class Agent(open val character: GameObject,
                  open val level: Level
@@ -43,13 +42,12 @@ abstract class Agent(open val character: GameObject,
      */
     open fun applyGameLoop() {
         // ---------- moving ----------
-        val x_delta = getDeltaX()
-        val y_delta = getDeltaY()
+        val delta = getDelta()
 
-        move(x_delta, y_delta)
+        move(delta)
 
         // ---------- updating velocity ----------
-        if (x_delta == 0.0 && character.velocity.x != 0.0) {                     // if no horizontal movement possible, set velocity accordingly
+        if (delta.x == 0.0 && character.velocity.x != 0.0) {                     // if no horizontal movement possible, set velocity accordingly
             character.velocity.x = 0.0
         } else {
             character.velocity.x *= 0.25                                         // slide
@@ -133,25 +131,62 @@ abstract class Agent(open val character: GameObject,
     /**
      * Function to move characters x and y coordinate
      */
-    private fun move(x: Double, y: Double) {
-        character.position.x += x
-        character.position.y += y
-        if (level.isBelowGroundLevel(character)) {
-            // TODO: set dead
-        }
+    private fun move(delta: Vector) {
+        character.position.x += delta.x
+        character.position.y += delta.y
     }
 
     /**
      * Checks if two characters intersect. If yes, collision detection is applied to change the velocity vector.
      */
     fun validateIntersect(other: Agent) {
-        if (character.intersects(other.character)) {
-            character.collide(other.character)
+        // save current position
+        val pos = this.character.position.get()
+        val otherPos = other.character.position.get()
+
+        // make a move
+        this.move(this.getDelta())
+        other.move(other.getDelta())
+
+        // check intersection and adapt velocity if necessary
+        if (intersects(other)) {
+            collide(other)
         }
+
+        // reset move
+        this.character.position = pos
+        other.character.position = otherPos
     }
 
     override fun toString(): String {
         return character.toString()
+    }
+
+    open fun intersects(other: Agent) : Boolean {
+        return !(other.character.position.x > this.character.position.x + this.character.width || other.character.position.x + other.character.width < this.character.position.x || other.character.position.y > this.character.position.y + this.character.height || other.character.position.y + other.character.height < this.character.position.x)
+    }
+
+    private fun center() : Vector {
+        return Vector(character.position.x + (character.width/2), character.position.y - (character.height/2))
+    }
+
+    open fun collide(other: Agent) {
+        val vCollision = Vector(other.character.velocity.x - this.character.velocity.x, other.character.velocity.y - this.character.velocity.y)
+        val center1 = this.center()
+        val center2 = other.center()
+        var distance = kotlin.math.sqrt((center2.x - center1.x) * (center2.x - center1.x) + (center2.y - center1.y) * (center2.y - center1.y))
+        if (distance == 0.0) {
+            distance = 1.0     // avoid division by 0
+        }
+        val vCollisionNorm = Vector(vCollision.x / distance, vCollision.y / distance)
+        val relVelocity = Vector(this.character.velocity.x - other.character.velocity.x, this.character.velocity.y  - other.character.velocity.y)
+
+        val speed = Math.min(Math.abs(relVelocity.x * vCollisionNorm.x + relVelocity.y * vCollisionNorm.y), 2.0)
+        val newVelocity = Vector(vCollisionNorm.x * speed , vCollisionNorm.y * speed)
+        val newOtherVelocity = Vector(vCollisionNorm.x * speed , vCollisionNorm.y * speed )
+        this.character.velocity.add(newVelocity)
+        other.character.velocity.subtract(newOtherVelocity)
+
     }
 
 

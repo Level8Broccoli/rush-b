@@ -28,8 +28,32 @@ export const SPRITES: SpriteCollection = {
     width: 16,
     height: 16,
   },
-  CHARACTER: {
+  MASK_DUDE: {
     path: "/assets/pixel-adventure-1/Main Characters/Mask Dude/",
+    image: "Fall (32x32).png",
+    x: 0,
+    y: 0,
+    width: 32,
+    height: 32,
+  },
+  PINK_MAN: {
+    path: "/assets/pixel-adventure-1/Main Characters/Pink Man/",
+    image: "Fall (32x32).png",
+    x: 0,
+    y: 0,
+    width: 32,
+    height: 32,
+  },
+  NiNJA_FROG: {
+    path: "/assets/pixel-adventure-1/Main Characters/Ninja Frog/",
+    image: "Fall (32x32).png",
+    x: 0,
+    y: 0,
+    width: 32,
+    height: 32,
+  },
+  VIRTUAL_GUY: {
+    path: "/assets/pixel-adventure-1/Main Characters/Virtual Guy/",
     image: "Fall (32x32).png",
     x: 0,
     y: 0,

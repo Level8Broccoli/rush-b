@@ -6,13 +6,13 @@ class Game {
     private val id = "game 0"
     private val level = Level(TileMap.ONE)
     private val player1 = AgentPlayer(Character(
-        "you",
+        CharacterType.MASK_DUDE.name,
         "red",
         Vector(16.0, 0.0)),
         level
     );
     private val player2 = AgentPlayer(Character(
-        "dummy-player",
+        CharacterType.PINK_MAN.name,
         "purple",
         Vector(200.0, 0.0)),
         level
@@ -25,37 +25,37 @@ class Game {
         gameObjects.add(player2)
 
         gameObjects.add(AgentNpc(Npc(
-            "npc1",
+            CharacterType.NINJA_FROG.name,
             "pink",
             Vector(100.0, 0.0)),
             level
         ))
         gameObjects.add(AgentNpc(Npc(
-            "npc2",
+            CharacterType.NINJA_FROG.name,
             "pink",
             Vector(120.0, 0.0)),
             level
         ))
         gameObjects.add(AgentNpc(Npc(
-            "npc3",
+            CharacterType.NINJA_FROG.name,
             "pink",
             Vector(125.0, 0.0)),
             level
         ))
         gameObjects.add(AgentNpc(Npc(
-            "npc4",
+            CharacterType.NINJA_FROG.name,
             "pink",
             Vector(135.0, 0.0)),
             level
         ))
         gameObjects.add(AgentNpc(Npc(
-            "npc4",
+            CharacterType.NINJA_FROG.name,
             "pink",
             Vector(140.0, 0.0)),
             level
         ))
         gameObjects.add(AgentNpc(Npc(
-            "npc5",
+            CharacterType.NINJA_FROG.name,
             "pink",
             Vector(160.0, 0.0)),
             level
@@ -83,7 +83,7 @@ class Game {
 
     override fun toString(): String {
         var out = "{\"id\": \"" + id +
-                "\" , \"level\": \"" + level.toString() +
+                "\" , \"level\": \"" + level.tileMap.name +
                 "\" , \"characters\": ["
 
         for (i in 0 until gameObjects.size) {
@@ -93,7 +93,7 @@ class Game {
             }
         }
         out += "]}"
-        return out
+        return out.replace("NaN", "-100.0")
     }
 
 }

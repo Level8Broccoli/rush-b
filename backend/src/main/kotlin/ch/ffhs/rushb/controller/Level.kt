@@ -6,7 +6,7 @@ import ch.ffhs.rushb.model.TileMap
 import java.lang.Double.MAX_VALUE
 
 
-class Level (private val tileMap: TileMap) {
+class Level (val tileMap: TileMap) {
 
     val tileSize = tileMap.tileSize
 

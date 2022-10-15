@@ -6,6 +6,11 @@ class Vector(
     var x: Double,
     var y: Double
 ) {
+
+    fun get(): Vector {
+        return Vector(x, y)
+    }
+
     fun add(v: Vector) {
         this.x += v.x;
         this.y += v.y;
