@@ -2,9 +2,9 @@ package ch.ffhs.rushb.controller
 
 import ch.ffhs.rushb.behavior.INITIAL_VELOCITY
 import ch.ffhs.rushb.behavior.Serializable
-import ch.ffhs.rushb.model.CharacterState
+import ch.ffhs.rushb.enums.CharacterState
 import ch.ffhs.rushb.model.GameObject
-import ch.ffhs.rushb.model.Orientation
+import ch.ffhs.rushb.enums.Orientation
 import ch.ffhs.rushb.model.Vector
 
 abstract class Agent(

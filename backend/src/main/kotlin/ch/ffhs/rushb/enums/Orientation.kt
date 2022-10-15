@@ -1,7 +1,7 @@
-package ch.ffhs.rushb.model
+package ch.ffhs.rushb.enums
 
 enum class Orientation {
     FACE,
     LEFT,
-    RIGHT
+    RIGHT,
 }

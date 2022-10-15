@@ -1,12 +1,14 @@
 package ch.ffhs.rushb.behavior
 
-import ch.ffhs.rushb.model.CharacterState
-import ch.ffhs.rushb.model.Orientation
+import ch.ffhs.rushb.enums.CharacterState
+import ch.ffhs.rushb.enums.Color
+import ch.ffhs.rushb.enums.Orientation
 import ch.ffhs.rushb.model.Vector
 
 val INITIAL_VELOCITY = Vector(0.0, 0.0)
 
 interface Movable {
+    val color: Color
     var position: Vector
     var width: Double
     var height: Double

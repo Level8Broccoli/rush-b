@@ -3,10 +3,13 @@ package ch.ffhs.rushb.model
 import ch.ffhs.rushb.behavior.INITIAL_VELOCITY
 import ch.ffhs.rushb.behavior.Movable
 import ch.ffhs.rushb.behavior.Serializable
+import ch.ffhs.rushb.enums.CharacterState
+import ch.ffhs.rushb.enums.Color
+import ch.ffhs.rushb.enums.Orientation
 
 class Npc(
     override val id: String,
-    color: String,
+    color: Color,
     override var position: Vector,
 ) : GameObject(color), Serializable, Movable {
     override var orientation = Orientation.FACE
@@ -19,14 +22,17 @@ class Npc(
     override var state = CharacterState.IDLE
 
     override fun toJSON(): String {
-        return "{\"id\": \"" + id +
-                "\", \"color\": \"" + color +
-                "\", \"width\": " + width +
-                ", \"height\": " + height +
-                ", \"x\": " + position.x +
-                ", \"y\": " + position.y +
-                ", \"state\": \"" + state +
-                "\", \"orientation\": \"" + orientation +
-                "\"}"
+        return """
+            {   
+                "id": "$id", 
+                "color": "$color", 
+                "width": $width, 
+                "height": $height, 
+                "x": ${position.x}, 
+                "y": ${position.y}, 
+                "state": "$state", 
+                "orientation": "$orientation"
+            }
+        """.trimIndent()
     }
 }
