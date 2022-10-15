@@ -1,101 +1,65 @@
-import { createRef, h } from "preact";
-import { useEffect, useState } from "preact/compat";
-import { SendMessage } from "../../shared/websocket/websocket";
-import { drawSprite, SPRITES } from "./Sprite";
+import {createRef, h} from "preact";
+import {useEffect, useState} from "preact/compat";
 
-interface character {
-  id: string,
-  color: string;
-  width: number;
-  height: number;
-  x: number;
-  y: number;
-  score: number;
-  state: string;
-  orientation: string;
+
+function createContext(ctx: CanvasRenderingContext2D, scaleFactor: number) {
+    return {
+        ctx,
+        scale: (input: number) => input * scaleFactor,
+        clear: () => ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
+    }
 }
+
+export type CanvasContext = ReturnType<typeof createContext>;
 
 type Props = {
-  send: SendMessage;
-  tileMap: { tileSize: number; tiles: number[][] };
-  game: {
-  id: string;
-  level: string;
-  characters: character[]
+    getCtx: (context: CanvasContext) => void;
+    relHeight: number;
+    relWidth: number;
+    onKeyDown: (e: KeyboardEvent) => void;
+    onKeyUp: (e: KeyboardEvent) => void;
 }
 
-};
+function getAspectRatio(horizontalUnits: number, verticalUnits: number): number {
+    return verticalUnits / horizontalUnits;
+}
+
+// setup for high res screens
+const CANVAS_SCALE = 2;
+const CANVAS_WIDTH = 1000;
 
 export default function Canvas(props: Props): JSX.Element {
-  const [message, setMessage] = useState<string[]>([]);
-  const canvasRef = createRef<HTMLCanvasElement>();
+    const [WIDTH, _setWIDTH] = useState(CANVAS_WIDTH);
+    const [HEIGHT, setHEIGHT] = useState(0);
+    const canvas = createRef<HTMLCanvasElement>();
 
-  useEffect(() => {
-    if (canvasRef.current === null) {
-      return;
-    }
-    const ctx = canvasRef.current.getContext("2d");
-    const tileFactor = 0.5;
-    const tileSize = props.tileMap.tileSize * tileFactor;
-    if (ctx === null) {
-      return;
-    }
+    useEffect(() => {
+        setHEIGHT(WIDTH * getAspectRatio(props.relWidth, props.relHeight));
+    }, [props.relWidth, props.relHeight])
 
-    props.tileMap.tiles.forEach((colElement, col) => {
-      colElement.forEach((rowElement, row) => {
-        const dx = col * tileSize;
-        const dy = row * tileSize;
-        const dWidth = tileSize;
-        const dHeight = tileSize;
-        if (props.tileMap.tiles[col][row] == 1) {
-          //drawSprite(ctx, SPRITES.TERRAIN, dx, dy, dWidth, dHeight);
-            ctx.fillStyle = "black";
-            ctx.fillRect(dx,dy,dWidth,dHeight)
-        } else {
-          //drawSprite(ctx, SPRITES.BACKGROUND, dx, dy, dWidth, dHeight);
-            ctx.fillStyle = "lightblue";
-            ctx.fillRect(dx,dy,dWidth,dHeight)
+    useEffect(() => {
+        if (canvas.current === null) {
+            throw new Error("Couldn't get canvas");
         }
-      });
-    });
-    props.game.characters.forEach((character)=>{
-      const dx = character.x * tileFactor;
-      const dy = character.y * tileFactor;
-      const dWidth = character.width * tileFactor;
-      const dHeight = character.height * tileFactor;
-      //drawSprite(ctx, SPRITES.CHARACTER, dx, dy, dWidth, dHeight);
-      ctx.fillStyle = character.color;
-      ctx.fillRect(dx,dy,dWidth,dHeight)
-    })
+        canvas.current.width = WIDTH * CANVAS_SCALE;
+        canvas.current.height = HEIGHT * CANVAS_SCALE;
+        canvas.current.style.width = `${WIDTH}px`;
+        canvas.current.style.height = `${HEIGHT}px`;
 
-  }, [props.game]);
+        const ctx = canvas.current.getContext("2d");
+        if (ctx === null) {
+            throw new Error("Couldn't get 2d context of canvas");
+        }
+        ctx.scale(CANVAS_SCALE, CANVAS_SCALE);
 
-  const onKeyDown = (e: KeyboardEvent) => {
-    e.preventDefault();
-    if (!message.includes(e.code)) {
-      setMessage((prev) => [...prev, e.code]);
-    }
-    if (message.length) {
-      props.send("keyPress", message);
-    }
-  };
+        props.getCtx(createContext(ctx, CANVAS_WIDTH / props.relWidth));
+    }, [HEIGHT])
 
-  const onKeyUp = (e: KeyboardEvent) => {
-    e.preventDefault();
-    if (message.includes(e.code)) {
-      setMessage((prev) => [...prev].filter((item) => item !== e.code));
-    }
-    if (message.length) {
-      props.send("keyPress", message);
-    }
-  };
-
-  return (
-    <canvas
-      tabIndex={0}
-      onKeyDown={onKeyDown}
-      onKeyUp={onKeyUp}
-      ref={canvasRef}
+    return <canvas
+        ref={canvas}
+        style="border: 1px solid hotpink;"
+        tabIndex={0}
+        onKeyDown={props.onKeyDown}
+        onKeyUp={props.onKeyUp}
     />
-  );
 }
