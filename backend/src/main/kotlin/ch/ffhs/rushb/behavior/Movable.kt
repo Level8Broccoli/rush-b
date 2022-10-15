@@ -1,5 +1,6 @@
 package ch.ffhs.rushb.behavior
 
+import ch.ffhs.rushb.controller.Level
 import ch.ffhs.rushb.enums.CharacterState
 import ch.ffhs.rushb.enums.Color
 import ch.ffhs.rushb.enums.Orientation
@@ -7,7 +8,7 @@ import ch.ffhs.rushb.model.Vector
 
 val INITIAL_VELOCITY = Vector(0.0, 0.0)
 
-interface Movable {
+interface Movable : Serializable {
     val color: Color
     var position: Vector
     var width: Double
@@ -18,6 +19,8 @@ interface Movable {
     var jumpForce: Double
     var speed: Double
     var state: CharacterState
+
+    fun applyGameLoop(level: Level)
 
     fun top(): Double {
         return position.y
@@ -33,5 +36,85 @@ interface Movable {
 
     fun right(): Double {
         return position.x + width
+    }
+
+    // ---------------- MOVING BY USER INPUT ----------------
+
+    /**
+     * This method is used to change the horizontal speed of the character by user input.
+     * @param x: the user input; -1.0 in left hand oriented movement, 1.0 in right hand oriented movement
+     */
+    fun setVelocityX(x: Double) {
+        velocity.x = x
+        orientation = if (x > 0) {
+            Orientation.RIGHT
+        } else if (x < 0) {
+            Orientation.LEFT
+        } else {
+            Orientation.FACE
+        }
+    }
+
+    /**
+     * This method is used to command a jump by user input. A jump can be applied only if the character is currently standing on ground.
+     */
+    fun setVelocityY(level: Level) {
+        if (level.collidesBottom(this)) {
+            velocity.y = -jumpForce
+        }
+    }
+
+    /**
+     * Checks if two characters intersect. If yes, collision detection is applied to change the velocity vector.
+     */
+    fun validateIntersect(other: Movable) {
+        if (intersects(other)) {
+            collide(other)
+        }
+    }
+
+    // ---------------- MOVING TRIGGERED BY GAME LOOP ----------------
+
+    /**
+     * Function to move characters x and y coordinate
+     */
+    fun move(delta: Vector) {
+        position.x += delta.x
+        position.y += delta.y
+    }
+
+    private fun intersects(other: Movable): Boolean {
+        return !(other.position.x > position.x + width ||
+                position.x > other.position.x + other.width ||
+                other.position.y > position.y + height ||
+                position.y > other.position.y + other.height)
+    }
+
+    private fun center(): Vector {
+        return Vector(position.x + (width / 2), position.y - (height / 2))
+    }
+
+    private fun collide(other: Movable) {
+        val vCollision = Vector(other.position.x - position.x, other.position.y - position.y)
+        val center1 = this.center()
+        val center2 = other.center()
+        val distance = Math.min(
+            kotlin.math.sqrt(Math.pow(center2.x - center1.x, 2.0) + Math.pow(center2.y - center1.y, 2.0)),
+            1.0
+        )    // apply min to avoid division by 0.0
+        val vCollisionNorm = vCollision.div(distance)
+        val relVelocity = Vector(
+            velocity.x * speed - other.velocity.x * other.speed,
+            velocity.y * speed - other.velocity.y * other.speed
+        )
+
+        val speed = Math.min(Math.abs(relVelocity.x * vCollisionNorm.x + relVelocity.y * vCollisionNorm.y), 2.0)
+        val impulse = 2.0 * speed / (weight + other.weight)
+        val newVelocity =
+            Vector(vCollisionNorm.x, vCollisionNorm.y).mul(impulse * Math.min(weight, 1.0)).div(speed)
+        val newOtherVelocity =
+            Vector(vCollisionNorm.x, vCollisionNorm.y).mul(impulse * Math.min(other.weight, 1.0)).div(other.speed)
+        velocity.subtract(newVelocity)
+        other.velocity.add(newOtherVelocity)
     }
 }

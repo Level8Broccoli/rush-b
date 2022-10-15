@@ -1,5 +1,6 @@
 package ch.ffhs.rushb.controller
 
+import ch.ffhs.rushb.model.TileMap
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.scheduling.annotation.EnableScheduling
 import org.springframework.scheduling.annotation.Scheduled
@@ -29,7 +30,9 @@ class GameController : TextWebSocketHandler() {
 
     private val sessionList = HashMap<WebSocketSession, Subscriber>()
     private var uid = AtomicLong(0)
-    private var game = Game()
+
+    private val level = Level(TileMap.ONE)
+    private var game = Game("game 0", level)
 
     override fun afterConnectionClosed(session: WebSocketSession, status: CloseStatus) {
         broadcastToOthers(session, Message("left", session))
@@ -64,7 +67,7 @@ class GameController : TextWebSocketHandler() {
                     } else if (key.asText() == "ArrowRight") {
                         instance.game.getPlayer1().setVelocityX(1.0)
                     } else if (key.asText() == "ArrowUp" || key.asText() == "SPACE") {
-                        instance.game.getPlayer1().setVelocityY()
+                        instance.game.getPlayer1().setVelocityY(level)
                     } else if (key.asText() == "KeyE") {
                         // TODO: paint
                     } else if (key.asText() == "KeyR") {
@@ -87,7 +90,6 @@ class GameController : TextWebSocketHandler() {
     }
 
 
-
     private fun broadcast(msg: Message) {
         instance.sessionList.forEach { emit(it.key, msg) }
     }
@@ -96,7 +98,8 @@ class GameController : TextWebSocketHandler() {
         instance.sessionList.filterNot { it.key == me }.forEach { emit(it.key, msg) }
     }
 
-    @Synchronized private fun emit(session: WebSocketSession, msg: Message) {
+    @Synchronized
+    private fun emit(session: WebSocketSession, msg: Message) {
         try {
             session.sendMessage(TextMessage(ObjectMapper().writeValueAsBytes(msg)))
         } catch (e: RuntimeException) { // org.springframework.web.socket.sockjs.SockJsTransportFailureException
