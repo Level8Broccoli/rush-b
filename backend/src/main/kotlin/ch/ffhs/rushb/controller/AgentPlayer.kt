@@ -6,6 +6,9 @@ import ch.ffhs.rushb.model.GameObject
 class AgentPlayer(
     character: GameObject, level: Level
 ) : Agent(character, level), Serializable {
+    override val id: String
+        get() = character.id
+
     override fun toJSON(): String {
         return character.toJSON()
     }

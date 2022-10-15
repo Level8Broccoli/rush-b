@@ -1,5 +1,6 @@
 package ch.ffhs.rushb.behavior
 
+import ch.ffhs.rushb.model.CharacterState
 import ch.ffhs.rushb.model.Orientation
 import ch.ffhs.rushb.model.Vector
 
@@ -14,6 +15,7 @@ interface Movable {
     var weight: Double
     var jumpForce: Double
     var speed: Double
+    var state: CharacterState
 
     fun top(): Double {
         return position.y

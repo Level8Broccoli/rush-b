@@ -5,10 +5,10 @@ import ch.ffhs.rushb.behavior.Movable
 import ch.ffhs.rushb.behavior.Serializable
 
 class Npc(
-    id: String,
+    override val id: String,
     color: String,
     override var position: Vector,
-) : GameObject(id, color), Serializable, Movable {
+) : GameObject(color), Serializable, Movable {
     override var orientation = Orientation.FACE
     override var velocity = Vector(0.0, INITIAL_VELOCITY.y)
     override var width = 8.0
@@ -16,6 +16,7 @@ class Npc(
     override var weight = 0.25
     override var jumpForce = 1.0
     override var speed = 4.0
+    override var state = CharacterState.IDLE
 
     override fun toJSON(): String {
         return "{\"id\": \"" + id +

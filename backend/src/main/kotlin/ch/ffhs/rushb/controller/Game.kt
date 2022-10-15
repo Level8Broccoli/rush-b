@@ -4,7 +4,7 @@ import ch.ffhs.rushb.behavior.Serializable
 import ch.ffhs.rushb.model.*
 
 class Game : Serializable {
-    private val id = "game 0"
+    override val id = "game 0"
     private val level = Level(TileMap.ONE)
     private val player1 = AgentPlayer(
         Character(

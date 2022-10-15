@@ -21,10 +21,11 @@ class AgentNpc(
                 super.setVelocityY()
             }
         }
-
-
         super.applyGameLoop()
     }
+
+    override val id: String
+        get() = character.id
 
     override fun toJSON(): String {
         return character.toJSON()

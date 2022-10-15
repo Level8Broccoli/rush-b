@@ -32,8 +32,4 @@ class Vector(
     fun magnitude(): Double {
         return sqrt(x * x + y * y)
     }
-
-    override fun toString(): String {
-        return "(x: " + x + ", y: " + y + ")"
-    }
 }
