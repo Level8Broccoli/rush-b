@@ -1,12 +1,12 @@
 package ch.ffhs.rushb.model
 
-open class Npc (
-    id : String,
-    color: String,
-    position: Vector
-) : GameObject (id, color, position)
+import ch.ffhs.rushb.behavior.Serializable
 
-{
+class Npc(
+    id: String,
+    color: String,
+    position: Vector,
+) : GameObject(id, color, position), Serializable {
     init {
         width = 8.0
         height = 8.0
@@ -15,15 +15,15 @@ open class Npc (
         speed = 4.0
     }
 
-    override fun toString(): String {
+    override fun toJSON(): String {
         return "{\"id\": \"" + id +
-                "\", \"color\": \"" + color+
+                "\", \"color\": \"" + color +
                 "\", \"width\": " + width +
                 ", \"height\": " + height +
                 ", \"x\": " + position.x +
                 ", \"y\": " + position.y +
                 ", \"state\": \"" + state +
                 "\", \"orientation\": \"" + orientation +
-                "\"}";
+                "\"}"
     }
 }

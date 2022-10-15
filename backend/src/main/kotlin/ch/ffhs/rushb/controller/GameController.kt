@@ -1,6 +1,5 @@
 package ch.ffhs.rushb.controller
 
-import ch.kaiki.nn.neuralnet.NeuralNetwork
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.scheduling.annotation.EnableScheduling
 import org.springframework.scheduling.annotation.Scheduled
@@ -9,7 +8,6 @@ import org.springframework.web.socket.CloseStatus
 import org.springframework.web.socket.TextMessage
 import org.springframework.web.socket.WebSocketSession
 import org.springframework.web.socket.handler.TextWebSocketHandler
-import java.lang.RuntimeException
 import java.util.concurrent.atomic.AtomicLong
 
 
@@ -41,7 +39,7 @@ class GameController : TextWebSocketHandler() {
     @Scheduled(fixedRate = 200)
     fun sendGameStatus() {
         instance.game.applyGameLoop()
-        val gameData = instance.game.toString()
+        val gameData = instance.game.toJSON()
         broadcast(Message("game", gameData))
     }
 
@@ -62,11 +60,11 @@ class GameController : TextWebSocketHandler() {
                 val keys = json.get("data").asIterable()
                 for (key in keys) {
                     if (key.asText() == "ArrowLeft") {
-                        instance.game.getPlayer1().setVelocityX(-1.0);
+                        instance.game.getPlayer1().setVelocityX(-1.0)
                     } else if (key.asText() == "ArrowRight") {
-                        instance.game.getPlayer1().setVelocityX(1.0);
+                        instance.game.getPlayer1().setVelocityX(1.0)
                     } else if (key.asText() == "ArrowUp" || key.asText() == "SPACE") {
-                        instance.game.getPlayer1().setVelocityY();
+                        instance.game.getPlayer1().setVelocityY()
                     } else if (key.asText() == "KeyE") {
                         // TODO: paint
                     } else if (key.asText() == "KeyR") {

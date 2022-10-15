@@ -1,14 +1,13 @@
 package ch.ffhs.rushb.controller
 
-import ch.ffhs.rushb.model.Character
 import ch.ffhs.rushb.model.GameObject
 import ch.ffhs.rushb.model.TileMap
 import java.lang.Double.MAX_VALUE
 
 
-class Level (val tileMap: TileMap) {
+class Level(val tileMap: TileMap) {
 
-    val tileSize = tileMap.tileSize
+    private val tileSize = tileMap.tileSize
 
 
     // ---------------- COLLISION DETECTION ----------------
@@ -88,7 +87,7 @@ class Level (val tileMap: TileMap) {
 
     fun getDistanceToLeft(character: GameObject): Double {
         val rowTop = (character.top() / tileSize).toInt()
-        val rowBottom = ((character.bottom()-1) / tileSize).toInt()
+        val rowBottom = ((character.bottom() - 1) / tileSize).toInt()
         val col = (character.left() / tileSize).toInt()
         val xOffset = (character.left() % tileSize)
         var distance = MAX_VALUE
@@ -113,7 +112,7 @@ class Level (val tileMap: TileMap) {
 
     fun getDistanceToRight(character: GameObject): Double {
         val rowTop = (character.top() / tileSize).toInt()
-        val rowBottom = ((character.bottom()-1) / tileSize).toInt()
+        val rowBottom = ((character.bottom() - 1) / tileSize).toInt()
         val col = (character.right() / tileSize).toInt()
         val xOffset = tileSize - (character.right() % tileSize)
         var distance = MAX_VALUE

@@ -12,7 +12,7 @@ class Vector(
     }
 
     fun mul(d: Double): Vector {
-        return Vector(x * d, y *d)
+        return Vector(x * d, y * d)
     }
 
     fun div(d: Double): Vector {
@@ -20,17 +20,17 @@ class Vector(
     }
 
     fun add(v: Vector) {
-        this.x += v.x;
-        this.y += v.y;
+        this.x += v.x
+        this.y += v.y
     }
 
     fun subtract(v: Vector) {
-        this.x -= v.x;
-        this.y -= v.y;
+        this.x -= v.x
+        this.y -= v.y
     }
 
     fun magnitude(): Double {
-        return sqrt(x*x + y*y)
+        return sqrt(x * x + y * y)
     }
 
     override fun toString(): String {

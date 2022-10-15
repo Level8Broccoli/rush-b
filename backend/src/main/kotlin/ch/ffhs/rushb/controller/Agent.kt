@@ -1,10 +1,15 @@
 package ch.ffhs.rushb.controller
 
-import ch.ffhs.rushb.model.*
+import ch.ffhs.rushb.behavior.Serializable
+import ch.ffhs.rushb.model.CharacterOrientation
+import ch.ffhs.rushb.model.CharacterState
+import ch.ffhs.rushb.model.GameObject
+import ch.ffhs.rushb.model.Vector
 
-abstract class Agent(open val character: GameObject,
-                 open val level: Level
-) {
+abstract class Agent(
+    val character: GameObject,
+    private val level: Level
+) : Serializable {
 
     // ---------------- MOVING BY USER INPUT ----------------
 
@@ -12,7 +17,7 @@ abstract class Agent(open val character: GameObject,
      * This method is used to change the horizontal speed of the character by user input.
      * @param x: the user input; -1.0 in left hand oriented movement, 1.0 in right hand oriented movement
      */
-    open fun setVelocityX(x: Double) {
+    fun setVelocityX(x: Double) {
         character.velocity.x = x
         if (x > 0) {
             character.orientation = CharacterOrientation.RIGHT
@@ -26,7 +31,7 @@ abstract class Agent(open val character: GameObject,
     /**
      * This method is used to command a jump by user input. A jump can be applied only if the character is currently standing on ground.
      */
-    open fun setVelocityY() {
+    fun setVelocityY() {
         if (level.collidesBottom(character)) {
             character.velocity.y = -character.jumpForce
         }
@@ -106,14 +111,14 @@ abstract class Agent(open val character: GameObject,
      */
     private fun getDeltaY(): Double {
         val distance: Double
-        var delta = 0.0
+        val delta: Double
         val velocity = character.velocity.y * character.speed
 
         if (character.velocity.y < 0) {      // going up
             distance = -level.getDistanceToTop(character)
             delta = velocity.coerceAtLeast(distance)    // max
             if (distance >= -0.05 && velocity < -0.05) {
-                character.velocity.y =  -1 * character.velocity.y                // reverse yVelocity when head was hit
+                character.velocity.y = -1 * character.velocity.y                // reverse yVelocity when head was hit
             }
         } else {                            // going down
             distance = level.getDistanceToBottom(character)
@@ -122,7 +127,7 @@ abstract class Agent(open val character: GameObject,
         return delta
     }
 
-    fun getDelta() : Vector {
+    private fun getDelta(): Vector {
         return Vector(getDeltaX(), getDeltaY())
     }
 
@@ -145,11 +150,7 @@ abstract class Agent(open val character: GameObject,
         }
     }
 
-    override fun toString(): String {
-        return character.toString()
-    }
-
-    open fun intersects(other: Agent) : Boolean {
+    private fun intersects(other: Agent): Boolean {
         val obj1 = this.character
         val obj2 = other.character
         return !(obj2.position.x > obj1.position.x + obj1.width ||
@@ -158,28 +159,34 @@ abstract class Agent(open val character: GameObject,
                 obj1.position.y > obj2.position.y + obj2.height)
     }
 
-    private fun center() : Vector {
-        return Vector(character.position.x + (character.width/2), character.position.y - (character.height/2))
+    private fun center(): Vector {
+        return Vector(character.position.x + (character.width / 2), character.position.y - (character.height / 2))
     }
 
-    open fun collide(other: Agent) {
+    private fun collide(other: Agent) {
         val obj1 = this.character
         val obj2 = other.character
 
         val vCollision = Vector(obj2.position.x - obj1.position.x, obj2.position.y - obj1.position.y)
         val center1 = this.center()
         val center2 = other.center()
-        var distance = Math.min(kotlin.math.sqrt(Math.pow(center2.x - center1.x, 2.0)  + Math.pow(center2.y - center1.y, 2.0)), 1.0)    // apply min to avoid division by 0.0
+        val distance = Math.min(
+            kotlin.math.sqrt(Math.pow(center2.x - center1.x, 2.0) + Math.pow(center2.y - center1.y, 2.0)),
+            1.0
+        )    // apply min to avoid division by 0.0
         val vCollisionNorm = vCollision.div(distance)
-        val relVelocity = Vector(obj1.velocity.x * obj1.speed - obj2.velocity.x * obj2.speed, obj1.velocity.y * obj1.speed  - obj2.velocity.y * obj2.speed)
+        val relVelocity = Vector(
+            obj1.velocity.x * obj1.speed - obj2.velocity.x * obj2.speed,
+            obj1.velocity.y * obj1.speed - obj2.velocity.y * obj2.speed
+        )
 
         val speed = Math.min(Math.abs(relVelocity.x * vCollisionNorm.x + relVelocity.y * vCollisionNorm.y), 2.0)
         val impulse = 2.0 * speed / (obj1.weight + obj2.weight)
-        val newVelocity = Vector(vCollisionNorm.x, vCollisionNorm.y).mul(impulse * Math.min(obj1.weight, 1.0)).div(obj1.speed)
-        val newOtherVelocity = Vector(vCollisionNorm.x, vCollisionNorm.y).mul(impulse * Math.min(obj2.weight, 1.0)).div(obj2.speed)
+        val newVelocity =
+            Vector(vCollisionNorm.x, vCollisionNorm.y).mul(impulse * Math.min(obj1.weight, 1.0)).div(obj1.speed)
+        val newOtherVelocity =
+            Vector(vCollisionNorm.x, vCollisionNorm.y).mul(impulse * Math.min(obj2.weight, 1.0)).div(obj2.speed)
         obj1.velocity.subtract(newVelocity)
         obj2.velocity.add(newOtherVelocity)
     }
-
-
 }

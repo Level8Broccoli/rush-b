@@ -1,54 +1,36 @@
 package ch.ffhs.rushb.model
 
-import java.lang.Math.sqrt
+import ch.ffhs.rushb.behavior.Serializable
 
-abstract class GameObject (
-    open val id : String,
-    open val color: String,
-    open var position: Vector
-    ) {
-    open var width: Double = 0.0
-    open var height: Double = 0.0
-    open var state : CharacterState = CharacterState.IDLE
-    open var orientation: CharacterOrientation = CharacterOrientation.FACE
-    open var score: Int = 0
-    open val yVelocityInitial: Double = 0.0
-    open var velocity: Vector = Vector(0.0, yVelocityInitial)
-    open var weight: Double = 0.0
-    open var jumpForce: Double = 0.0
-    open var speed: Double = 0.0
+abstract class GameObject(
+    val id: String,
+    val color: String,
+    var position: Vector
+) : Serializable {
+    var width: Double = 0.0
+    var height: Double = 0.0
+    var state: CharacterState = CharacterState.IDLE
+    var orientation: CharacterOrientation = CharacterOrientation.FACE
+    var score: Int = 0
+    val yVelocityInitial: Double = 0.0
+    var velocity: Vector = Vector(0.0, yVelocityInitial)
+    var weight: Double = 0.0
+    var jumpForce: Double = 0.0
+    var speed: Double = 0.0
 
-
-    override fun toString(): String {
-        return "{\"id\": \"" + id +
-                "\", \"color\": \"" + color+
-                "\", \"width\": " + width +
-                ", \"height\": " + height +
-                ", \"x\": " + position.x +
-                ", \"y\": " + position.y +
-                ", \"score\": " + score +
-                ", \"state\": \"" + state +
-                "\", \"orientation\": \"" + orientation +
-                "\"}";
-    }
-
-    open fun top(): Double {
+    fun top(): Double {
         return position.y
     }
 
-    open fun bottom(): Double {
+    fun bottom(): Double {
         return position.y + height
     }
 
-    open fun left(): Double {
+    fun left(): Double {
         return position.x
     }
 
-    open fun right(): Double {
+    fun right(): Double {
         return position.x + width
     }
-
-
-
-
 }
