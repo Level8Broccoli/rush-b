@@ -34,7 +34,6 @@ function drawCharacters(context: CanvasContext, characters: Character[]) {
     ctx.fillStyle = c.color;
     ctx.fillRect(dx, dy, dWidth, dHeight);
     const sprite = SPRITES[c.id as keyof typeof SPRITES]
-    console.log (sprite)
     await drawSprite(ctx, sprite, dx, dy, dWidth, dHeight);
   });
 }

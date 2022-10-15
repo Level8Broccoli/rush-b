@@ -8,8 +8,8 @@ open class Npc (
 
 {
     init {
-        width = 6.0
-        height = 4.0
+        width = 8.0
+        height = 8.0
         weight = 0.25
         jumpForce = 1.0
         speed = 4.0

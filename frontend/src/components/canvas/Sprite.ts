@@ -44,7 +44,7 @@ export const SPRITES: SpriteCollection = {
     width: 32,
     height: 32,
   },
-  NiNJA_FROG: {
+  NINJA_FROG: {
     path: "/assets/pixel-adventure-1/Main Characters/Ninja Frog/",
     image: "Fall (32x32).png",
     x: 0,
