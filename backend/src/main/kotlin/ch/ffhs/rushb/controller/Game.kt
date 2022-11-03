@@ -4,6 +4,7 @@ import ch.ffhs.rushb.behavior.Movable
 import ch.ffhs.rushb.behavior.Serializable
 import ch.ffhs.rushb.enums.CharacterType
 import ch.ffhs.rushb.enums.Color
+import ch.ffhs.rushb.model.Brush
 import ch.ffhs.rushb.model.Character
 import ch.ffhs.rushb.model.Npc
 import ch.ffhs.rushb.model.Vector
@@ -31,6 +32,16 @@ class Game(
     init {
         gameObjects.add(player1)
         gameObjects.add(player2)
+
+        // TODO: initialize brush at 320
+
+        gameObjects.add(
+            Brush(
+                CharacterType.VIRTUAL_GUY.name,
+                Color.PINK,
+                Vector(320.0, 0.0)
+            )
+        )
 
         gameObjects.add(
             Npc(

@@ -4,6 +4,7 @@ import ch.ffhs.rushb.behavior.getDelta
 import ch.ffhs.rushb.controller.Level
 import ch.ffhs.rushb.enums.CharacterState
 import ch.ffhs.rushb.enums.Orientation
+import ch.ffhs.rushb.model.Brush
 
 // ---------------- GAME LOOP ----------------
 
@@ -30,7 +31,9 @@ fun gameLoop(level: Level, character: Movable) {
     }
 
     if (!level.collidesBottom(character)) {                                 // if character is not on ground
-        character.velocity.y += character.weight                            // apply gravity
+        if (!(character is Brush && character.movable != null)) {
+            character.velocity.y += character.weight                            // apply gravity
+        }
     } else {                                                                // if on ground
         if (character.velocity.y > INITIAL_VELOCITY.y) {           // if on ground & no jump detected
             character.velocity.y = INITIAL_VELOCITY.y               // set to initial yVelocity

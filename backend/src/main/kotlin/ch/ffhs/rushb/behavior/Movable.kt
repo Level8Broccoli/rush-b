@@ -4,6 +4,7 @@ import ch.ffhs.rushb.controller.Level
 import ch.ffhs.rushb.enums.CharacterState
 import ch.ffhs.rushb.enums.Color
 import ch.ffhs.rushb.enums.Orientation
+import ch.ffhs.rushb.model.Brush
 import ch.ffhs.rushb.model.Vector
 
 val INITIAL_VELOCITY = Vector(0.0, 0.0)
@@ -81,6 +82,9 @@ interface Movable : Serializable {
     fun move(delta: Vector) {
         position.x += delta.x
         position.y += delta.y
+        if (this is Paintable && this.brush != null) {
+            this.brush!!.position = this.center()
+        }
     }
 
     private fun intersects(other: Movable): Boolean {
@@ -90,11 +94,34 @@ interface Movable : Serializable {
                 position.y > other.position.y + other.height)
     }
 
+
+
     private fun center(): Vector {
-        return Vector(position.x + (width / 2), position.y - (height / 2))
+        return Vector(position.x + (width / 2), position.y + (height / 2))
     }
 
     private fun collide(other: Movable) {
+        // lose brush if colliding with some oher characer
+        if (this is Paintable && this.brush !== null && !(other is Brush)) {
+            this.brush!!.movable = null
+            this.brush = null
+        } else if (other is Paintable && other.brush !== null && !(this is Brush)) {
+            other.brush!!.movable = null
+            other.brush = null
+        }
+
+        // grab brush if colliding with it
+        if (this is Paintable && other is Brush) {
+            this.brush = other
+            other.movable = this
+            return
+        } else if (other is Paintable && this is Brush) {
+            other.brush = this
+            this.movable = other
+            return
+        }
+
+        // collide
         val vCollision = Vector(other.position.x - position.x, other.position.y - position.y)
         val center1 = this.center()
         val center2 = other.center()
@@ -111,9 +138,11 @@ interface Movable : Serializable {
         val speed = Math.min(Math.abs(relVelocity.x * vCollisionNorm.x + relVelocity.y * vCollisionNorm.y), 2.0)
         val impulse = 2.0 * speed / (weight + other.weight)
         val newVelocity =
-            Vector(vCollisionNorm.x, vCollisionNorm.y).mul(impulse * Math.min(weight, 1.0)).div(speed).limitToMax(2.0)
+            Vector(vCollisionNorm.x, vCollisionNorm.y).mul(impulse * Math.min(weight, 1.0)).div(speed)
+                .limitToMax(2.0)
         val newOtherVelocity =
-            Vector(vCollisionNorm.x, vCollisionNorm.y).mul(impulse * Math.min(other.weight, 1.0)).div(other.speed).limitToMax(2.0)
+            Vector(vCollisionNorm.x, vCollisionNorm.y).mul(impulse * Math.min(other.weight, 1.0)).div(other.speed)
+                .limitToMax(2.0)
         velocity.subtract(newVelocity)
         other.velocity.add(newOtherVelocity)
     }

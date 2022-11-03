@@ -2,6 +2,7 @@ package ch.ffhs.rushb.model
 
 import ch.ffhs.rushb.behavior.INITIAL_VELOCITY
 import ch.ffhs.rushb.behavior.Movable
+import ch.ffhs.rushb.behavior.Paintable
 import ch.ffhs.rushb.behavior.Scorable
 import ch.ffhs.rushb.controller.Level
 import ch.ffhs.rushb.enums.CharacterState
@@ -13,9 +14,9 @@ class Character(
     override val id: String,
     override val color: Color,
     override var position: Vector,
-) : Movable, Scorable {
+) : Movable, Scorable, Paintable {
     override var orientation = Orientation.FACE
-    override var width = 10.0
+    override var width = 14.0
     override var height = 28.0
     override var velocity = Vector(0.0, INITIAL_VELOCITY.y)
     override var weight = 0.75
@@ -23,6 +24,7 @@ class Character(
     override var speed = 12.0
     override var state = CharacterState.IDLE
     override var score = 0
+    override var brush: Brush? = null
 
     override fun applyGameLoop(level: Level) {
         gameLoop(level, this)
