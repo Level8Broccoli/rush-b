@@ -11,11 +11,18 @@ class Vector(
         return Vector(x, y)
     }
 
+    fun limitToMax(d: Double): Vector {
+        return Vector(x.coerceAtMost(d), y.coerceAtMost(d))     // clamp to avoid shooting characters out of game
+    }
+
     fun mul(d: Double): Vector {
         return Vector(x * d, y * d)
     }
 
     fun div(d: Double): Vector {
+        if (d == 0.0) {
+            return this     // avoid division by 0
+        }
         return Vector(x / d, y / d)
     }
 

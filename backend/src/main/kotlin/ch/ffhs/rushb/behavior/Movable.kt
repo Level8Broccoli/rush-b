@@ -111,9 +111,9 @@ interface Movable : Serializable {
         val speed = Math.min(Math.abs(relVelocity.x * vCollisionNorm.x + relVelocity.y * vCollisionNorm.y), 2.0)
         val impulse = 2.0 * speed / (weight + other.weight)
         val newVelocity =
-            Vector(vCollisionNorm.x, vCollisionNorm.y).mul(impulse * Math.min(weight, 1.0)).div(speed)
+            Vector(vCollisionNorm.x, vCollisionNorm.y).mul(impulse * Math.min(weight, 1.0)).div(speed).limitToMax(2.0)
         val newOtherVelocity =
-            Vector(vCollisionNorm.x, vCollisionNorm.y).mul(impulse * Math.min(other.weight, 1.0)).div(other.speed)
+            Vector(vCollisionNorm.x, vCollisionNorm.y).mul(impulse * Math.min(other.weight, 1.0)).div(other.speed).limitToMax(2.0)
         velocity.subtract(newVelocity)
         other.velocity.add(newOtherVelocity)
     }

@@ -23,7 +23,7 @@ class Game(
         Character(
             CharacterType.PINK_MAN.name,
             Color.PURPLE,
-            Vector(200.0, 0.0)
+            Vector(610.0, 0.0)
         )
 
     private val gameObjects = mutableListOf<Movable>()
@@ -39,11 +39,12 @@ class Game(
                 Vector(100.0, 0.0)
             )
         )
+
         gameObjects.add(
             Npc(
                 CharacterType.NINJA_FROG.name,
                 Color.PINK,
-                Vector(120.0, 0.0)
+                Vector(200.0, 0.0)
             )
         )
 
@@ -51,28 +52,28 @@ class Game(
             Npc(
                 CharacterType.NINJA_FROG.name,
                 Color.PINK,
-                Vector(125.0, 0.0)
+                Vector(300.0, 0.0)
             )
         )
         gameObjects.add(
             Npc(
                 CharacterType.NINJA_FROG.name,
                 Color.PINK,
-                Vector(135.0, 0.0)
+                Vector(400.0, 0.0)
             )
         )
         gameObjects.add(
             Npc(
                 CharacterType.NINJA_FROG.name,
                 Color.PINK,
-                Vector(140.0, 0.0)
+                Vector(500.0, 0.0)
             )
         )
         gameObjects.add(
             Npc(
                 CharacterType.NINJA_FROG.name,
                 Color.PINK,
-                Vector(160.0, 0.0)
+                Vector(600.0, 0.0)
             )
         )
     }
