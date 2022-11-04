@@ -11,8 +11,10 @@ interface Paintable {
         if (this is Movable) {
             val v = this.center().div(16.0)
             level.tileMap.tiles
-            if (level.tiles[v.x.toInt()][v.y.toInt()] < 1 || level.tiles[v.x.toInt()][v.y.toInt()] >= 100) {
-                level.tiles[v.x.toInt()][v.y.toInt()] = this.paintId
+            var _x = v.x.toInt()
+            var _y = v.y.toInt()
+            if (_x >= 0 && _y >= 0 && level.tiles[_x][_y] < 1 || level.tiles[_x][_y] >= 100) {
+                level.tiles[_x][_y] = this.paintId
             }
         }
     }

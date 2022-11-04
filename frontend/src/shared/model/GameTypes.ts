@@ -1,5 +1,6 @@
 export type Character = {
   id: string;
+  paintId: number;
   color: string;
   width: number;
   height: number;

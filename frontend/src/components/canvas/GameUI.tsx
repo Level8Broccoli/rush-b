@@ -20,7 +20,7 @@ export default function GameUI(props: Props): JSX.Element {
         return;
       }
       contextRef.current.clear();
-      drawBackground(contextRef.current, props.tileMap);
+      drawBackground(contextRef.current, props.tileMap, props.characters);
       drawCharacters(contextRef.current, props.characters);
     });
   }, [props.characters]);

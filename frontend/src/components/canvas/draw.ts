@@ -3,9 +3,8 @@ import { CanvasContext } from "./Canvas";
 import { Character } from "../../shared/model/GameTypes";
 import { drawSprite, SPRITES } from "./Sprite";
 
-function drawBackground(context: CanvasContext, tiles: number[][]) {
+function drawBackground(context: CanvasContext, tiles: number[][], characters: Character[]) {
   const { ctx, scale } = context;
-  console.log(typeof tiles)
   tiles.forEach( (col,x) => {
     col.forEach(async(t,y) => {
       const dx = scale(x);
@@ -17,7 +16,11 @@ function drawBackground(context: CanvasContext, tiles: number[][]) {
       } else if (t === TILES.SKY) {
         await drawSprite(ctx, SPRITES.BACKGROUND, dx, dy, dWidth, dHeight);
       } else {
-        //TODO: paint in color of character
+        const character = characters.find(c => c.paintId == t)
+        if (character !== undefined) {
+          ctx.fillStyle = character.color;
+          ctx.fillRect(dx, dy, dWidth, dHeight);
+        }
       }
     })
   })
