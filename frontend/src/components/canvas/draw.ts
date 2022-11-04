@@ -41,6 +41,9 @@ function drawCharacters(context: CanvasContext, characters: Character[]) {
     ctx.fillStyle = c.color;
     ctx.fillRect(dx, dy, dWidth, dHeight);
     const sprite = SPRITES[c.id as keyof typeof SPRITES]
+    if (c.score !== undefined) {
+      console.log("score: " + c.score)    // TODO: display score on gui
+    }
     await drawSprite(ctx, sprite, dx, dy, dWidth, dHeight);
   });
 }

@@ -1,5 +1,6 @@
 import ch.ffhs.rushb.behavior.INITIAL_VELOCITY
 import ch.ffhs.rushb.behavior.Movable
+import ch.ffhs.rushb.behavior.Scorable
 import ch.ffhs.rushb.behavior.getDelta
 import ch.ffhs.rushb.controller.Level
 import ch.ffhs.rushb.enums.CharacterState
@@ -39,6 +40,12 @@ fun gameLoop(level: Level, character: Movable) {
             character.velocity.y = INITIAL_VELOCITY.y               // set to initial yVelocity
         } else {
         }
+    }
+
+    // ---------- updating score ----------
+
+    if (character is Scorable) {
+        character.score(level)
     }
 
     // ---------- updating state & orientation ----------

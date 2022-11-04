@@ -13,7 +13,6 @@ type Props = {
 };
 
 export default function GameUI(props: Props): JSX.Element {
-  console.log(props.timer)
   const contextRef = useRef<CanvasContext>();
   const [message, setMessage] = useState<string[]>([]);
   useEffect(() => {

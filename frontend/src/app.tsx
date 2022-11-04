@@ -49,8 +49,9 @@ export function App() {
         if (data["msgType"] === "message" || data["msgType"] === "keyPress") {
           setMessages((prev) => [...prev, data["data"]]);
         } else if (data["msgType"] === "game") {
-          var game = JSON.parse(data["data"])
+          const game = JSON.parse(data["data"]);
           game["level"] = JSON.parse(game["level"])
+          console.log("timer: " + game["timer"])    // TODO: display timer on gui
           setGame(game);
         }
       },
