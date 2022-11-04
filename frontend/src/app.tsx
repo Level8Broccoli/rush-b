@@ -25,6 +25,7 @@ export function App() {
     characters: [
       {
         id: "",
+        paintId: -1,
         color: "",
         width: 0,
         height: 0,

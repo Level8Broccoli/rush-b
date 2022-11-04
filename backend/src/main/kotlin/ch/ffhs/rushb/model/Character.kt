@@ -14,6 +14,7 @@ class Character(
     override val id: String,
     override val color: Color,
     override var position: Vector,
+    override var paintId: Int
 ) : Movable, Scorable, Paintable {
     override var orientation = Orientation.FACE
     override var width = 14.0
@@ -34,6 +35,7 @@ class Character(
         return """
             {
                 "id": "$id", 
+                "paintId": $paintId, 
                 "color": "${color.value}", 
                 "width": $width, 
                 "height": $height, 

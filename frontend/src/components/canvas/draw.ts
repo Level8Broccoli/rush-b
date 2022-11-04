@@ -16,6 +16,8 @@ function drawBackground(context: CanvasContext, tiles: number[][]) {
         await drawSprite(ctx, SPRITES.TERRAIN, dx, dy, dWidth, dHeight);
       } else if (t === TILES.SKY) {
         await drawSprite(ctx, SPRITES.BACKGROUND, dx, dy, dWidth, dHeight);
+      } else {
+        //TODO: paint in color of character
       }
     })
   })

@@ -19,13 +19,16 @@ class Game(
         Character(
             CharacterType.MASK_DUDE.name,
             Color.RED,
-            Vector(16.0, 0.0)
+            Vector(16.0, 0.0),
+            100
+
         )
     private val player2 =
         Character(
             CharacterType.PINK_MAN.name,
             Color.PURPLE,
-            Vector(610.0, 0.0)
+            Vector(610.0, 0.0),
+            101
         )
 
     private val gameObjects = mutableListOf<Movable>()
