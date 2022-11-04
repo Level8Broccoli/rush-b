@@ -3,11 +3,11 @@ import { CanvasContext } from "./Canvas";
 import { Character } from "../../shared/model/GameTypes";
 import { drawSprite, SPRITES } from "./Sprite";
 
-function drawBackground(context: CanvasContext, tiles: TileMap) {
+function drawBackground(context: CanvasContext, tiles: number[][]) {
   const { ctx, scale } = context;
-
-  tiles.tiles.forEach((row, y) => {
-    row.forEach(async (t, x) => {
+  console.log(typeof tiles)
+  tiles.forEach( (col,x) => {
+    col.forEach(async(t,y) => {
       const dx = scale(x);
       const dy = scale(y);
       const dWidth = scale(1);
@@ -17,8 +17,10 @@ function drawBackground(context: CanvasContext, tiles: TileMap) {
       } else if (t === TILES.SKY) {
         await drawSprite(ctx, SPRITES.BACKGROUND, dx, dy, dWidth, dHeight);
       }
-    });
-  });
+    })
+  })
+
+
 }
 
 function drawCharacters(context: CanvasContext, characters: Character[]) {

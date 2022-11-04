@@ -1,6 +1,7 @@
 package ch.ffhs.rushb.controller
 
 import ch.ffhs.rushb.behavior.Movable
+import ch.ffhs.rushb.behavior.Paintable
 import ch.ffhs.rushb.behavior.Serializable
 import ch.ffhs.rushb.enums.CharacterType
 import ch.ffhs.rushb.enums.Color
@@ -32,8 +33,6 @@ class Game(
     init {
         gameObjects.add(player1)
         gameObjects.add(player2)
-
-        // TODO: initialize brush at 320
 
         gameObjects.add(
             Brush(
@@ -89,6 +88,12 @@ class Game(
         )
     }
 
+    fun paint(player: Movable) {
+        if (player is Paintable) {
+            player.paint(level)
+        }
+    }
+
     fun applyGameLoop() {
         for (i in 0 until gameObjects.size) {
             for (j in i + 1 until gameObjects.size) {
@@ -106,10 +111,11 @@ class Game(
 
     override fun toJSON(): String {
         val characterJSON = gameObjects.map { it.toJSON() }.joinToString(",")
+        var levelJSON = "[" +level.tiles.map { "[" +it.map{it -> it}.joinToString(",") +"]"}.joinToString(",")+"]"
         val out = """
             {
                 "id": "$id" , 
-                "level": "${level.tileMap.name}" , 
+                "level": "${levelJSON}" , 
                 "characters": [$characterJSON]
             }
             """.trimIndent()

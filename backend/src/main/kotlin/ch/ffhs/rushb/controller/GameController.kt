@@ -69,7 +69,7 @@ class GameController : TextWebSocketHandler() {
                     } else if (key.asText() == "ArrowUp" || key.asText() == "SPACE") {
                         instance.game.getPlayer1().setVelocityY(level)
                     } else if (key.asText() == "KeyE") {
-                        // TODO: paint
+                        instance.game.paint(instance.game.getPlayer1())
                     } else if (key.asText() == "KeyR") {
                         // TODO: hit
                     } else if (key.asText() == "KeyQ") {
@@ -102,7 +102,7 @@ class GameController : TextWebSocketHandler() {
     private fun emit(session: WebSocketSession, msg: Message) {
         try {
             session.sendMessage(TextMessage(ObjectMapper().writeValueAsBytes(msg)))
-        } catch (e: RuntimeException) { // org.springframework.web.socket.sockjs.SockJsTransportFailureException
+        } catch (e: RuntimeException) { // org.springframework.web.socket.sockjs.SockJsTransportFailureException, com.fasterxml.jackson.databind.exc.InvalidDefinitionException
             println(e)
         }
     }

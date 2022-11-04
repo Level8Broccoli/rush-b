@@ -96,7 +96,7 @@ interface Movable : Serializable {
 
 
 
-    private fun center(): Vector {
+    fun center(): Vector {
         return Vector(position.x + (width / 2), position.y + (height / 2))
     }
 
@@ -139,10 +139,10 @@ interface Movable : Serializable {
         val impulse = 2.0 * speed / (weight + other.weight)
         val newVelocity =
             Vector(vCollisionNorm.x, vCollisionNorm.y).mul(impulse * Math.min(weight, 1.0)).div(speed)
-                .limitToMax(2.0)
+                .snapToMax(2.0)
         val newOtherVelocity =
             Vector(vCollisionNorm.x, vCollisionNorm.y).mul(impulse * Math.min(other.weight, 1.0)).div(other.speed)
-                .limitToMax(2.0)
+                .snapToMax(2.0)
         velocity.subtract(newVelocity)
         other.velocity.add(newOtherVelocity)
     }

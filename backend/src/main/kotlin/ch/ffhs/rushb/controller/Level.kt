@@ -8,7 +8,7 @@ import java.lang.Double.MAX_VALUE
 class Level(val tileMap: TileMap) {
 
     private val tileSize = tileMap.tileSize
-
+    var tiles = tileMap.tiles.copyOf()
 
     // ---------------- COLLISION DETECTION ----------------
 
@@ -29,7 +29,7 @@ class Level(val tileMap: TileMap) {
     }
 
     fun isBelowGroundLevel(character: Movable): Boolean {
-        return getDistanceToBottom(character) == MAX_VALUE && character.bottom() > tileMap.tiles[0].size * tileSize
+        return getDistanceToBottom(character) == MAX_VALUE && character.bottom() > tiles[0].size * tileSize
     }
 
 
@@ -43,8 +43,8 @@ class Level(val tileMap: TileMap) {
         var distance = MAX_VALUE
         if (isColCoordinateValid(colLeft) && isColCoordinateValid(colRight) && isRowCoordinateValid(row)) {
             var tempDistance = -1.0
-            for (i in row until tileMap.tiles[0].size) {
-                if (tileMap.tiles[colLeft][i] > 0 || tileMap.tiles[colRight][i] > 0) {  // solid tile found
+            for (i in row until tiles[0].size) {
+                if (tiles[colLeft][i] == 1 || tiles[colRight][i] == 1) {  // solid tile found
                     distance = tempDistance
                     break
                 }
@@ -69,7 +69,7 @@ class Level(val tileMap: TileMap) {
         if (isColCoordinateValid(colLeft) && isColCoordinateValid(colRight) && isRowCoordinateValid(row)) {
             var tempDistance = -1.0
             for (i in row downTo 0) {
-                if (tileMap.tiles[colLeft][i] > 0 || tileMap.tiles[colRight][i] > 0) {  // solid tile found
+                if (tiles[colLeft][i] == 1 || tiles[colRight][i] == 1) {  // solid tile found
                     distance = tempDistance
                     break
                 }
@@ -94,7 +94,7 @@ class Level(val tileMap: TileMap) {
         if (isRowCoordinateValid(rowTop) && isRowCoordinateValid(rowBottom) && isColCoordinateValid(col)) {
             var tempDistance = -1.0
             for (i in col downTo 0) {
-                if (tileMap.tiles[i][rowTop] > 0 || tileMap.tiles[i][rowBottom] > 0) {  // solid tile found
+                if (tiles[i][rowTop] == 1 || tiles[i][rowBottom] == 1) {  // solid tile found
                     distance = tempDistance
                     break
                 }
@@ -118,8 +118,8 @@ class Level(val tileMap: TileMap) {
         var distance = MAX_VALUE
         if (isRowCoordinateValid(rowTop) && isRowCoordinateValid(rowBottom) && isColCoordinateValid(col)) {
             var tempDistance = -1.0
-            for (i in col until tileMap.tiles.size) {
-                if (tileMap.tiles[i][rowTop] > 0 || tileMap.tiles[i][rowBottom] > 0) {  // solid tile found
+            for (i in col until tiles.size) {
+                if (tiles[i][rowTop] == 1 || tiles[i][rowBottom] == 1) {  // solid tile found
                     distance = tempDistance
                     break
                 }
@@ -139,11 +139,11 @@ class Level(val tileMap: TileMap) {
     // ---------------- VALIDITY CHECKS ----------------
 
     private fun isColCoordinateValid(colIndex: Int): Boolean {
-        return colIndex >= 0 && colIndex < tileMap.tiles.size
+        return colIndex >= 0 && colIndex < tiles.size
     }
 
     private fun isRowCoordinateValid(rowIndex: Int): Boolean {
-        return rowIndex >= 0 && rowIndex < tileMap.tiles[0].size
+        return rowIndex >= 0 && rowIndex < tiles[0].size
     }
 
 }

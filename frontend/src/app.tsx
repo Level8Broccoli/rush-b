@@ -21,7 +21,7 @@ export function App() {
   const [messages, setMessages] = useState<string[]>([]);
   const [game, setGame] = useState({
     id: "",
-    level: "",
+    level: [[]],
     characters: [
       {
         id: "",
@@ -47,7 +47,9 @@ export function App() {
         if (data["msgType"] === "message" || data["msgType"] === "keyPress") {
           setMessages((prev) => [...prev, data["data"]]);
         } else if (data["msgType"] === "game") {
-          setGame(JSON.parse(data["data"]));
+          var game = JSON.parse(data["data"])
+          game["level"] = JSON.parse(game["level"])
+          setGame(game);
         }
       },
     });
@@ -64,7 +66,7 @@ export function App() {
       </div>
       <div style="display: grid; grid-template-columns: 1fr 20rem; gap: 1rem; padding-block: 3rem;">
         <GameUI
-          tileMap={tileMapEnum.ONE}
+          tileMap={game.level}
           characters={game.characters}
           send={send}
         />

@@ -11,8 +11,12 @@ class Vector(
         return Vector(x, y)
     }
 
-    fun limitToMax(d: Double): Vector {
+    fun snapToMax(d: Double): Vector {
         return Vector(x.coerceAtMost(d), y.coerceAtMost(d))     // clamp to avoid shooting characters out of game
+    }
+
+    fun getGridValue(): Vector {
+        return Vector(x / 16.0, y / 16.0)
     }
 
     fun mul(d: Double): Vector {

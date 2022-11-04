@@ -1,13 +1,12 @@
 import Canvas, { CanvasContext } from "./Canvas";
 import { h } from "preact";
-import { TileMap } from "../../shared/model/tileMap.enum";
 import { useEffect, useRef, useState } from "preact/compat";
 import { drawBackground, drawCharacters } from "./draw";
 import { Character } from "../../shared/model/GameTypes";
 import { SendMessage } from "../../shared/websocket/websocket";
 
 type Props = {
-  tileMap: TileMap;
+  tileMap: number[][];
   characters: Character[];
   send: SendMessage;
 };
@@ -15,7 +14,6 @@ type Props = {
 export default function GameUI(props: Props): JSX.Element {
   const contextRef = useRef<CanvasContext>();
   const [message, setMessage] = useState<string[]>([]);
-
   useEffect(() => {
     requestAnimationFrame(() => {
       if (contextRef.current === undefined) {
@@ -54,8 +52,8 @@ export default function GameUI(props: Props): JSX.Element {
   return (
     <Canvas
       getCtx={getCtx}
-      relHeight={props.tileMap.tiles.length}
-      relWidth={props.tileMap.tiles[0].length}
+      relHeight={props.tileMap[0].length}
+      relWidth={props.tileMap.length}
       onKeyUp={onKeyUp}
       onKeyDown={onKeyDown}
     />
