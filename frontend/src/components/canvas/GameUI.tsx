@@ -6,12 +6,14 @@ import { Character } from "../../shared/model/GameTypes";
 import { SendMessage } from "../../shared/websocket/websocket";
 
 type Props = {
+  timer: string;
   tileMap: number[][];
   characters: Character[];
   send: SendMessage;
 };
 
 export default function GameUI(props: Props): JSX.Element {
+  console.log(props.timer)
   const contextRef = useRef<CanvasContext>();
   const [message, setMessage] = useState<string[]>([]);
   useEffect(() => {

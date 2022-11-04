@@ -9,11 +9,17 @@ import ch.ffhs.rushb.model.Brush
 import ch.ffhs.rushb.model.Character
 import ch.ffhs.rushb.model.Npc
 import ch.ffhs.rushb.model.Vector
+import java.util.*
+import kotlin.concurrent.schedule
 
 class Game(
     override val id: String,
     private val level: Level,
+
 ) : Serializable {
+    private val timer = Timer()
+    private var millis = 0L
+    private val limit = 1000 * 60 * 2
 
     private val player1 =
         Character(
@@ -89,6 +95,14 @@ class Game(
                 Vector(600.0, 0.0)
             )
         )
+
+        val period = 100L
+        timer.schedule(100,period) {
+            millis += period
+            if (millis >= limit) {
+                timer.cancel()
+            }
+        }
     }
 
     fun paint(player: Movable) {
@@ -118,10 +132,18 @@ class Game(
         val out = """
             {
                 "id": "$id" , 
+                "timer": "${counterToTime()}" , 
                 "level": "${levelJSON}" , 
                 "characters": [$characterJSON]
             }
             """.trimIndent()
         return out.replace("NaN", "-100.0")
+    }
+
+    /**
+     * Method to transform milliseconds to nice formatted time string.
+     */
+    private fun counterToTime(): String {
+        return ((limit-millis)/(1000*60)).toString().padStart(2,'0') + ":" + (((limit-millis)/(1000))%60).toString().padStart(2,'0')
     }
 }

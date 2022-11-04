@@ -21,6 +21,7 @@ export function App() {
   const [messages, setMessages] = useState<string[]>([]);
   const [game, setGame] = useState({
     id: "",
+    timer: "",
     level: [[]],
     characters: [
       {
@@ -67,6 +68,7 @@ export function App() {
       </div>
       <div style="display: grid; grid-template-columns: 1fr 20rem; gap: 1rem; padding-block: 3rem;">
         <GameUI
+          timer={game.timer}
           tileMap={game.level}
           characters={game.characters}
           send={send}
