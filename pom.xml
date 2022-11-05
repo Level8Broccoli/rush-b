@@ -18,7 +18,7 @@
         <kotlin.version>1.6.21</kotlin.version>
         <neuralnetwork.group>ch.kaiki.nn</neuralnetwork.group>
         <neuralnetwork.id>neural-network</neuralnetwork.id>
-        <neuralnetwork.version>3.0</neuralnetwork.version>
+        <neuralnetwork.version>LATEST</neuralnetwork.version>
     </properties>
 
     <repositories>
@@ -57,8 +57,8 @@
     </dependencies>
 
     <build>
-        <sourceDirectory>${project.basedir}/src/main/kotlin</sourceDirectory>
-        <testSourceDirectory>${project.basedir}/src/test/kotlin</testSourceDirectory>
+        <sourceDirectory>${project.basedir}/src/main/kotlincode</sourceDirectory>
+        <testSourceDirectory>${project.basedir}/src/test/kotlincode</testSourceDirectory>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
