@@ -79,11 +79,15 @@ class MockGame(neuralNetwork: NeuralNetwork?) : GeneticObject(neuralNetwork) {
     override fun perform(): Boolean {
         applyGameLoop()
         counter += 1
+        if (bot.brush != null) {
+            bot.fitness += 1
+        }
         return counter <= limit
     }
 
     override fun getFitness(): Double {
-        return bot.score.toDouble()
+        bot.fitness += bot.score * 100
+        return bot.fitness.toDouble()
     }
 
     // not used but not removable

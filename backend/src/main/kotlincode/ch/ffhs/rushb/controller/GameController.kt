@@ -11,6 +11,7 @@ import org.springframework.web.socket.WebSocketSession
 import org.springframework.web.socket.handler.TextWebSocketHandler
 import java.util.concurrent.atomic.AtomicLong
 import kotlincode.ch.ffhs.rushb.behavior.ai.GeneticFitter
+import kotlin.concurrent.thread
 
 
 data class Subscriber(val id: Long, var player: MockPlayer?)
@@ -27,7 +28,9 @@ class GameController : TextWebSocketHandler() {
 
     init {
         instance = this
-        //GeneticFitter().run()
+        thread {
+            GeneticFitter().run()
+        }
     }
 
     private val sessionList = HashMap<WebSocketSession, Subscriber>()

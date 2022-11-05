@@ -24,6 +24,7 @@ class Bot(
     override var score = 0
     override var brush: Brush? = null
     override var neuralNetwork = SeedUtil().getSeed()
+    override var fitness = 0
 
     override fun applyGameLoop(level: Level) {
         gameLoop(level, this)

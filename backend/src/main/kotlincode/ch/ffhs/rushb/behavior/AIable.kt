@@ -6,6 +6,7 @@ import kotlincode.ch.ffhs.rushb.controller.Level
 
 interface AIable {
     var neuralNetwork: NeuralNetwork
+    var fitness: Int
 
     fun predict(level: Level, gameObject: MutableList<Movable>) {
         if (!(this is Movable)) {
