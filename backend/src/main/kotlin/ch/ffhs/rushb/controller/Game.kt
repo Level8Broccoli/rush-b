@@ -1,16 +1,16 @@
 package ch.ffhs.rushb.controller
 
+import ch.ffhs.rushb.behavior.AIable
 import ch.ffhs.rushb.behavior.Movable
 import ch.ffhs.rushb.behavior.Paintable
 import ch.ffhs.rushb.behavior.Serializable
 import ch.ffhs.rushb.enums.CharacterType
 import ch.ffhs.rushb.enums.Color
-import ch.ffhs.rushb.model.Brush
-import ch.ffhs.rushb.model.Character
-import ch.ffhs.rushb.model.Npc
+import ch.ffhs.rushb.model.*
 import ch.ffhs.rushb.model.Vector
 import java.util.*
 import kotlin.concurrent.schedule
+import kotlin.random.Random
 
 class Game(
     override val id: String,
@@ -30,7 +30,7 @@ class Game(
 
         )
     private val player2 =
-        Character(
+        Bot(
             CharacterType.PINK_MAN.name,
             Color.PURPLE,
             Vector(610.0, 0.0),
@@ -40,9 +40,12 @@ class Game(
     private val gameObjects = mutableListOf<Movable>()
 
     init {
+
+        // add playeres
         gameObjects.add(player1)
         gameObjects.add(player2)
 
+        // add brush
         gameObjects.add(
             Brush(
                 CharacterType.VIRTUAL_GUY.name,
@@ -51,50 +54,16 @@ class Game(
             )
         )
 
-        gameObjects.add(
-            Npc(
+        // add npcs
+        val numberOfNpcs = 6
+        for (i in 0 until numberOfNpcs) {
+            gameObjects.add(Npc(
                 CharacterType.NINJA_FROG.name,
                 Color.PINK,
-                Vector(100.0, 0.0)
-            )
-        )
+                Vector(Random.nextInt(100,600).toDouble(), 0.0)
+            ))
+        }
 
-        gameObjects.add(
-            Npc(
-                CharacterType.NINJA_FROG.name,
-                Color.PINK,
-                Vector(200.0, 0.0)
-            )
-        )
-
-        gameObjects.add(
-            Npc(
-                CharacterType.NINJA_FROG.name,
-                Color.PINK,
-                Vector(300.0, 0.0)
-            )
-        )
-        gameObjects.add(
-            Npc(
-                CharacterType.NINJA_FROG.name,
-                Color.PINK,
-                Vector(400.0, 0.0)
-            )
-        )
-        gameObjects.add(
-            Npc(
-                CharacterType.NINJA_FROG.name,
-                Color.PINK,
-                Vector(500.0, 0.0)
-            )
-        )
-        gameObjects.add(
-            Npc(
-                CharacterType.NINJA_FROG.name,
-                Color.PINK,
-                Vector(600.0, 0.0)
-            )
-        )
 
         val period = 100L
         timer.schedule(100,period) {
@@ -118,6 +87,9 @@ class Game(
             }
         }
         for (obj in gameObjects) {
+            if (obj is AIable) {
+                obj.predict(level, gameObjects)
+            }
             obj.applyGameLoop(level)
         }
     }
@@ -145,5 +117,13 @@ class Game(
      */
     private fun counterToTime(): String {
         return ((limit-millis)/(1000*60)).toString().padStart(2,'0') + ":" + (((limit-millis)/(1000))%60).toString().padStart(2,'0')
+    }
+
+    fun setVelocityX(player: Movable, d: Double) {
+        player.setVelocityX(d)
+    }
+
+    fun setVelocityY(player: Movable) {
+        player.setVelocityY(level)
     }
 }

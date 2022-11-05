@@ -30,9 +30,7 @@ class GameController : TextWebSocketHandler() {
 
     private val sessionList = HashMap<WebSocketSession, Subscriber>()
     private var uid = AtomicLong(0)
-
-    private val level = Level(TileMap.ONE)
-    private var game = Game("game 0", level)
+    private var game = Game("game 0", Level(TileMap.ONE))
 
     override fun afterConnectionClosed(session: WebSocketSession, status: CloseStatus) {
         broadcastToOthers(session, Message("left", session))
@@ -63,11 +61,11 @@ class GameController : TextWebSocketHandler() {
                 val keys = json.get("data").asIterable()
                 for (key in keys) {
                     if (key.asText() == "ArrowLeft") {
-                        instance.game.getPlayer1().setVelocityX(-1.0)
+                        instance.game.setVelocityX(instance.game.getPlayer1(), -1.0)
                     } else if (key.asText() == "ArrowRight") {
-                        instance.game.getPlayer1().setVelocityX(1.0)
+                        instance.game.setVelocityX(instance.game.getPlayer1(), 1.0)
                     } else if (key.asText() == "ArrowUp" || key.asText() == "SPACE") {
-                        instance.game.getPlayer1().setVelocityY(level)
+                        instance.game.setVelocityY(instance.game.getPlayer1())
                     } else if (key.asText() == "KeyE") {
                         instance.game.paint(instance.game.getPlayer1())
                     } else if (key.asText() == "KeyR") {
