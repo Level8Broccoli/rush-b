@@ -32,17 +32,22 @@ class GameController : TextWebSocketHandler() {
         if (instance == null) {
             instance = this
 
-            if (false) {    // used temporarily to train ai (i know, bad place, but works)
-                thread {
-                    GeneticFitter().run()
-                }
-            }
+            /**
+             * To train the AI, uncomment the next line. It will generate a serialized neural network
+             * to your temp folder. To use it, remove the time stamp and move it to the resources folder.
+             * To see the result, replace the variable game with
+             * MockGame(SeedUtil().load())
+             * instead of
+             * Game("game 0", Level(TileMap.ONE))
+             */
+
+            // GeneticFitter().run()
         }
     }
 
     private val sessionList = HashMap<WebSocketSession, Subscriber>()
     private var uid = AtomicLong(0)
-    private var game = Game("game 0", Level(TileMap.ONE))  //Game("game 0", Level(TileMap.ONE))  MockGame(SeedUtil().load())
+    private var game = Game("game 0", Level(TileMap.ONE))
 
     override fun afterConnectionClosed(session: WebSocketSession, status: CloseStatus) {
         broadcastToOthers(session, Message("left", session))

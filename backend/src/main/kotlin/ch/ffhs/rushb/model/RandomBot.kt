@@ -1,21 +1,22 @@
 package ch.ffhs.rushb.model
 
-import ch.ffhs.rushb.behavior.*
-import ch.ffhs.rushb.behavior.ai.SeedUtil
+import ch.ffhs.rushb.behavior.INITIAL_VELOCITY
+import ch.ffhs.rushb.behavior.Movable
+import ch.ffhs.rushb.behavior.Paintable
+import ch.ffhs.rushb.behavior.Scorable
 import ch.ffhs.rushb.controller.Level
 import ch.ffhs.rushb.enums.CharacterState
 import ch.ffhs.rushb.enums.Color
 import ch.ffhs.rushb.enums.Orientation
-import ch.kaiki.nn.neuralnet.NeuralNetwork
 import gameLoop
+import kotlin.random.Random
 
-class Bot(
+class RandomBot(
     override val id: String,
     override val color: Color,
     override var position: Vector,
-    override var paintId: Int,
-    override var neuralNetwork: NeuralNetwork
-) : Movable, Scorable, Paintable, AIable {
+    override var paintId: Int
+) : Movable, Scorable, Paintable {
     override var orientation = Orientation.FACE
     override var width = 14.0
     override var height = 28.0
@@ -26,10 +27,20 @@ class Bot(
     override var state = CharacterState.IDLE
     override var score = 0
     override var brush: Brush? = null
-    override var fitness = 0L
-    override var visitedTiles: MutableList<String> = mutableListOf()
 
     override fun applyGameLoop(level: Level) {
+        if (Random.nextBoolean()) {
+            if (Random.nextBoolean()) {
+                setVelocityX(1.0)
+            } else {
+                setVelocityX(-1.0)
+            }
+        } else {
+            if (Random.nextBoolean()) {
+                setVelocityY(level)
+            }
+        }
+        paint(level)
         gameLoop(level, this)
     }
 

@@ -17,7 +17,7 @@ open class MockGame(neuralNetwork: NeuralNetwork?) : GeneticObject(neuralNetwork
     val limit = 600     // (1000 * 60 * 2) / 200 -> two minutes / calculation step
     var counter = 100
     val gameObjects = mutableListOf<Movable>()
-    val bot = Bot(CharacterType.MASK_DUDE.name, Color.PURPLE, Vector(Random.nextDouble(100.0,600.0),0.0), 200, neuralNetwork!!)
+    val bot = DeepBot(CharacterType.MASK_DUDE.name, Color.PURPLE, Vector(Random.nextDouble(100.0,600.0),0.0), 200, neuralNetwork!!)
     var rated = false
 
     init {
@@ -30,7 +30,7 @@ open class MockGame(neuralNetwork: NeuralNetwork?) : GeneticObject(neuralNetwork
         gameObjects.add(bot)
         for (i in 0 until numberOfMockPlayers) {
             gameObjects.add(
-                MockCharacter(
+                RandomBot(
                     CharacterType.PINK_MAN.name,
                     Color.RED,
                     Vector(Random.nextDouble(100.0, 600.0), 0.0),

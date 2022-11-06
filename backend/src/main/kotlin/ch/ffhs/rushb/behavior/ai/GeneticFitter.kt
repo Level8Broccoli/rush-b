@@ -2,6 +2,7 @@ package ch.ffhs.rushb.behavior.ai
 
 import ch.kaiki.nn.genetic.GeneticBatch
 import ch.kaiki.nn.neuralnet.NeuralNetwork
+import kotlin.concurrent.thread
 
 
 class GeneticFitter {
@@ -14,12 +15,13 @@ class GeneticFitter {
         MockGame(seed).javaClass, seed.javaClass, seed, populationSize);
 
     fun run() {
-        println("genetic algorithm started")
-        for (i in 0 until generationCount) {
-            seed = batch.processGeneration() as NeuralNetwork;
+        thread {
+            for (i in 0 until generationCount) {
+                seed = batch.processGeneration() as NeuralNetwork;
+            }
+            SeedUtil().serializeToTempDirectory(batch.bestGene as NeuralNetwork)
         }
-        println("genetic algorithm stopped")
-        SeedUtil().serializeToTempDirectory(batch.bestGene as NeuralNetwork)
+
     }
 }
 

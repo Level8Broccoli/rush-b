@@ -22,12 +22,10 @@ interface AIable {
 
         val vision = doubleArrayOf(
             0.0,0.0,0.0,0.0,    // colliding with walls
-            //0.0,0.0,0.0,0.0,    // near other character
             0.0,0.0,0.0,0.0,    // near brush
-            //0.0,0.0,0.0,0.0,    // near npc
             0.0,                // has brush
             0.0,                // tile already visited
-            0.0,0.0,             // velocity
+            0.0,0.0,            // velocity
             0.0,0.0             // position
         )
         if (level.collidesTop(this)) {
@@ -51,21 +49,7 @@ interface AIable {
             val xObj = centerObj.x
             val yObj = centerObj.y
 
-            if (obj is Paintable) {         // character
-                /*
-                if (yObj <= y && Math.abs(yObj-y) <= offset && Math.abs(xObj-x) <= offset) {
-                    vision[4] = 1.0
-                }
-                if (xObj >= x && Math.abs(yObj-y) <= offset && Math.abs(xObj-x) <= offset) {
-                    vision[5] = 1.0
-                }
-                if (yObj >= y && Math.abs(yObj-y) <= offset && Math.abs(xObj-x) <= offset) {
-                    vision[6] = 1.0
-                }
-                if (xObj <= x && Math.abs(yObj-y) <= offset && Math.abs(xObj-x) <= offset) {
-                    vision[7] = 1.0
-                }*/
-            } else if (obj is Grabbable) {  // brush
+            if (obj is Grabbable) {  // brush
                 if (yObj <= y && Math.abs(yObj-y) <= offset && Math.abs(xObj-x) <= offset) {
                     vision[4] = 1.0
                 }
@@ -78,20 +62,6 @@ interface AIable {
                 if (xObj <= x && Math.abs(yObj-y) <= offset && Math.abs(xObj-x) <= offset) {
                     vision[7] = 1.0
                 }
-            } else {                        // npc
-                /*
-                if (yObj <= y && Math.abs(yObj-y) <= offset && Math.abs(xObj-x) <= offset) {
-                    vision[12] = 1.0
-                }
-                if (xObj >= x && Math.abs(yObj-y) <= offset && Math.abs(xObj-x) <= offset) {
-                    vision[13] = 1.0
-                }
-                if (yObj >= y && Math.abs(yObj-y) <= offset && Math.abs(xObj-x) <= offset) {
-                    vision[14] = 1.0
-                }
-                if (xObj <= x && Math.abs(yObj-y) <= offset && Math.abs(xObj-x) <= offset) {
-                    vision[15] = 1.0
-                }*/
             }
         }
 

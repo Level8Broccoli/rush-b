@@ -31,7 +31,7 @@ class Game(
 
         )
     private val player2 =
-        Bot(
+        DeepBot(
             CharacterType.PINK_MAN.name,
             Color.PURPLE,
             Vector(610.0, 0.0),
