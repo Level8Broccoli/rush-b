@@ -31,13 +31,23 @@ class Game(
 
         )
     private val player2 =
-        DeepBot(
+        RandomBot(
+            CharacterType.PINK_MAN.name,
+            Color.PURPLE,
+            Vector(610.0, 0.0),
+            101,
+        )
+
+    /*
+    private val player2 =
+    DeepBot(
             CharacterType.PINK_MAN.name,
             Color.PURPLE,
             Vector(610.0, 0.0),
             101,
             SeedUtil().load()
         )
+     */
 
     private val gameObjects = mutableListOf<Movable>()
 
