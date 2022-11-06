@@ -30,12 +30,12 @@ function drawBackground(context: CanvasContext, tiles: number[][], characters: C
 
 }
 
-function drawCharacters(context: CanvasContext, characters: Character[]) {
+async function drawCharacters(context: CanvasContext, characters: Character[]) {
   const NORM_FACTOR = 16; // TODO: Refactor on backend
 
   const { ctx, scale } = context;
 
-  characters.forEach(async (c) => {
+  await characters.forEach(async (c) => {
     const dx = scale(c.x / NORM_FACTOR);
     const dy = scale(c.y / NORM_FACTOR);
     const dWidth = scale(c.width / NORM_FACTOR);
@@ -43,11 +43,23 @@ function drawCharacters(context: CanvasContext, characters: Character[]) {
     ctx.fillStyle = c.color;
     ctx.fillRect(dx, dy, dWidth, dHeight);
     const sprite = SPRITES[c.id as keyof typeof SPRITES]
-    if (c.score !== undefined) {
-      console.log("score: " + c.score)    // TODO: display score on gui
-    }
+
     await drawSprite(ctx, sprite, dx, dy, dWidth, dHeight);
+    if (c.score !== undefined) {
+      drawScore(context, "" + c.score, 20, 380)   // TODO: do not draw all scores over each other
+    }
   });
+
+
+}
+
+function drawScore(context: CanvasContext, text: string, x: number, y: number) {
+  const { ctx, scale } = context;
+  ctx.fillStyle = "white";
+  ctx.font = "30px Arial"
+  ctx?.fillText(text, x, y);
+  ctx.fillStyle = "black";
+  ctx.strokeText(text, x, y);
 }
 
 export { drawBackground, drawCharacters };

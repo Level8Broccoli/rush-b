@@ -16,13 +16,23 @@ export default function GameUI(props: Props): JSX.Element {
   const contextRef = useRef<CanvasContext>();
   const [message, setMessage] = useState<string[]>([]);
   useEffect(() => {
-    requestAnimationFrame(() => {
+    requestAnimationFrame(async () => {
       if (contextRef.current === undefined) {
         return;
       }
+
       contextRef.current.clear();
       drawBackground(contextRef.current, props.tileMap, props.characters);
-      drawCharacters(contextRef.current, props.characters);
+      await drawCharacters(contextRef.current, props.characters);
+      const ctx = contextRef.current.ctx
+
+
+      const text = props.timer
+      ctx.fillStyle = "white";
+      ctx.font = "30px Arial"
+      ctx?.fillText(text, 20, 40);
+      ctx.fillStyle = "black";
+      ctx.strokeText(text, 20, 40);
     });
   }, [props.characters]);
 

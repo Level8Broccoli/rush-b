@@ -71,6 +71,9 @@ class MockGame(neuralNetwork: NeuralNetwork?) : GeneticObject(neuralNetwork) {
      * This method represents a game step.
      */
     fun applyGameLoop() {
+        if ((counter > limit)) {
+            return
+        }
         for (i in 0 until gameObjects.size) {
             for (j in i + 1 until gameObjects.size) {
                 gameObjects[i].validateIntersect(gameObjects[j])

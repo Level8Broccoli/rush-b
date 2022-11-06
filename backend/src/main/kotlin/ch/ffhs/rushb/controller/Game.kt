@@ -61,7 +61,7 @@ class Game(
         gameObjects.add(player2)
 
         val numberOfBrushes = 10
-        val numberOfBots = 0
+        val numberOfBots = 4
         val numberOfNpcs = 5
 
 
@@ -116,6 +116,9 @@ class Game(
     }
 
     fun applyGameLoop() {
+        if ((limit-millis) <= 0) {
+            return
+        }
         for (i in 0 until gameObjects.size) {
             for (j in i + 1 until gameObjects.size) {
                 gameObjects[i].validateIntersect(gameObjects[j])

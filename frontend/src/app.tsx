@@ -51,7 +51,6 @@ export function App() {
         } else if (data["msgType"] === "game") {
           const game = JSON.parse(data["data"]);
           game["level"] = JSON.parse(game["level"])
-          console.log("timer: " + game["timer"])    // TODO: display timer on gui
           setGame(game);
         }
       },
