@@ -4,6 +4,7 @@ import ch.ffhs.rushb.behavior.AIable
 import ch.ffhs.rushb.behavior.Movable
 import ch.ffhs.rushb.behavior.Paintable
 import ch.ffhs.rushb.behavior.Serializable
+import ch.ffhs.rushb.behavior.ai.SeedUtil
 import ch.ffhs.rushb.enums.CharacterType
 import ch.ffhs.rushb.enums.Color
 import ch.ffhs.rushb.model.*
@@ -34,7 +35,8 @@ class Game(
             CharacterType.PINK_MAN.name,
             Color.PURPLE,
             Vector(610.0, 0.0),
-            101
+            101,
+            SeedUtil().load()
         )
 
     private val gameObjects = mutableListOf<Movable>()
@@ -45,17 +47,21 @@ class Game(
         gameObjects.add(player1)
         gameObjects.add(player2)
 
+        val numberOfBrushes = 10
+        val numberOfNpcs = 10
+
         // add brush
-        gameObjects.add(
-            Brush(
-                CharacterType.VIRTUAL_GUY.name,
-                Color.PINK,
-                Vector(320.0, 0.0)
+        for (i in 0 until numberOfBrushes) {
+            gameObjects.add(
+                Brush(
+                    CharacterType.VIRTUAL_GUY.name,
+                    Color.PINK,
+                    Vector(Random.nextInt(100,600).toDouble(), 0.0)
+                )
             )
-        )
+        }
 
         // add npcs
-        val numberOfNpcs = 6
         for (i in 0 until numberOfNpcs) {
             gameObjects.add(
                 Npc(

@@ -1,5 +1,8 @@
 package ch.ffhs.rushb.controller
 
+import ch.ffhs.rushb.behavior.ai.GeneticFitter
+import ch.ffhs.rushb.behavior.ai.MockGame
+import ch.ffhs.rushb.behavior.ai.SeedUtil
 import ch.ffhs.rushb.model.TileMap
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.scheduling.annotation.EnableScheduling
@@ -10,6 +13,7 @@ import org.springframework.web.socket.TextMessage
 import org.springframework.web.socket.WebSocketSession
 import org.springframework.web.socket.handler.TextWebSocketHandler
 import java.util.concurrent.atomic.AtomicLong
+import kotlin.concurrent.thread
 
 
 data class Subscriber(val id: Long, var player: MockPlayer?)
@@ -21,29 +25,34 @@ data class Message(val msgType: String, val data: Any)
 class GameController : TextWebSocketHandler() {
 
     companion object {
-        lateinit var instance: GameController
+        var instance: GameController? = null
     }
 
     init {
-        instance = this
-        /*thread {
-            GeneticFitter().run()
-        }*/
+        if (instance == null) {
+            instance = this
+
+            if (false) {    // used temporarily to train ai (i know, bad place, but works)
+                thread {
+                    GeneticFitter().run()
+                }
+            }
+        }
     }
 
     private val sessionList = HashMap<WebSocketSession, Subscriber>()
     private var uid = AtomicLong(0)
-    private var game = Game("game 0", Level(TileMap.ONE))
+    private var game = Game("game 0", Level(TileMap.ONE))  //Game("game 0", Level(TileMap.ONE))  MockGame(SeedUtil().load())
 
     override fun afterConnectionClosed(session: WebSocketSession, status: CloseStatus) {
         broadcastToOthers(session, Message("left", session))
-        instance.sessionList -= session
+        instance!!.sessionList -= session
     }
 
     @Scheduled(fixedRate = 200)
     fun sendGameStatus() {
-        instance.game.applyGameLoop()
-        val gameData = instance.game.toJSON()
+        instance!!.game.applyGameLoop()
+        val gameData = instance!!.game.toJSON()
         broadcast(Message("game", gameData))
     }
 
@@ -51,9 +60,9 @@ class GameController : TextWebSocketHandler() {
         val json = ObjectMapper().readTree(message.payload)
         when (json.get("type").asText()) {
             "subscribe" -> {
-                val subscriber = Subscriber(instance.uid.getAndIncrement(), null)
-                instance.sessionList += mapOf(session to subscriber)
-                broadcast(Message("subscriber", instance.sessionList.values))
+                val subscriber = Subscriber(instance!!.uid.getAndIncrement(), null)
+                instance!!.sessionList += mapOf(session to subscriber)
+                broadcast(Message("subscriber", instance!!.sessionList.values))
             }
 
             "message" -> {
@@ -64,13 +73,13 @@ class GameController : TextWebSocketHandler() {
                 val keys = json.get("data").asIterable()
                 for (key in keys) {
                     if (key.asText() == "ArrowLeft") {
-                        instance.game.setVelocityX(instance.game.getPlayer1(), -1.0)
+                        instance!!.game.setVelocityX(instance!!.game.getPlayer1(), -1.0)
                     } else if (key.asText() == "ArrowRight") {
-                        instance.game.setVelocityX(instance.game.getPlayer1(), 1.0)
+                        instance!!.game.setVelocityX(instance!!.game.getPlayer1(), 1.0)
                     } else if (key.asText() == "ArrowUp" || key.asText() == "SPACE") {
-                        instance.game.setVelocityY(instance.game.getPlayer1())
+                        instance!!.game.setVelocityY(instance!!.game.getPlayer1())
                     } else if (key.asText() == "KeyE") {
-                        instance.game.paint(instance.game.getPlayer1())
+                        instance!!.game.paint(instance!!.game.getPlayer1())
                     } else if (key.asText() == "KeyR") {
                         // TODO: hit
                     } else if (key.asText() == "KeyQ") {
@@ -80,8 +89,8 @@ class GameController : TextWebSocketHandler() {
             }
 
             "register-as-player" -> {
-                instance.sessionList[session]?.player = MockPlayer(json.get("data").asText())
-                broadcast(Message("subscriber", instance.sessionList.values))
+                instance!!.sessionList[session]?.player = MockPlayer(json.get("data").asText())
+                broadcast(Message("subscriber", instance!!.sessionList.values))
             }
 
             else -> {
@@ -92,11 +101,11 @@ class GameController : TextWebSocketHandler() {
 
 
     private fun broadcast(msg: Message) {
-        instance.sessionList.forEach { emit(it.key, msg) }
+        instance!!.sessionList.forEach { emit(it.key, msg) }
     }
 
     private fun broadcastToOthers(me: WebSocketSession, msg: Message) {
-        instance.sessionList.filterNot { it.key == me }.forEach { emit(it.key, msg) }
+        instance!!.sessionList.filterNot { it.key == me }.forEach { emit(it.key, msg) }
     }
 
     @Synchronized

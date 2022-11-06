@@ -11,27 +11,27 @@ import ch.ffhs.rushb.model.*
 import kotlin.random.Random
 
 
-class MockGame(neuralNetwork: NeuralNetwork?) : GeneticObject(neuralNetwork) {
+open class MockGame(neuralNetwork: NeuralNetwork?) : GeneticObject(neuralNetwork) {
 
     val level = Level(TileMap.ONE)
     val limit = 600     // (1000 * 60 * 2) / 200 -> two minutes / calculation step
     var counter = 100
     val gameObjects = mutableListOf<Movable>()
-    val bot = Bot("Bot", Color.RED, Vector(Random.nextDouble(100.0,600.0),0.0), 200)
+    val bot = Bot(CharacterType.MASK_DUDE.name, Color.PURPLE, Vector(Random.nextDouble(100.0,600.0),0.0), 200, neuralNetwork!!)
+    var rated = false
 
     init {
-        bot.neuralNetwork = neuralNetwork!!
 
-        val numberOfMockPlayers = 2
+        val numberOfMockPlayers = 1
         val numberOfBrushes = 10
-        val numberOfNpcs = 6
+        val numberOfNpcs = 1
 
         // add players
         gameObjects.add(bot)
         for (i in 0 until numberOfMockPlayers) {
             gameObjects.add(
                 MockCharacter(
-                    "mockCharacter",
+                    CharacterType.PINK_MAN.name,
                     Color.RED,
                     Vector(Random.nextDouble(100.0, 600.0), 0.0),
                     210 + i
@@ -79,15 +79,23 @@ class MockGame(neuralNetwork: NeuralNetwork?) : GeneticObject(neuralNetwork) {
     override fun perform(): Boolean {
         applyGameLoop()
         counter += 1
+
         if (bot.brush != null) {
             bot.fitness += 1
+        }
+        if ((Math.abs(bot.velocity.x) > 0 || Math.abs(bot.velocity.y) > 0) && !level.collidesLeft(bot as Movable)  && !level.collidesRight(bot as Movable)) {
+            bot.fitness += 10
         }
         return counter <= limit
     }
 
-    override fun getFitness(): Double {
-        bot.fitness += bot.score * 100
-        return bot.fitness.toDouble()
+    override fun getFitness(): Long {
+        if (!rated) {
+            bot.fitness += bot.visitedTiles.size * 100
+            bot.fitness += bot.score * 1000000
+            rated = true
+        }
+        return bot.fitness
     }
 
     // not used but not removable
@@ -98,5 +106,35 @@ class MockGame(neuralNetwork: NeuralNetwork?) : GeneticObject(neuralNetwork) {
     // not used but not removable
     override fun hasReachedGoal(): Boolean {
         return false
+    }
+
+    fun toJSON(): String {
+        val characterJSON = gameObjects.map { it.toJSON() }.joinToString(",")
+        var levelJSON = "[" +level.tiles.map { "[" +it.map{it -> it}.joinToString(",") +"]"}.joinToString(",")+"]"
+        val out = """
+            {
+                "id": "mock game" , 
+                "timer": "00:00" , 
+                "level": "${levelJSON}" , 
+                "characters": [$characterJSON]
+            }
+            """.trimIndent()
+        return out.replace("NaN", "-100.0")
+    }
+
+    fun setVelocityX(player: Movable, d: Double) {
+
+    }
+
+    fun setVelocityY(player: Movable) {
+
+    }
+
+    fun paint(player: Movable) {
+
+    }
+
+    fun getPlayer1(): Movable {
+        return bot
     }
 }

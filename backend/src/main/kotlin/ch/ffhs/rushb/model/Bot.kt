@@ -13,7 +13,8 @@ class Bot(
     override val id: String,
     override val color: Color,
     override var position: Vector,
-    override var paintId: Int
+    override var paintId: Int,
+    override var neuralNetwork: NeuralNetwork
 ) : Movable, Scorable, Paintable, AIable {
     override var orientation = Orientation.FACE
     override var width = 14.0
@@ -25,8 +26,8 @@ class Bot(
     override var state = CharacterState.IDLE
     override var score = 0
     override var brush: Brush? = null
-    override var neuralNetwork = SeedUtil().getSeed()
-    override var fitness = 0
+    override var fitness = 0L
+    override var visitedTiles: MutableList<String> = mutableListOf()
 
     override fun applyGameLoop(level: Level) {
         gameLoop(level, this)
