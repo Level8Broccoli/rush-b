@@ -115,8 +115,12 @@ class Game(
         }
     }
 
+    fun isActive(): Boolean {
+        return (limit-millis) >= 0
+    }
+
     fun applyGameLoop() {
-        if ((limit-millis) <= 0) {
+        if (!isActive()) {
             return
         }
         for (i in 0 until gameObjects.size) {

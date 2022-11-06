@@ -15,8 +15,7 @@ import org.springframework.web.socket.handler.TextWebSocketHandler
 import java.util.concurrent.atomic.AtomicLong
 
 
-data class Subscriber(val id: Long, var player: MockPlayer?)
-data class MockPlayer(val name: String)
+data class Subscriber(val id: Long)
 data class Message(val msgType: String, val data: Any)
 
 @EnableScheduling
@@ -26,6 +25,11 @@ class GameController : TextWebSocketHandler() {
     companion object {
         var instance: GameController? = null
     }
+
+    val sessionList = HashMap<WebSocketSession, Subscriber>()
+    val gameList = mutableListOf<Game>()
+    private var uid = AtomicLong(0)
+    private var game = Game("game 0", Level(TileMap.ONE))
 
     init {
         if (instance == null) {
@@ -44,9 +48,6 @@ class GameController : TextWebSocketHandler() {
         }
     }
 
-    private val sessionList = HashMap<WebSocketSession, Subscriber>()
-    private var uid = AtomicLong(0)
-    private var game = Game("game 0", Level(TileMap.ONE))
 
     override fun afterConnectionClosed(session: WebSocketSession, status: CloseStatus) {
         broadcastToOthers(session, Message("left", session))
@@ -55,17 +56,22 @@ class GameController : TextWebSocketHandler() {
 
     @Scheduled(fixedRate = 200)
     fun sendGameStatus() {
-        instance!!.game.applyGameLoop()
-        val gameData = instance!!.game.toJSON()
-        broadcast(Message("game", gameData))
+        instance!!.gameList.forEach { it ->
+            it.applyGameLoop()
+            val gameData = it.toJSON()
+            broadcast(Message("game", gameData))
+        }
+
+        // TODO: remove inactive games
     }
 
     override fun handleTextMessage(session: WebSocketSession, message: TextMessage) {
         val json = ObjectMapper().readTree(message.payload)
         when (json.get("type").asText()) {
             "subscribe" -> {
-                val subscriber = Subscriber(instance!!.uid.getAndIncrement(), null)
+                val subscriber = Subscriber(instance!!.uid.getAndIncrement())
                 instance!!.sessionList += mapOf(session to subscriber)
+                instance!!.gameList.add(Game("" + subscriber.id, Level(TileMap.ONE)))
                 broadcast(Message("subscriber", instance!!.sessionList.values))
             }
 
@@ -90,11 +96,6 @@ class GameController : TextWebSocketHandler() {
                         // TODO: quit
                     }
                 }
-            }
-
-            "register-as-player" -> {
-                instance!!.sessionList[session]?.player = MockPlayer(json.get("data").asText())
-                broadcast(Message("subscriber", instance!!.sessionList.values))
             }
 
             else -> {
