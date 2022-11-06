@@ -4,14 +4,19 @@ import ch.kaiki.nn.genetic.GeneticBatch
 import ch.kaiki.nn.neuralnet.NeuralNetwork
 import kotlin.concurrent.thread
 
-
+/**
+ * This class is used to train a new neural network (which would be the core for the DeepBot).
+ * The training will be executed in a separate thread. The result will be saved as serialized
+ * neural network to your temp folder (full path will be printed to log).
+ * If the file is to be used, please remove the timestamp and move it to the resources folder.
+ */
 class GeneticFitter {
 
-    var seed = SeedUtil().getSeed()
-    var populationSize = 1000;
-    var generationCount = 20;
-    var x = MockGame(seed)
-    var batch: GeneticBatch<MockGame, NeuralNetwork> = GeneticBatch<MockGame, NeuralNetwork>(
+    private val populationSize = 1000;
+    private val generationCount = 20;
+    private var seed = SeedUtil().getSeed()
+
+    private val batch: GeneticBatch<MockGame, NeuralNetwork> = GeneticBatch<MockGame, NeuralNetwork>(
         MockGame(seed).javaClass, seed.javaClass, seed, populationSize);
 
     fun run() {

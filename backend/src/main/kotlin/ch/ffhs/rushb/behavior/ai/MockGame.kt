@@ -10,8 +10,12 @@ import ch.kaiki.nn.neuralnet.NeuralNetwork
 import ch.ffhs.rushb.model.*
 import kotlin.random.Random
 
-
-open class MockGame(neuralNetwork: NeuralNetwork?) : GeneticObject(neuralNetwork) {
+/**
+ * This class is used to train the generative ai. It simulates a game with all required components
+ * and is able to rate the outcome of the game. The rating (i.e. fitness) will ensure, that
+ * the algorithm is able to improve itself over multiple generations.
+ */
+class MockGame(neuralNetwork: NeuralNetwork?) : GeneticObject(neuralNetwork) {
 
     val level = Level(TileMap.ONE)
     val limit = 600     // (1000 * 60 * 2) / 200 -> two minutes / calculation step
@@ -21,13 +25,14 @@ open class MockGame(neuralNetwork: NeuralNetwork?) : GeneticObject(neuralNetwork
     var rated = false
 
     init {
-
         val numberOfMockPlayers = 1
         val numberOfBrushes = 10
         val numberOfNpcs = 1
 
-        // add players
+        // add deep bot to be trained
         gameObjects.add(bot)
+
+        // add mock players
         for (i in 0 until numberOfMockPlayers) {
             gameObjects.add(
                 RandomBot(
@@ -39,7 +44,7 @@ open class MockGame(neuralNetwork: NeuralNetwork?) : GeneticObject(neuralNetwork
             )
         }
 
-        // add brush
+        // add brushes
         for (i in 0 until numberOfBrushes) {
             gameObjects.add(
                 Brush(
@@ -62,6 +67,9 @@ open class MockGame(neuralNetwork: NeuralNetwork?) : GeneticObject(neuralNetwork
         }
     }
 
+    /**
+     * This method represents a game step.
+     */
     fun applyGameLoop() {
         for (i in 0 until gameObjects.size) {
             for (j in i + 1 until gameObjects.size) {
@@ -76,6 +84,9 @@ open class MockGame(neuralNetwork: NeuralNetwork?) : GeneticObject(neuralNetwork
         }
     }
 
+    /**
+     * After running the game loop, the outcome is rated.
+     */
     override fun perform(): Boolean {
         applyGameLoop()
         counter += 1
@@ -89,6 +100,9 @@ open class MockGame(neuralNetwork: NeuralNetwork?) : GeneticObject(neuralNetwork
         return counter <= limit
     }
 
+    /**
+     * Returns the fitness of the bot, so rating metrics can be applied.
+     */
     override fun getFitness(): Long {
         if (!rated) {
             bot.fitness += bot.visitedTiles.size * 100
@@ -96,16 +110,6 @@ open class MockGame(neuralNetwork: NeuralNetwork?) : GeneticObject(neuralNetwork
             rated = true
         }
         return bot.fitness
-    }
-
-    // not used but not removable
-    override fun isImmature(): Boolean {
-        return false
-    }
-
-    // not used but not removable
-    override fun hasReachedGoal(): Boolean {
-        return false
     }
 
     fun toJSON(): String {
@@ -122,16 +126,23 @@ open class MockGame(neuralNetwork: NeuralNetwork?) : GeneticObject(neuralNetwork
         return out.replace("NaN", "-100.0")
     }
 
-    fun setVelocityX(player: Movable, d: Double) {
+    // ---------------- NO USE, BUT NEED TO BE IMPLEMENTED ----------------
 
+    override fun isImmature(): Boolean {
+        return false
+    }
+
+    override fun hasReachedGoal(): Boolean {
+        return false
+    }
+
+    fun setVelocityX(player: Movable, d: Double) {
     }
 
     fun setVelocityY(player: Movable) {
-
     }
 
     fun paint(player: Movable) {
-
     }
 
     fun getPlayer1(): Movable {

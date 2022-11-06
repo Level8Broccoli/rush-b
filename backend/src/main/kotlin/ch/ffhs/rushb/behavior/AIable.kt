@@ -4,13 +4,25 @@ import ch.ffhs.rushb.controller.Level
 import ch.kaiki.nn.neuralnet.NeuralNetwork
 import ch.kaiki.nn.util.NetUtils
 
+/**
+ * This interface acts as component for ai related behavior.
+ * It holds a neural network as 'brain', which will be used to predict the velocity
+ * for the next step. Furthermore, it contains tracking properties so the
+ * success of the bot is possible to rate.
+ */
 interface AIable {
     var neuralNetwork: NeuralNetwork
     var fitness: Long
     var visitedTiles: MutableList<String>
 
-
-    fun predict(level: Level, gameObject: MutableList<Movable>) {
+    /**
+     * With this method, the 'vision' of the bot is constructed as vector, which is fed to the
+     * neural network to obtain a prediction of the next action.
+     * The prediction is then evaluated so the next action of the bot can be determined.
+     * @param level the level to be played
+     * @param gameObjects the list of all game objects (characters, bots, npcs, brushes)
+     */
+    fun predict(level: Level, gameObjects: MutableList<Movable>) {
         if (!(this is Movable)) {
             return
         }
@@ -19,6 +31,8 @@ interface AIable {
         val center = this.center()
         val x = center.x
         val y = center.y
+
+        // ---------------- COLLECT VISION VECTOR ----------------
 
         val vision = doubleArrayOf(
             0.0,0.0,0.0,0.0,    // colliding with walls
@@ -40,7 +54,7 @@ interface AIable {
         if (level.collidesLeft(this)) {
             vision[3] = 1.0
         }
-        for (obj in gameObject) {
+        for (obj in gameObjects) {
             if (obj == this) {
                 continue
             }
@@ -79,6 +93,7 @@ interface AIable {
         if (Math.abs(this.velocity.x) > 0) {
             vision[10] = 1.0
         }
+
         if (Math.abs(this.velocity.y) > 0) {
             vision[11] = 1.0
         }
@@ -90,7 +105,12 @@ interface AIable {
             vision[13] = (y / 16 / level.tiles[0].size)
         }
 
+        // ---------------- PREDICT ACTION ----------------
+
         val prediction = NetUtils.getMaxindex(neuralNetwork.predict(vision))
+
+        // ---------------- EVALUATE PREDICITION ----------------
+
         if (prediction == 0) {
             this.setVelocityX(-1.0)
         } else if (prediction == 1) {
