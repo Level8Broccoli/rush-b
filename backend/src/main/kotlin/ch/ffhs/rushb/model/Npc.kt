@@ -2,11 +2,11 @@ package ch.ffhs.rushb.model
 
 import ch.ffhs.rushb.behavior.INITIAL_VELOCITY
 import ch.ffhs.rushb.behavior.Movable
+import ch.ffhs.rushb.behavior.gameLoop
 import ch.ffhs.rushb.controller.Level
 import ch.ffhs.rushb.enums.CharacterState
 import ch.ffhs.rushb.enums.Color
 import ch.ffhs.rushb.enums.Orientation
-import gameLoop
 import kotlin.random.Random
 
 class Npc(
@@ -22,8 +22,9 @@ class Npc(
     override var jumpForce = 1.0
     override var speed = 4.0
     override var state = CharacterState.IDLE
+    var isChaser = Random.nextBoolean()
 
-    override fun applyGameLoop(level: Level) {
+    override fun applyGameLoop(level: Level, gameObjects: MutableList<Movable>) {
         if (Random.nextBoolean()) {
             if (Random.nextBoolean()) {
                 setVelocityX(1.0)

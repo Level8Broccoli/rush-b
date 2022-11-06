@@ -3,12 +3,11 @@ package ch.ffhs.rushb.model
 import ch.ffhs.rushb.behavior.Grabbable
 import ch.ffhs.rushb.behavior.INITIAL_VELOCITY
 import ch.ffhs.rushb.behavior.Movable
+import ch.ffhs.rushb.behavior.gameLoop
 import ch.ffhs.rushb.controller.Level
 import ch.ffhs.rushb.enums.CharacterState
 import ch.ffhs.rushb.enums.Color
 import ch.ffhs.rushb.enums.Orientation
-import gameLoop
-import kotlin.random.Random
 
 class Brush(
     override val id: String,
@@ -25,7 +24,7 @@ class Brush(
     override var state = CharacterState.IDLE
     override var movable: Movable? = null
 
-    override fun applyGameLoop(level: Level) {
+    override fun applyGameLoop(level: Level, gameObjects: MutableList<Movable>) {
         gameLoop(level, this)
     }
 

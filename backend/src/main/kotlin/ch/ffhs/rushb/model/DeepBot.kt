@@ -6,7 +6,6 @@ import ch.ffhs.rushb.enums.CharacterState
 import ch.ffhs.rushb.enums.Color
 import ch.ffhs.rushb.enums.Orientation
 import ch.kaiki.nn.neuralnet.NeuralNetwork
-import gameLoop
 
 class DeepBot(
     override val id: String,
@@ -28,7 +27,8 @@ class DeepBot(
     override var fitness = 0L
     override var visitedTiles: MutableList<String> = mutableListOf()
 
-    override fun applyGameLoop(level: Level) {
+    override fun applyGameLoop(level: Level, gameObjects: MutableList<Movable>) {
+        predict(level, gameObjects)
         gameLoop(level, this)
     }
 

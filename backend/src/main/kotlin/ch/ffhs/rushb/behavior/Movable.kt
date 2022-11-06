@@ -21,7 +21,7 @@ interface Movable : Serializable {
     var speed: Double
     var state: CharacterState
 
-    fun applyGameLoop(level: Level)
+    fun applyGameLoop(level: Level, gameObjects: MutableList<Movable>)
 
     fun top(): Double {
         return position.y

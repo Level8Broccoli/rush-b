@@ -13,7 +13,6 @@ import org.springframework.web.socket.TextMessage
 import org.springframework.web.socket.WebSocketSession
 import org.springframework.web.socket.handler.TextWebSocketHandler
 import java.util.concurrent.atomic.AtomicLong
-import kotlin.concurrent.thread
 
 
 data class Subscriber(val id: Long, var player: MockPlayer?)

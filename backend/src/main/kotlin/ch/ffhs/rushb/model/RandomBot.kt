@@ -1,14 +1,10 @@
 package ch.ffhs.rushb.model
 
-import ch.ffhs.rushb.behavior.INITIAL_VELOCITY
-import ch.ffhs.rushb.behavior.Movable
-import ch.ffhs.rushb.behavior.Paintable
-import ch.ffhs.rushb.behavior.Scorable
+import ch.ffhs.rushb.behavior.*
 import ch.ffhs.rushb.controller.Level
 import ch.ffhs.rushb.enums.CharacterState
 import ch.ffhs.rushb.enums.Color
 import ch.ffhs.rushb.enums.Orientation
-import gameLoop
 import kotlin.random.Random
 
 class RandomBot(
@@ -28,7 +24,7 @@ class RandomBot(
     override var score = 0
     override var brush: Brush? = null
 
-    override fun applyGameLoop(level: Level) {
+    override fun applyGameLoop(level: Level, gameObjects: MutableList<Movable>) {
         if (Random.nextBoolean()) {
             if (Random.nextBoolean()) {
                 setVelocityX(1.0)

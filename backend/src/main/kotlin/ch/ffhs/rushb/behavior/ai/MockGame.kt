@@ -77,10 +77,7 @@ class MockGame(neuralNetwork: NeuralNetwork?) : GeneticObject(neuralNetwork) {
             }
         }
         for (obj in gameObjects) {
-            if (obj is AIable) {
-                obj.predict(level, gameObjects)
-            }
-            obj.applyGameLoop(level)
+            obj.applyGameLoop(level, gameObjects)
         }
     }
 

@@ -98,7 +98,7 @@ class Game(
             if (obj is AIable) {
                 obj.predict(level, gameObjects)
             }
-            obj.applyGameLoop(level)
+            obj.applyGameLoop(level, gameObjects)
         }
     }
 

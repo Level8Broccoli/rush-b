@@ -1,7 +1,5 @@
-import ch.ffhs.rushb.behavior.INITIAL_VELOCITY
-import ch.ffhs.rushb.behavior.Movable
-import ch.ffhs.rushb.behavior.Scorable
-import ch.ffhs.rushb.behavior.getDelta
+package ch.ffhs.rushb.behavior
+
 import ch.ffhs.rushb.controller.Level
 import ch.ffhs.rushb.enums.CharacterState
 import ch.ffhs.rushb.enums.Orientation
