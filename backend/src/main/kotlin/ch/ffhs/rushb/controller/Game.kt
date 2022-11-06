@@ -61,8 +61,8 @@ class Game(
         gameObjects.add(player2)
 
         val numberOfBrushes = 10
-        val numberOfBots = 5
-        val numberOfNpcs = 10
+        val numberOfBots = 0
+        val numberOfNpcs = 5
 
 
         // add brush

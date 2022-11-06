@@ -3,6 +3,7 @@ package ch.ffhs.rushb.controller
 import ch.ffhs.rushb.behavior.Movable
 import ch.ffhs.rushb.model.TileMap
 import java.lang.Double.MAX_VALUE
+import kotlin.random.Random
 
 
 class Level(val tileMap: TileMap) {
@@ -61,12 +62,15 @@ class Level(val tileMap: TileMap) {
     }
 
     fun getDistanceToTop(character: Movable): Double {
+        val row = (character.top() / tileSize).toInt()
+        if (row == 0) {
+            return 0.0
+        }
         if (isCharacterStuck(character)) {
             return MAX_VALUE
         }
         val colLeft = (character.left() / tileSize).toInt()
         val colRight = (character.right() / tileSize).toInt()
-        val row = (character.top() / tileSize).toInt()
         val yOffset = (character.top() % tileSize)
         var distance = MAX_VALUE
         if (isColCoordinateValid(colLeft) && isColCoordinateValid(colRight) && isRowCoordinateValid(row)) {
@@ -91,12 +95,15 @@ class Level(val tileMap: TileMap) {
     }
 
     fun getDistanceToLeft(character: Movable): Double {
+        val col = (character.left() / tileSize).toInt()
+        if (col <= 0) {
+            return 0.0
+        }
         if (isCharacterStuck(character)) {
             return MAX_VALUE
         }
         val rowTop = (character.top() / tileSize).toInt()
         val rowBottom = ((character.bottom() - 1) / tileSize).toInt()
-        val col = (character.left() / tileSize).toInt()
         val xOffset = (character.left() % tileSize)
         var distance = MAX_VALUE
         if (isRowCoordinateValid(rowTop) && isRowCoordinateValid(rowBottom) && isColCoordinateValid(col)) {
@@ -119,12 +126,15 @@ class Level(val tileMap: TileMap) {
     }
 
     fun getDistanceToRight(character: Movable): Double {
+        val col = (character.right() / tileSize).toInt()
+        if (col >= tiles.size -1) {
+            return 0.0
+        }
         if (isCharacterStuck(character)) {
             return MAX_VALUE
         }
         val rowTop = (character.top() / tileSize).toInt()
         val rowBottom = ((character.bottom() - 1) / tileSize).toInt()
-        val col = (character.right() / tileSize).toInt()
         val xOffset = tileSize - (character.right() % tileSize)
         var distance = MAX_VALUE
         if (isRowCoordinateValid(rowTop) && isRowCoordinateValid(rowBottom) && isColCoordinateValid(col)) {
@@ -151,6 +161,14 @@ class Level(val tileMap: TileMap) {
         val center = character.center().getGridValue()
         if (center.x < 0 || center.x >= tiles.size || center.y < 0 || center.y >= tiles[0].size) {
             return false
+        }
+        return tiles[center.x.toInt()][center.y.toInt()] != 0
+    }
+
+    fun isCoordinateInvalid(character: Movable): Boolean {
+        val center = character.center().getGridValue()
+        if (center.x < 0 || center.x >= tiles.size || center.y < 0 || center.y >= tiles[0].size) {
+            return true
         }
         return tiles[center.x.toInt()][center.y.toInt()] != 0
     }
