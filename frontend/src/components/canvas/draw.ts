@@ -15,6 +15,8 @@ function drawBackground(context: CanvasContext, tiles: number[][], characters: C
         await drawSprite(ctx, SPRITES.TERRAIN, dx, dy, dWidth, dHeight);
       } else if (t === TILES.SKY) {
         await drawSprite(ctx, SPRITES.BACKGROUND, dx, dy, dWidth, dHeight);
+      } else if (t === TILES.BOX) {
+        await drawSprite(ctx, SPRITES.BOX, dx, dy, dWidth, dHeight);
       } else {
         const character = characters.find(c => c.paintId == t)
         if (character !== undefined) {

@@ -1,6 +1,7 @@
 export enum TILES {
   SKY,
   FOUNDATION,
+  BOX = 2
 }
 
 export type TileMap = { tiles: TILES[][] };
@@ -9,7 +10,7 @@ type TileMapCollection = {
   ONE: TileMap;
 };
 
-// prettier-ignore
+// TODO: delete, as coming from backend now
 export const tileMapEnum: TileMapCollection = {
   ONE: {
     tiles: [

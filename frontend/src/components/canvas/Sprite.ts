@@ -28,6 +28,14 @@ export const SPRITES: SpriteCollection = {
     width: 16,
     height: 16,
   },
+  BOX: {
+    path: "/assets/pixel-adventure-1/Items/Boxes/Box2",
+    image: "Idle.png",
+    x: 4,
+    y: 2,
+    width: 20,
+    height: 20,
+  },
   MASK_DUDE: {
     path: "/assets/pixel-adventure-1/Main Characters/Mask Dude/",
     image: "Fall (32x32).png",

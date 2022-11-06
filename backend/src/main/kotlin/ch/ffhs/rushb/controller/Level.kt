@@ -44,7 +44,7 @@ class Level(val tileMap: TileMap) {
         if (isColCoordinateValid(colLeft) && isColCoordinateValid(colRight) && isRowCoordinateValid(row)) {
             var tempDistance = -1.0
             for (i in row until tiles[0].size) {
-                if (tiles[colLeft][i] == 1 || tiles[colRight][i] == 1) {  // solid tile found
+                if (tiles[colLeft][i] in 1..9 || tiles[colRight][i] in 1..9) {  // solid tile found
                     distance = tempDistance
                     break
                 }
@@ -69,7 +69,7 @@ class Level(val tileMap: TileMap) {
         if (isColCoordinateValid(colLeft) && isColCoordinateValid(colRight) && isRowCoordinateValid(row)) {
             var tempDistance = -1.0
             for (i in row downTo 0) {
-                if (tiles[colLeft][i] == 1 || tiles[colRight][i] == 1) {  // solid tile found
+                if (tiles[colLeft][i] in 1..9 || tiles[colRight][i] in 1..9) {  // solid tile found
                     distance = tempDistance
                     break
                 }
@@ -94,7 +94,7 @@ class Level(val tileMap: TileMap) {
         if (isRowCoordinateValid(rowTop) && isRowCoordinateValid(rowBottom) && isColCoordinateValid(col)) {
             var tempDistance = -1.0
             for (i in col downTo 0) {
-                if (tiles[i][rowTop] == 1 || tiles[i][rowBottom] == 1) {  // solid tile found
+                if (tiles[i][rowTop] in 1..9 || tiles[i][rowBottom] in 1..9) {  // solid tile found
                     distance = tempDistance
                     break
                 }
@@ -119,7 +119,7 @@ class Level(val tileMap: TileMap) {
         if (isRowCoordinateValid(rowTop) && isRowCoordinateValid(rowBottom) && isColCoordinateValid(col)) {
             var tempDistance = -1.0
             for (i in col until tiles.size) {
-                if (tiles[i][rowTop] == 1 || tiles[i][rowBottom] == 1) {  // solid tile found
+                if (tiles[i][rowTop] in 1..9 || tiles[i][rowBottom] in 1..9) {  // solid tile found
                     distance = tempDistance
                     break
                 }
