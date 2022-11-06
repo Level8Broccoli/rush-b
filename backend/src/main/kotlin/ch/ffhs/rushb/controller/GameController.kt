@@ -26,6 +26,9 @@ class GameController : TextWebSocketHandler() {
 
     init {
         instance = this
+        /*thread {
+            GeneticFitter().run()
+        }*/
     }
 
     private val sessionList = HashMap<WebSocketSession, Subscriber>()

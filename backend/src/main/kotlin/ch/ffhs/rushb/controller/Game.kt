@@ -16,7 +16,7 @@ class Game(
     override val id: String,
     private val level: Level,
 
-) : Serializable {
+    ) : Serializable {
     private val timer = Timer()
     private var millis = 0L
     private val limit = 1000 * 60 * 2
@@ -41,7 +41,7 @@ class Game(
 
     init {
 
-        // add playeres
+        // add players
         gameObjects.add(player1)
         gameObjects.add(player2)
 
@@ -57,11 +57,13 @@ class Game(
         // add npcs
         val numberOfNpcs = 6
         for (i in 0 until numberOfNpcs) {
-            gameObjects.add(Npc(
-                CharacterType.NINJA_FROG.name,
-                Color.PINK,
-                Vector(Random.nextInt(100,600).toDouble(), 0.0)
-            ))
+            gameObjects.add(
+                Npc(
+                    CharacterType.NINJA_FROG.name,
+                    Color.PINK,
+                    Vector(Random.nextInt(100,600).toDouble(), 0.0)
+                )
+            )
         }
 
 

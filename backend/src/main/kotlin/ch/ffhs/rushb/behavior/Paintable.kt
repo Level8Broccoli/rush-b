@@ -12,7 +12,7 @@ interface Paintable {
             val v = this.center().div(16.0)
             var _x = v.x.toInt()
             var _y = v.y.toInt()
-            if (_x < 0 || _y < 0 || brush == null) {
+            if (_x < 0 || _y < 0 || _x >= level.tiles.size || _y >= level.tiles[0].size || brush == null) {
                 return
             }
             if (level.tiles[_x][_y] < 1 || level.tiles[_x][_y] >= 100) {

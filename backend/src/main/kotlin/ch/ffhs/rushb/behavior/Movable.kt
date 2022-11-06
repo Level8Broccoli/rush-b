@@ -39,6 +39,10 @@ interface Movable : Serializable {
         return position.x + width
     }
 
+    fun center(): Vector {
+        return Vector(position.x + (width / 2), position.y + (height / 2))
+    }
+
     // ---------------- MOVING BY USER INPUT ----------------
 
     /**
@@ -92,12 +96,6 @@ interface Movable : Serializable {
                 position.x > other.position.x + other.width ||
                 other.position.y > position.y + height ||
                 position.y > other.position.y + other.height)
-    }
-
-
-
-    fun center(): Vector {
-        return Vector(position.x + (width / 2), position.y + (height / 2))
     }
 
     private fun collide(other: Movable) {
