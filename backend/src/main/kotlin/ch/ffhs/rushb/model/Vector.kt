@@ -1,5 +1,6 @@
 package ch.ffhs.rushb.model
 
+import java.lang.Math.abs
 import java.lang.Math.sqrt
 
 class Vector(
@@ -42,5 +43,14 @@ class Vector(
 
     fun magnitude(): Double {
         return sqrt(x * x + y * y)
+    }
+
+    fun distance(v: Vector): Double {
+        return Vector(abs(x-v.x),abs(y-v.y)).magnitude()
+    }
+
+    fun switch() {
+        x = -x
+        y = -y
     }
 }

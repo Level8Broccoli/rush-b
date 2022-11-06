@@ -25,15 +25,48 @@ class Npc(
     var isChaser = Random.nextBoolean()
 
     override fun applyGameLoop(level: Level, gameObjects: MutableList<Movable>) {
-        if (Random.nextBoolean()) {
-            if (Random.nextBoolean()) {
+        var distance = Double.MAX_VALUE
+        var radius = 16 * 3
+        var nearestCharacter: Character? = null
+        for (obj in gameObjects) {
+            if (!(obj is Character)) {
+                continue
+            }
+            val d = this.position.distance(obj.position)
+            if (d < distance) {
+                distance = d
+                if (d < radius) {
+                    nearestCharacter = obj
+                }
+            }
+        }
+
+        if (nearestCharacter != null) {
+            val pos = nearestCharacter.position.get()
+            pos.subtract(this.position)
+            var direction = pos.div(this.position.magnitude())
+            if (!isChaser) {
+                direction.switch()
+            }
+            if (direction.x > 0.0) {
                 setVelocityX(1.0)
-            } else {
+            } else if (direction.x < 0) {
                 setVelocityX(-1.0)
+            }
+            if (direction.y < 0) {
+                setVelocityY(level)
             }
         } else {
             if (Random.nextBoolean()) {
-                setVelocityY(level)
+                if (Random.nextBoolean()) {
+                    setVelocityX(1.0)
+                } else {
+                    setVelocityX(-1.0)
+                }
+            } else {
+                if (Random.nextBoolean()) {
+                    setVelocityY(level)
+                }
             }
         }
         gameLoop(level, this)
