@@ -22,11 +22,14 @@ class Game(
     private var millis = 0L
     private val limit = 1000 * 60 * 2
 
+    private val gridStart = 32
+    private val gridEnd = level.tiles.size * 16 - 32
+
     private val player1 =
         Character(
             CharacterType.MASK_DUDE.name,
             Color.RED,
-            Vector(16.0, 0.0),
+            Vector(Random.nextInt(gridStart,gridEnd).toDouble(), 0.0),
             100
 
         )
@@ -34,7 +37,7 @@ class Game(
         RandomBot(
             CharacterType.PINK_MAN.name,
             Color.PURPLE,
-            Vector(610.0, 0.0),
+            Vector(Random.nextInt(gridStart,gridEnd).toDouble(), 0.0),
             101,
         )
 
@@ -43,7 +46,7 @@ class Game(
     DeepBot(
             CharacterType.PINK_MAN.name,
             Color.PURPLE,
-            Vector(610.0, 0.0),
+            Vector(Random.nextInt(gridStart,gridEnd).toDouble(), 0.0),
             101,
             SeedUtil().load()
         )
@@ -58,7 +61,9 @@ class Game(
         gameObjects.add(player2)
 
         val numberOfBrushes = 10
+        val numberOfBots = 5
         val numberOfNpcs = 10
+
 
         // add brush
         for (i in 0 until numberOfBrushes) {
@@ -66,7 +71,19 @@ class Game(
                 Brush(
                     CharacterType.VIRTUAL_GUY.name,
                     Color.PINK,
-                    Vector(Random.nextInt(100,600).toDouble(), 0.0)
+                    Vector(Random.nextInt(gridStart,gridEnd).toDouble(), 0.0)
+                )
+            )
+        }
+
+        // add additional bots
+        for (i in 0 until numberOfBots) {
+            gameObjects.add(
+                RandomBot(
+                    CharacterType.PINK_MAN.name,
+                    Color.PURPLE,
+                    Vector(Random.nextInt(gridStart,gridEnd).toDouble(), 0.0),
+                    110 + 1
                 )
             )
         }
@@ -77,7 +94,7 @@ class Game(
                 Npc(
                     CharacterType.NINJA_FROG.name,
                     Color.PINK,
-                    Vector(Random.nextInt(100,600).toDouble(), 0.0)
+                    Vector(Random.nextInt(gridStart,gridEnd).toDouble(), 0.0)
                 )
             )
         }

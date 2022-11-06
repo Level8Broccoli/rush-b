@@ -61,6 +61,9 @@ class Level(val tileMap: TileMap) {
     }
 
     fun getDistanceToTop(character: Movable): Double {
+        if (isCharacterStuck(character)) {
+            return MAX_VALUE
+        }
         val colLeft = (character.left() / tileSize).toInt()
         val colRight = (character.right() / tileSize).toInt()
         val row = (character.top() / tileSize).toInt()
@@ -75,6 +78,8 @@ class Level(val tileMap: TileMap) {
                 }
                 tempDistance += 1
             }
+        } else {
+            distance = 0.0
         }
         if (distance < MAX_VALUE) {
             distance = distance * tileSize + yOffset
@@ -86,6 +91,9 @@ class Level(val tileMap: TileMap) {
     }
 
     fun getDistanceToLeft(character: Movable): Double {
+        if (isCharacterStuck(character)) {
+            return MAX_VALUE
+        }
         val rowTop = (character.top() / tileSize).toInt()
         val rowBottom = ((character.bottom() - 1) / tileSize).toInt()
         val col = (character.left() / tileSize).toInt()
@@ -111,6 +119,9 @@ class Level(val tileMap: TileMap) {
     }
 
     fun getDistanceToRight(character: Movable): Double {
+        if (isCharacterStuck(character)) {
+            return MAX_VALUE
+        }
         val rowTop = (character.top() / tileSize).toInt()
         val rowBottom = ((character.bottom() - 1) / tileSize).toInt()
         val col = (character.right() / tileSize).toInt()
@@ -134,6 +145,14 @@ class Level(val tileMap: TileMap) {
             }
         }
         return distance
+    }
+
+    fun isCharacterStuck(character: Movable): Boolean {
+        val center = character.center().getGridValue()
+        if (center.x < 0 || center.x >= tiles.size || center.y < 0 || center.y >= tiles[0].size) {
+            return false
+        }
+        return tiles[center.x.toInt()][center.y.toInt()] != 0
     }
 
     // ---------------- VALIDITY CHECKS ----------------
