@@ -90,8 +90,6 @@ class GameController : TextWebSocketHandler() {
                         instance!!.game.setVelocityY(instance!!.game.getPlayer1())
                     } else if (key.asText() == "KeyE") {
                         instance!!.game.paint(instance!!.game.getPlayer1())
-                    } else if (key.asText() == "KeyR") {
-                        // TODO: hit
                     } else if (key.asText() == "KeyQ") {
                         // TODO: quit
                     }
