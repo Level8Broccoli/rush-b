@@ -23,7 +23,14 @@ export type Game = {
   characters: Character[];
 };
 
+export enum Views {
+  Home,
+  Lobby,
+  Game,
+}
+
 export type GameState = {
+  view: Views;
   connectionStatus: ConnectionStatus;
   messages: Message[];
   game: Game;
