@@ -1,6 +1,6 @@
 import { h } from "preact";
 import { useState } from "preact/compat";
-import { SendMessage } from "../../shared/websocket/websocket";
+import { SendMessage } from "../../websocket/websocketTypes";
 
 type Props = {
   send: SendMessage;

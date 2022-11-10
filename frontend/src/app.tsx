@@ -1,57 +1,35 @@
 import { h } from "preact";
 import { useEffect, useState } from "preact/compat";
-import { Chat } from "./components/chat/Chat";
-import {
-  ConnectionStatus,
-  initWebSocket,
-  SendMessage,
-} from "./shared/websocket/websocket";
-import { tileMapEnum } from "./shared/model/tileMap.enum";
-import { isMessage } from "./shared/utils/parse";
+import { isMessage } from "./utils/parse";
+import { Home } from "./views/Home";
+import { Lobby } from "./views/Lobby";
 import Logs from "./components/log/Logs";
-import GameUI from "./components/canvas/GameUI";
+import { Chat } from "./components/chat/Chat";
+import { useGameState } from "./state/state";
+import { SendMessage } from "./websocket/websocketTypes";
+import { initWebSocket } from "./websocket/websocket";
+import { Events } from "./state/stateEvents";
 
 export function App() {
-  const [connectionStatus, setConnectionStatus] = useState(
-    ConnectionStatus.CLOSED
-  );
+  const [state, updateEvent] = useGameState();
   const [send, setSend] = useState<SendMessage>((type, data) =>
     console.error("not yet connected", { type, data })
   );
-  const [messages, setMessages] = useState<string[]>([]);
-  const [game, setGame] = useState({
-    id: "",
-    timer: "",
-    level: [[]],
-    characters: [
-      {
-        id: "",
-        paintId: -1,
-        color: "",
-        width: 0,
-        height: 0,
-        x: -100,
-        y: -100,
-        score: 0,
-        state: "",
-        orientation: "",
-      },
-    ],
-  });
 
   useEffect(() => {
     const sendMessage = initWebSocket({
-      onConnectionChange: setConnectionStatus,
+      onConnectionChange: (newStatus) =>
+        updateEvent([Events.UpdateConnectionStatus, newStatus]),
       onMessageReceived: (data) => {
         if (!isMessage(data)) {
           return;
         }
         if (data["msgType"] === "message" || data["msgType"] === "keyPress") {
-          setMessages((prev) => [...prev, data["data"]]);
+          updateEvent([Events.NewMessage, data["data"]]);
         } else if (data["msgType"] === "game") {
           const game = JSON.parse(data["data"]);
-          game["level"] = JSON.parse(game["level"])
-          setGame(game);
+          game["level"] = JSON.parse(game["level"]);
+          updateEvent([Events.SetGame, game]);
         }
       },
     });
@@ -67,16 +45,12 @@ export function App() {
         </small>
       </div>
       <div style="display: grid; grid-template-columns: 1fr 20rem; gap: 1rem; padding-block: 3rem;">
-        <GameUI
-          timer={game.timer}
-          tileMap={game.level}
-          characters={game.characters}
-          send={send}
-        />
-        <div style="background-color: lightgray; border-radius: 0.3rem; padding-inline: 1rem;">
-          <Logs connectionStatus={connectionStatus} logs={messages} />
-          <Chat send={send} />
-        </div>
+        <Home />
+        <Lobby />
+      </div>
+      <div style="background-color: lightgray; border-radius: 0.3rem; padding-inline: 1rem;">
+        <Logs connectionStatus={state.connectionStatus} logs={state.messages} />
+        <Chat send={send} />
       </div>
     </div>
   );

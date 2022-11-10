@@ -2,17 +2,18 @@ import Canvas, { CanvasContext } from "./Canvas";
 import { h } from "preact";
 import { useEffect, useRef, useState } from "preact/compat";
 import { drawBackground, drawCharacters } from "./draw";
-import { Character } from "../../shared/model/GameTypes";
-import { SendMessage } from "../../shared/websocket/websocket";
+import { SendMessage } from "../../websocket/websocketTypes";
+import { Character } from "../../state/stateTypes";
+import { TileMap } from "../../state/tileMap.enum";
 
 type Props = {
   timer: string;
-  tileMap: number[][];
+  tileMap: TileMap;
   characters: Character[];
   send: SendMessage;
 };
 
-export default function GameUI(props: Props): JSX.Element {
+export function GameUI(props: Props): JSX.Element {
   const contextRef = useRef<CanvasContext>();
   const [message, setMessage] = useState<string[]>([]);
   useEffect(() => {
@@ -22,14 +23,13 @@ export default function GameUI(props: Props): JSX.Element {
       }
 
       contextRef.current.clear();
-      drawBackground(contextRef.current, props.tileMap, props.characters);
+      drawBackground(contextRef.current, props.tileMap.tiles, props.characters);
       await drawCharacters(contextRef.current, props.characters);
-      const ctx = contextRef.current.ctx
+      const ctx = contextRef.current.ctx;
 
-
-      const text = props.timer
+      const text = props.timer;
       ctx.fillStyle = "white";
-      ctx.font = "30px Arial"
+      ctx.font = "30px Arial";
       ctx?.fillText(text, 20, 40);
       ctx.fillStyle = "black";
       ctx.strokeText(text, 20, 40);
@@ -63,8 +63,8 @@ export default function GameUI(props: Props): JSX.Element {
   return (
     <Canvas
       getCtx={getCtx}
-      relHeight={props.tileMap[0].length}
-      relWidth={props.tileMap.length}
+      relHeight={props.tileMap.tiles[0].length}
+      relWidth={props.tileMap.tiles.length}
       onKeyUp={onKeyUp}
       onKeyDown={onKeyDown}
     />

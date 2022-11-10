@@ -1,20 +1,10 @@
 import SockJS from "sockjs-client/dist/sockjs";
-
-export enum ConnectionStatus {
-  CONNECTING,
-  OPEN,
-  CLOSING,
-  CLOSED,
-}
-
-type Params = {
-  onMessageReceived: (data: unknown) => void;
-  onConnectionChange: (status: ConnectionStatus) => void;
-};
-
-type MessageType = "keyPress" | "message";
-
-export type SendMessage = (type: MessageType, data: string | string[]) => void;
+import {
+  ConnectionStatus,
+  MessageType,
+  Params,
+  SendMessage,
+} from "./websocketTypes";
 
 function initWebSocket({
   onMessageReceived,

@@ -1,0 +1,53 @@
+import { StateUpdater } from "preact/compat";
+import { Game, GameState, Message } from "./stateTypes";
+import { ConnectionStatus } from "../websocket/websocketTypes";
+
+export enum Events {
+  NewMessage,
+  UpdateConnectionStatus,
+  SetGame,
+}
+
+export type AllEvents = [Events, unknown] &
+  (NewMessageEvent | UpdateConnectionStatusEvent | SetGameEvent);
+
+export type UpdateEvent = (event: AllEvents) => void;
+
+type UpdaterFunction<T extends AllEvents> = (
+  setState: StateUpdater<GameState>,
+  payload: T[1]
+) => void;
+
+// UpdaterFunctions
+
+type NewMessageEvent = [Events.NewMessage, Message];
+
+export const newMessage: UpdaterFunction<NewMessageEvent> = (
+  setState,
+  newMessage
+): void => {
+  setState((prevState) => {
+    return { ...prevState, messages: [...prevState.messages, newMessage] };
+  });
+};
+
+type UpdateConnectionStatusEvent = [
+  Events.UpdateConnectionStatus,
+  ConnectionStatus
+];
+
+export const updateConnectionStatus: UpdaterFunction<
+  UpdateConnectionStatusEvent
+> = (setState, newStatus) => {
+  setState((prevState) => {
+    return { ...prevState, connectionStatus: newStatus };
+  });
+};
+
+type SetGameEvent = [Events.SetGame, Game];
+
+export const setGame: UpdaterFunction<SetGameEvent> = (setState, game) => {
+  setState((prevState) => {
+    return { ...prevState, game };
+  });
+};
