@@ -5,8 +5,14 @@ import {
   Params,
   SendMessage,
 } from "./websocketTypes";
+import {
+  createGame,
+  keyPress,
+  ServerEventTypes,
+  UpdateServerEvent,
+} from "./serverEvents";
 
-function initWebSocket({
+export function initWebSocket({
   onMessageReceived,
   onConnectionChange,
 }: Params): SendMessage {
@@ -51,4 +57,14 @@ function initWebSocket({
   return sendMessage;
 }
 
-export { initWebSocket };
+export type ServerEvent = typeof serverEvent;
+export const serverEvent: (sendMessage: SendMessage) => UpdateServerEvent =
+  (sendMessage) => (event) => {
+    const [eventType, payload] = event;
+    switch (eventType) {
+      case ServerEventTypes.KeyPress:
+        return keyPress(sendMessage, payload);
+      case ServerEventTypes.CreateGame:
+        return createGame(sendMessage, payload);
+    }
+  };
