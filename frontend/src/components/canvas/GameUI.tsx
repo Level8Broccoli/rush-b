@@ -2,7 +2,7 @@ import Canvas, { CanvasContext } from "./Canvas";
 import { h } from "preact";
 import { useEffect, useRef, useState } from "preact/compat";
 import { drawBackground, drawCharacters } from "./draw";
-import { SendMessage } from "../../websocket/websocketTypes";
+import { SendMessage } from "../../server/serverTypes";
 import { Character } from "../../state/stateTypes";
 import { TileMap } from "../../state/tileMap.enum";
 

@@ -1,4 +1,4 @@
-import { SendMessage } from "./websocketTypes";
+import { SendMessage } from "./serverTypes";
 
 export enum ServerEventTypes {
   KeyPress,

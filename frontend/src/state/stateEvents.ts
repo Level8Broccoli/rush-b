@@ -1,7 +1,7 @@
 import { StateUpdater } from "preact/compat";
 import { AppState, GameState, Message, Views } from "./stateTypes";
-import { ConnectionStatus } from "../websocket/websocketTypes";
-import { ServerEventTypes, UpdateServerEvent } from "../websocket/serverEvents";
+import { ConnectionStatus } from "../server/serverTypes";
+import { ServerEventTypes, UpdateServerEvent } from "../server/serverEvents";
 
 export enum Events {
   NewMessage,

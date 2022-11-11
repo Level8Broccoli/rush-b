@@ -1,5 +1,5 @@
 import { StateUpdater, useState } from "preact/compat";
-import { ConnectionStatus, SendMessage } from "../websocket/websocketTypes";
+import { ConnectionStatus, SendMessage } from "../server/serverTypes";
 import { AppState, Views } from "./stateTypes";
 import {
   Events,
@@ -11,8 +11,8 @@ import {
   updateConnectionStatus,
   UpdateEvent,
 } from "./stateEvents";
-import { serverEvent } from "../websocket/websocket";
-import { UpdateServerEvent } from "../websocket/serverEvents";
+import { serverEvent } from "../server/server";
+import { UpdateServerEvent } from "../server/serverEvents";
 
 const initalGameState: AppState = {
   view: Views.Home,

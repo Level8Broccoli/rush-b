@@ -1,5 +1,5 @@
 import { h } from "preact";
-import { ConnectionStatus } from "../../websocket/websocketTypes";
+import { ConnectionStatus } from "../../server/serverTypes";
 
 type Props = {
   logs: string[];

@@ -1,4 +1,4 @@
-import { ConnectionStatus } from "../websocket/websocketTypes";
+import { ConnectionStatus } from "../server/serverTypes";
 import { TileMap } from "./tileMap.enum";
 
 export type OpenGame = {

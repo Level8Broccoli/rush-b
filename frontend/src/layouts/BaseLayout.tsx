@@ -2,7 +2,7 @@ import { h } from "preact";
 import classes from "./BaseLayout.module.css";
 import backgroundImg from "./img/background.png";
 import { Loader } from "../components/general/Loader";
-import { ConnectionStatus } from "../websocket/websocketTypes";
+import { ConnectionStatus } from "../server/serverTypes";
 import { Icon } from "../components/general/Icon";
 
 type Props = {

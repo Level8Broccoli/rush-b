@@ -4,7 +4,7 @@ import {
   MessageType,
   Params,
   SendMessage,
-} from "./websocketTypes";
+} from "./serverTypes";
 import {
   createGame,
   keyPress,

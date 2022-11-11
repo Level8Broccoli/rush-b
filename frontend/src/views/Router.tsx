@@ -3,7 +3,7 @@ import { HomeView } from "./HomeView";
 import { LobbyView } from "./LobbyView";
 import { GameView } from "./GameView";
 import { h } from "preact";
-import { SendMessage } from "../websocket/websocketTypes";
+import { SendMessage } from "../server/serverTypes";
 import { UpdateEvent } from "../state/stateEvents";
 
 type Props = {

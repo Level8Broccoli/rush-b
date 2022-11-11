@@ -1,7 +1,7 @@
 import { h } from "preact";
 import { GameUI } from "../components/canvas/GameUI";
 import { AppState } from "../state/stateTypes";
-import { SendMessage } from "../websocket/websocketTypes";
+import { SendMessage } from "../server/serverTypes";
 import Logs from "../components/log/Logs";
 import { Chat } from "../components/chat/Chat";
 
