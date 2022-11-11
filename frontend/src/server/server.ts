@@ -3,22 +3,24 @@ import {
   ConnectionStatus,
   MessageType,
   Params,
-  SendMessage,
+  SendToServer,
 } from "./serverTypes";
 import {
   createGame,
   keyPress,
+  message,
   ServerEventTypes,
+  subscribe,
   UpdateServerEvent,
 } from "./serverEvents";
 
 export function initWebSocket({
   onMessageReceived,
   onConnectionChange,
-}: Params): SendMessage {
+}: Params): SendToServer {
   onConnectionChange(ConnectionStatus.CONNECTING);
 
-  let sendMessage: SendMessage = (type, data) => {
+  let sendMessage: SendToServer = (type, data) => {
     return new Promise(() =>
       console.error("Aktuell noch keine Verbindung aufgebaut", { type, data })
     );
@@ -45,13 +47,17 @@ export function initWebSocket({
       setTimeout(connect, Math.random() * 60_000);
     };
 
-    sendMessage = function (type: MessageType, data: string[]): Promise<void> {
+    sendMessage = function (
+      type: MessageType,
+      data: string[]
+    ): Promise<boolean> {
       if (webSocket.readyState === ConnectionStatus.OPEN) {
-        return new Promise(() =>
-          webSocket.send(JSON.stringify({ type, data }))
-        );
+        return new Promise((resolve) => {
+          webSocket.send(JSON.stringify({ type, data }));
+          resolve(true);
+        });
       }
-      return new Promise(() => {});
+      return new Promise((reject) => reject(false));
     };
   }
 
@@ -60,10 +66,14 @@ export function initWebSocket({
   return sendMessage;
 }
 
-export const serverEvent: (sendMessage: SendMessage) => UpdateServerEvent =
+export const serverEvent: (sendMessage: SendToServer) => UpdateServerEvent =
   (sendMessage) => (event) => {
     const [eventType, payload] = event;
     switch (eventType) {
+      case ServerEventTypes.Subscribe:
+        return subscribe(sendMessage, payload);
+      case ServerEventTypes.Message:
+        return message(sendMessage, payload);
       case ServerEventTypes.KeyPress:
         return keyPress(sendMessage, payload);
       case ServerEventTypes.CreateGame:

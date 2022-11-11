@@ -10,6 +10,14 @@ export type Params = {
   onConnectionChange: (status: ConnectionStatus) => void;
 };
 
-export type MessageType = "keyPress" | "message";
+export enum MessageType {
+  Subscribe = "subscribe",
+  KeyPress = "keyPress",
+  Message = "message",
+  createGame = "createGame",
+}
 
-export type SendMessage = (type: MessageType, data: string[]) => Promise<void>;
+export type SendToServer = (
+  type: MessageType,
+  data: string[]
+) => Promise<boolean>;

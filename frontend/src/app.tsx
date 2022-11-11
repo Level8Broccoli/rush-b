@@ -2,14 +2,14 @@ import { h } from "preact";
 import { useEffect, useState } from "preact/compat";
 import { isMessage } from "./utils/parse";
 import { useGameState } from "./state/state";
-import { SendMessage } from "./server/serverTypes";
+import { SendToServer } from "./server/serverTypes";
 import { initWebSocket } from "./server/server";
 import { Events } from "./state/stateEvents";
 import { Router } from "./views/Router";
 import { BaseLayout } from "./layouts/BaseLayout";
 
 export function App() {
-  const [send, setSend] = useState<SendMessage>(
+  const [send, setSend] = useState<SendToServer>(
     (type, data) =>
       new Promise(() =>
         console.error("not yet connected", {
@@ -29,7 +29,7 @@ export function App() {
           return;
         }
         if (data["msgType"] === "message" || data["msgType"] === "keyPress") {
-          updateEvent([Events.NewMessage, data["data"]]);
+          updateEvent([Events.AddMessages, [data["data"]]]);
         } else if (data["msgType"] === "game") {
           const game = JSON.parse(data["data"]);
           game["level"] = JSON.parse(game["level"]);
@@ -42,11 +42,11 @@ export function App() {
 
   return (
     <BaseLayout
-      playerName={state.playerName}
+      playerName={state.player.name}
       loadingMessage={state.loadingMessage}
       connectionStatus={state.connectionStatus}
     >
-      <Router state={state} updateEvent={updateEvent} send={send} />
+      <Router state={state} updateEvent={updateEvent} />
     </BaseLayout>
   );
 }

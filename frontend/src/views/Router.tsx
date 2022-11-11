@@ -3,13 +3,11 @@ import { HomeView } from "./HomeView";
 import { LobbyView } from "./LobbyView";
 import { GameView } from "./GameView";
 import { h } from "preact";
-import { SendMessage } from "../server/serverTypes";
 import { UpdateEvent } from "../state/stateEvents";
 
 type Props = {
   state: AppState;
   updateEvent: UpdateEvent;
-  send: SendMessage;
 };
 
 export function Router(props: Props): JSX.Element {
@@ -21,10 +19,10 @@ export function Router(props: Props): JSX.Element {
         <LobbyView
           updateEvent={props.updateEvent}
           openGames={props.state.openGames}
-          playerName={props.state.playerName}
+          playerName={props.state.player.name}
         />
       );
     case Views.Game:
-      return <GameView send={props.send} state={props.state} />;
+      return <GameView state={props.state} updateEvent={props.updateEvent} />;
   }
 }

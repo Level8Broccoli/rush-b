@@ -1,15 +1,17 @@
 import { StateUpdater, useState } from "preact/compat";
-import { ConnectionStatus, SendMessage } from "../server/serverTypes";
+import { ConnectionStatus, SendToServer } from "../server/serverTypes";
 import { AppState, Views } from "./stateTypes";
 import {
   Events,
   goToView,
-  newMessage,
+  addMessages,
   searchForGame,
   setGame,
   startNewGame,
   updateConnectionStatus,
   UpdateEvent,
+  sendMessages,
+  sendKeys,
 } from "./stateEvents";
 import { serverEvent } from "../server/server";
 import { UpdateServerEvent } from "../server/serverEvents";
@@ -24,7 +26,7 @@ const initalGameState: AppState = {
     id: "",
     characters: [],
   },
-  playerName: "",
+  player: { id: "", name: "" },
   openGames: [
     { gameId: "hi", playerName: "hi" },
     { gameId: "hi", playerName: "h5" },
@@ -38,8 +40,12 @@ const updateEvent: (
 ) => UpdateEvent = (setState, updateServerEvent) => (event) => {
   const [eventType, payload] = event;
   switch (eventType) {
-    case Events.NewMessage:
-      return newMessage(setState, updateServerEvent, payload);
+    case Events.AddMessages:
+      return addMessages(setState, updateServerEvent, payload);
+    case Events.SendMessages:
+      return sendMessages(setState, updateServerEvent, payload);
+    case Events.SendKeys:
+      return sendKeys(setState, updateServerEvent, payload);
     case Events.UpdateConnectionStatus:
       return updateConnectionStatus(setState, updateServerEvent, payload);
     case Events.SetGame:
@@ -54,7 +60,7 @@ const updateEvent: (
 };
 
 export function useGameState(
-  sendMessage: SendMessage
+  sendMessage: SendToServer
 ): [AppState, UpdateEvent] {
   const [state, setState] = useState<AppState>(initalGameState);
   return [state, updateEvent(setState, serverEvent(sendMessage))];

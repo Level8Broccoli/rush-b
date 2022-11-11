@@ -1,10 +1,16 @@
 import { StateUpdater } from "preact/compat";
 import { AppState, GameState, Message, Views } from "./stateTypes";
 import { ConnectionStatus } from "../server/serverTypes";
-import { ServerEventTypes, UpdateServerEvent } from "../server/serverEvents";
+import {
+  Keys,
+  ServerEventTypes,
+  UpdateServerEvent,
+} from "../server/serverEvents";
 
 export enum Events {
-  NewMessage,
+  AddMessages,
+  SendMessages,
+  SendKeys,
   UpdateConnectionStatus,
   SetGame,
   GoToView,
@@ -14,7 +20,9 @@ export enum Events {
 
 export type AllStateEvents = [Events, unknown] &
   (
-    | NewMessageEvent
+    | AddMessagesEvent
+    | SendMessagesEvent
+    | SendKeysEvent
     | UpdateConnectionStatusEvent
     | SetGameEvent
     | GoToViewEvent
@@ -32,16 +40,38 @@ type UpdaterFunction<T extends AllStateEvents> = (
 
 // UpdaterFunctions
 
-type NewMessageEvent = [Events.NewMessage, Message];
+type AddMessagesEvent = [Events.AddMessages, Message[]];
 
-export const newMessage: UpdaterFunction<NewMessageEvent> = (
+export const addMessages: UpdaterFunction<AddMessagesEvent> = (
   setState,
   updateServerEvent,
-  newMessage
+  messages
 ) => {
   setState((prevState) => {
-    return { ...prevState, messages: [...prevState.messages, newMessage] };
+    return { ...prevState, messages: [...prevState.messages, ...messages] };
   });
+  return true;
+};
+
+type SendMessagesEvent = [Events.SendMessages, Message[]];
+
+export const sendMessages: UpdaterFunction<SendMessagesEvent> = (
+  setState,
+  updateServerEvent,
+  messages
+) => {
+  updateServerEvent([ServerEventTypes.Message, messages]);
+  return true;
+};
+
+type SendKeysEvent = [Events.SendKeys, Keys[]];
+
+export const sendKeys: UpdaterFunction<SendKeysEvent> = (
+  setState,
+  updateServerEvent,
+  keys
+) => {
+  updateServerEvent([ServerEventTypes.KeyPress, keys]);
   return true;
 };
 

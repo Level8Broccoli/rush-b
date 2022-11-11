@@ -1,9 +1,9 @@
 import { h } from "preact";
 import { useState } from "preact/compat";
-import { SendMessage } from "../../server/serverTypes";
+import { Events, UpdateEvent } from "../../state/stateEvents";
 
 type Props = {
-  send: SendMessage;
+  updateEvent: UpdateEvent;
 };
 
 export function Chat(props: Props): JSX.Element {
@@ -11,7 +11,7 @@ export function Chat(props: Props): JSX.Element {
   const onSubmit = (e: Event) => {
     e.preventDefault();
     if (message.length) {
-      props.send("message", [message]);
+      props.updateEvent([Events.SendMessages, [message]]);
       setMessage("");
     }
   };

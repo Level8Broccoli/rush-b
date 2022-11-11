@@ -1,9 +1,11 @@
 import { ConnectionStatus } from "../server/serverTypes";
 import { TileMap } from "./tileMap.enum";
 
+export type UID = string;
+
 export type OpenGame = {
   playerName: string;
-  gameId: string;
+  gameId: UID;
 };
 
 export type Character = {
@@ -34,12 +36,17 @@ export enum Views {
   Game,
 }
 
+export type Player = {
+  name: string;
+  id: UID;
+};
+
 export type AppState = {
   view: Views;
   connectionStatus: ConnectionStatus;
   messages: Message[];
   game: GameState;
-  playerName: string;
+  player: Player;
   openGames: OpenGame[];
   loadingMessage: string;
 };

@@ -2,20 +2,21 @@ import Canvas, { CanvasContext } from "./Canvas";
 import { h } from "preact";
 import { useEffect, useRef, useState } from "preact/compat";
 import { drawBackground, drawCharacters } from "./draw";
-import { SendMessage } from "../../server/serverTypes";
 import { Character } from "../../state/stateTypes";
 import { TileMap } from "../../state/tileMap.enum";
+import { Events, UpdateEvent } from "../../state/stateEvents";
+import { Keys, toKey } from "../../server/serverEvents";
 
 type Props = {
   timer: string;
   tileMap: TileMap;
   characters: Character[];
-  send: SendMessage;
+  updateEvent: UpdateEvent;
 };
 
 export function GameUI(props: Props): JSX.Element {
   const contextRef = useRef<CanvasContext>();
-  const [message, setMessage] = useState<string[]>([]);
+  const [message, setMessage] = useState<Keys[]>([]);
   useEffect(() => {
     requestAnimationFrame(async () => {
       if (contextRef.current === undefined) {
@@ -42,21 +43,23 @@ export function GameUI(props: Props): JSX.Element {
 
   const onKeyDown = (e: KeyboardEvent) => {
     e.preventDefault();
-    if (!message.includes(e.code)) {
-      setMessage((prev) => [...prev, e.code]);
+    const key = toKey(e.code);
+    if (!message.includes(key)) {
+      setMessage((prev) => [...prev, key]);
     }
     if (message.length) {
-      props.send("keyPress", message);
+      props.updateEvent([Events.SendKeys, message]);
     }
   };
 
   const onKeyUp = (e: KeyboardEvent) => {
     e.preventDefault();
-    if (message.includes(e.code)) {
-      setMessage((prev) => [...prev].filter((item) => item !== e.code));
+    const key = toKey(e.code);
+    if (message.includes(key)) {
+      setMessage((prev) => [...prev].filter((item) => item !== key));
     }
     if (message.length) {
-      props.send("keyPress", message);
+      props.updateEvent([Events.SendKeys, message]);
     }
   };
 
