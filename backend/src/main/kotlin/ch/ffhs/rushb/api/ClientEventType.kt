@@ -49,7 +49,7 @@ data class KeyPressEvent(val keys: List<Key>) : ClientEvent {
         get() = ClientEventType.KeyPress
 }
 
-data class CreateGameEvent(val userId: String) : ClientEvent {
+data class CreateGameEvent(val clientId: String) : ClientEvent {
     override val event: ClientEventType
         get() = ClientEventType.CreateGame
 }

@@ -13,7 +13,7 @@ import org.springframework.web.socket.handler.TextWebSocketHandler
 import java.util.concurrent.atomic.AtomicLong
 
 
-data class Subscriber(val id: Long)
+data class Subscriber(val serverId: Long, val clientId: String)
 data class Message(val msgType: String, val data: Any)
 
 @EnableScheduling
@@ -69,9 +69,9 @@ class GameController : TextWebSocketHandler() {
         val event = parseFromClient(json)
         when (event?.event) {
             ClientEventType.Subscribe -> {
-                val subscriber = Subscriber(instance!!.uid.getAndIncrement())
+                val userId = (event as SubscribeEvent).userId
+                val subscriber = Subscriber(instance!!.uid.getAndIncrement(), userId)
                 instance!!.sessionList += mapOf(session to subscriber)
-                instance!!.gameList.add(Game("" + subscriber.id, Level(TileMap.ONE)))
                 broadcast(Message("subscriber", instance!!.sessionList.values))
             }
 
@@ -96,7 +96,13 @@ class GameController : TextWebSocketHandler() {
                 }
             }
 
-            ClientEventType.CreateGame -> TODO()
+            ClientEventType.CreateGame -> {
+                val clientId = (event as CreateGameEvent).clientId
+                val subscriber = getSubscriberByClientId(clientId, instance!!.sessionList)
+                if (subscriber != null) {
+                    instance!!.gameList.add(Game("" + subscriber.serverId, Level(TileMap.ONE)))
+                }
+            }
 
             null -> {
                 // Do nothing
@@ -122,5 +128,9 @@ class GameController : TextWebSocketHandler() {
         }
     }
 
+
+    private fun getSubscriberByClientId(clientId: String, sessions: Map<WebSocketSession, Subscriber>): Subscriber? {
+        return sessions.values.find { s -> s.clientId == clientId }
+    }
 }
 

@@ -26,8 +26,8 @@ fun parseFromClient(json: JsonNode): ClientEvent? {
 
 private fun parseSubscribe(data: List<JsonNode>): ClientEvent? {
     if (data.size == 1 && data[0].nodeType == JsonNodeType.STRING) {
-        val userId = data[0].textValue()
-        return SubscribeEvent(userId)
+        val clientId = data[0].textValue()
+        return SubscribeEvent(clientId)
     }
     println("Data didn't match expected form: $data")
     return null
@@ -57,8 +57,8 @@ private fun parseMessage(data: List<JsonNode>): ClientEvent? {
 
 private fun parseCreateGame(data: List<JsonNode>): ClientEvent? {
     if (data.size == 1 && data[0].nodeType == JsonNodeType.STRING) {
-        val userId = data[0].textValue()
-        return CreateGameEvent(userId)
+        val clientId = data[0].textValue()
+        return CreateGameEvent(clientId)
     }
     println("Data didn't match expected form: $data")
     return null
