@@ -1,6 +1,8 @@
 import { MessageType, SendToServer } from "./serverTypes";
 import { UID } from "../state/stateTypes";
 
+// should be kept in sync with `ClientEvents.kt`
+
 export enum ServerEventTypes {
   Subscribe,
   Message,
@@ -27,12 +29,17 @@ export const subscribe: UpdaterServerFunction<SubscribeEvent> = (
 };
 
 export enum Keys {
-  DOWN,
+  ARROW_LEFT = "ArrowLeft",
+  ARROW_RIGHT = "ArrowRight",
+  ARROW_UP = "ArrowLeft",
+  SPACE = "SPACE",
+  KEY_E = "KeyE",
+  KEY_Q = "KeyQ",
 }
 
 export function toKey(code: string): Keys {
   // To do mapping
-  return Keys.DOWN;
+  return Keys.ARROW_UP;
 }
 
 type MessageEvent = [ServerEventTypes.Message, string[]];
@@ -59,5 +66,5 @@ export const createGame: UpdaterServerFunction<CreateGameEvent> = (
   sendToServer,
   userId
 ) => {
-  return sendToServer(MessageType.createGame, [userId]);
+  return sendToServer(MessageType.CreateGame, [userId]);
 };

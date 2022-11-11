@@ -1,5 +1,6 @@
 package ch.ffhs.rushb.controller
 
+import ch.ffhs.rushb.api.*
 import ch.ffhs.rushb.model.TileMap
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.scheduling.annotation.EnableScheduling
@@ -30,6 +31,7 @@ class GameController : TextWebSocketHandler() {
 
     init {
         if (instance == null) {
+            print("this will get initialized")
             instance = this
 
             /**
@@ -64,37 +66,40 @@ class GameController : TextWebSocketHandler() {
 
     override fun handleTextMessage(session: WebSocketSession, message: TextMessage) {
         val json = ObjectMapper().readTree(message.payload)
-        when (json.get("type").asText()) {
-            "subscribe" -> {
+        val event = parseFromClient(json)
+        when (event?.event) {
+            ClientEventType.Subscribe -> {
                 val subscriber = Subscriber(instance!!.uid.getAndIncrement())
                 instance!!.sessionList += mapOf(session to subscriber)
                 instance!!.gameList.add(Game("" + subscriber.id, Level(TileMap.ONE)))
                 broadcast(Message("subscriber", instance!!.sessionList.values))
             }
 
-            "message" -> {
-                broadcast(Message("message", json.get("data").asText()))
+            ClientEventType.Message -> {
+                broadcast(Message("message", (event as MessageEvent).messages))
             }
 
-            "keyPress" -> {
-                val keys = json.get("data").asIterable()
+            ClientEventType.KeyPress -> {
+                val keys = (event as KeyPressEvent).keys
                 for (key in keys) {
-                    if (key.asText() == "ArrowLeft") {
+                    if (key == Key.ARROW_LEFT) {
                         instance!!.game.setVelocityX(instance!!.game.getPlayer1(), -1.0)
-                    } else if (key.asText() == "ArrowRight") {
+                    } else if (key == Key.ARROW_RIGHT) {
                         instance!!.game.setVelocityX(instance!!.game.getPlayer1(), 1.0)
-                    } else if (key.asText() == "ArrowUp" || key.asText() == "SPACE") {
+                    } else if (key == Key.ARROW_UP || key == Key.SPACE) {
                         instance!!.game.setVelocityY(instance!!.game.getPlayer1())
-                    } else if (key.asText() == "KeyE") {
+                    } else if (key == Key.KEY_E) {
                         instance!!.game.paint(instance!!.game.getPlayer1())
-                    } else if (key.asText() == "KeyQ") {
+                    } else if (key == Key.KEY_Q) {
                         // TODO: quit
                     }
                 }
             }
 
-            else -> {
-                broadcast(Message("unknown message type", json.get("data").asText()))
+            ClientEventType.CreateGame -> TODO()
+
+            null -> {
+                // Do nothing
             }
         }
     }

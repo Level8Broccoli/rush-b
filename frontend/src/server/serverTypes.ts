@@ -14,7 +14,7 @@ export enum MessageType {
   Subscribe = "subscribe",
   KeyPress = "keyPress",
   Message = "message",
-  createGame = "createGame",
+  CreateGame = "createGame",
 }
 
 export type SendToServer = (
