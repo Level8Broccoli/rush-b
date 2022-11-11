@@ -1,0 +1,11 @@
+.logo {
+  --size: 258px;
+  min-height: var(--size);
+  max-width: var(--size);
+}
+
+.buttonGroup {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
