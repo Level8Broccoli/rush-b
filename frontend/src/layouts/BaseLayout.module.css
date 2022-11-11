@@ -49,3 +49,13 @@ main {
 .navbarContainer > * {
   margin: 0 !important;
 }
+
+.navbarRight {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.connectionIcon {
+  display: grid;
+  place-content: center;
+}

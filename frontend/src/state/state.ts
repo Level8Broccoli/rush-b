@@ -28,7 +28,7 @@ const initalGameState: AppState = {
     { gameId: "hi", playerName: "hi" },
     { gameId: "hi", playerName: "h5" },
   ],
-  loadingMessage: "Warten auf Server.",
+  loadingMessage: "",
 };
 
 const updateEvent: (setState: StateUpdater<AppState>) => UpdateEvent =

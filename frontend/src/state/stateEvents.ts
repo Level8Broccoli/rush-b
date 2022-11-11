@@ -93,7 +93,7 @@ export const startNewGame: UpdaterFunction<StartNewGameEvent> = (
   playerName
 ) => {
   setState((prevState) => {
-    return { ...prevState, playerName };
+    return { ...prevState, playerName, loadingMessage: "Spiel wird erstellt" };
   });
   return true;
 };

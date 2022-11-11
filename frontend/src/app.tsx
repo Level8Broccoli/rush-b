@@ -38,6 +38,7 @@ export function App() {
     <BaseLayout
       playerName={state.playerName}
       loadingMessage={state.loadingMessage}
+      connectionStatus={state.connectionStatus}
     >
       <Router state={state} updateEvent={updateEvent} send={send} />
     </BaseLayout>
