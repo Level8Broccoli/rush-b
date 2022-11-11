@@ -6,5 +6,17 @@ type Props = {
 };
 
 export function BaseLayout(props: Props): JSX.Element {
-  return <div>{props.children}</div>;
+  return (
+    <>
+      <nav class="navbar has-background-danger-dark">
+        <h1 class="title has-text-white p-5">
+          rush-b <em class="is-size-7">by Lena & Oliver</em>
+        </h1>
+      </nav>
+      <main>{props.children}</main>
+      <footer class="has-background-danger-dark has-text-white p-5">
+        <small>2022 @ FFHS</small>
+      </footer>
+    </>
+  );
 }

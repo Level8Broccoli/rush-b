@@ -36,17 +36,7 @@ export function App() {
 
   return (
     <BaseLayout>
-      <>
-        <div style="display: flex; flex-wrap: wrap; align-items: baseline; gap: 1rem; padding: 0.5rem;">
-          <h1 style="margin: 0;">rush-b</h1>
-          <small>
-            <em>by Lena & Oliver</em>
-          </small>
-        </div>
-        <div style="display: grid; grid-template-columns: 1fr 20rem; gap: 1rem; padding-block: 3rem;">
-          <Router state={state} updateEvent={updateEvent} send={send} />
-        </div>
-      </>
+      <Router state={state} updateEvent={updateEvent} send={send} />
     </BaseLayout>
   );
 }
