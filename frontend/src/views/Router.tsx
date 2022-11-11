@@ -17,7 +17,13 @@ export function Router(props: Props): JSX.Element {
     case Views.Home:
       return <HomeView updateEvent={props.updateEvent} />;
     case Views.Lobby:
-      return <LobbyView updateEvent={props.updateEvent} />;
+      return (
+        <LobbyView
+          updateEvent={props.updateEvent}
+          openGames={props.state.openGames}
+          playerName={props.state.playerName}
+        />
+      );
     case Views.Game:
       return <GameView send={props.send} state={props.state} />;
   }

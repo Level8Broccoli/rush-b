@@ -38,3 +38,14 @@ main {
   display: grid;
   place-content: center;
 }
+
+.navbarContainer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.navbarContainer > * {
+  margin: 0 !important;
+}

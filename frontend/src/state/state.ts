@@ -24,6 +24,10 @@ const initalGameState: GameState = {
     characters: [],
   },
   playerName: "",
+  openGames: [
+    { gameId: "hi", playerName: "hi" },
+    { gameId: "hi", playerName: "h5" },
+  ],
 };
 
 const updateEvent: (setState: StateUpdater<GameState>) => UpdateEvent =

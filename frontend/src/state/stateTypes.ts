@@ -1,6 +1,11 @@
 import { ConnectionStatus } from "../websocket/websocketTypes";
 import { TileMap } from "./tileMap.enum";
 
+export type OpenGame = {
+  playerName: string;
+  gameId: string;
+};
+
 export type Character = {
   id: string;
   paintId: number;
@@ -35,4 +40,5 @@ export type GameState = {
   messages: Message[];
   game: Game;
   playerName: string;
+  openGames: OpenGame[];
 };

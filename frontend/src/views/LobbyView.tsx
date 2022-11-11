@@ -1,21 +1,35 @@
 import { h } from "preact";
 import { Events, UpdateEvent } from "../state/stateEvents";
-import { Views } from "../state/stateTypes";
+import { GameList } from "../components/lobby/GameList";
+import { OpenGame } from "../state/stateTypes";
+import classes from "./LobbyView.module.css";
 
 type Props = {
   updateEvent: UpdateEvent;
+  openGames: OpenGame[];
+  playerName: string;
 };
 
 export function LobbyView(props: Props): JSX.Element {
   return (
-    <>
-      <h1>Lobby</h1>
-      <button onClick={() => props.updateEvent([Events.GoToView, Views.Home])}>
-        Back To Home
-      </button>
-      <button onClick={() => props.updateEvent([Events.GoToView, Views.Game])}>
-        To Game View
-      </button>
-    </>
+    <div class={`card ${classes.lobbyCard}`}>
+      <header class="card-header">
+        <p className="card-header-title">Lobby</p>
+      </header>
+      <div className="card-content">
+        <GameList openGames={props.openGames} />
+      </div>
+      <div className="card-footer">
+        <a
+          href="#"
+          class="card-footer-item"
+          onClick={() =>
+            props.updateEvent([Events.StartNewGame, props.playerName])
+          }
+        >
+          oder starte ein eigenes Spiel, {props.playerName}
+        </a>
+      </div>
+    </div>
   );
 }
