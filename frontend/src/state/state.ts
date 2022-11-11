@@ -12,6 +12,7 @@ import {
   UpdateEvent,
   sendMessages,
   sendKeys,
+  setUserId,
 } from "./stateEvents";
 import { serverEvent } from "../server/server";
 import { UpdateServerEvent } from "../server/serverEvents";
@@ -56,6 +57,8 @@ const updateEvent: (
       return searchForGame(setState, updateServerEvent, payload);
     case Events.StartNewGame:
       return startNewGame(setState, updateServerEvent, payload);
+    case Events.SetUserId:
+      return setUserId(setState, updateServerEvent, payload);
   }
 };
 

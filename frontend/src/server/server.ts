@@ -13,12 +13,31 @@ import {
   subscribe,
   UpdateServerEvent,
 } from "./serverEvents";
+import { UID } from "../state/stateTypes";
+
+function generateUserId(): UID {
+  return String(Math.floor(Math.random() * 9999));
+}
+
+function send(
+  socket: WebSocket,
+  type: MessageType,
+  data: string[]
+): Promise<boolean> {
+  try {
+    socket.send(JSON.stringify({ type, data }));
+    return new Promise((resolve) => resolve(true));
+  } catch (e) {
+    return new Promise((_, reject) => reject(e));
+  }
+}
 
 export function initWebSocket({
   onMessageReceived,
   onConnectionChange,
-}: Params): SendToServer {
+}: Params): [UID, SendToServer] {
   onConnectionChange(ConnectionStatus.CONNECTING);
+  const userId = generateUserId();
 
   let sendMessage: SendToServer = (type, data) => {
     return new Promise(() =>
@@ -32,12 +51,7 @@ export function initWebSocket({
     );
     webSocket.onopen = function () {
       onConnectionChange(ConnectionStatus.OPEN);
-      webSocket.send(
-        JSON.stringify({
-          type: "subscribe",
-          data: String(Math.floor(Math.random() * 12)),
-        })
-      );
+      return send(webSocket, MessageType.Subscribe, [userId]);
     };
     webSocket.onmessage = function (e: { data: string }) {
       onMessageReceived(JSON.parse(e.data) as unknown);
@@ -52,18 +66,15 @@ export function initWebSocket({
       data: string[]
     ): Promise<boolean> {
       if (webSocket.readyState === ConnectionStatus.OPEN) {
-        return new Promise((resolve) => {
-          webSocket.send(JSON.stringify({ type, data }));
-          resolve(true);
-        });
+        return send(webSocket, type, data);
       }
-      return new Promise((reject) => reject(false));
+      return new Promise((_, reject) => reject("Connection is not open"));
     };
   }
 
   connect();
 
-  return sendMessage;
+  return [userId, sendMessage];
 }
 
 export const serverEvent: (sendMessage: SendToServer) => UpdateServerEvent =

@@ -21,7 +21,7 @@ export function App() {
   const [state, updateEvent] = useGameState(send);
 
   useEffect(() => {
-    const sendMessage = initWebSocket({
+    const [userId, sendMessage] = initWebSocket({
       onConnectionChange: (newStatus) =>
         updateEvent([Events.UpdateConnectionStatus, newStatus]),
       onMessageReceived: (data) => {
@@ -38,6 +38,7 @@ export function App() {
       },
     });
     setSend(() => sendMessage);
+    updateEvent([Events.SetUserId, userId]);
   }, []);
 
   return (

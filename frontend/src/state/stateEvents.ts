@@ -1,5 +1,5 @@
 import { StateUpdater } from "preact/compat";
-import { AppState, GameState, Message, Views } from "./stateTypes";
+import { AppState, GameState, Message, UID, Views } from "./stateTypes";
 import { ConnectionStatus } from "../server/serverTypes";
 import {
   Keys,
@@ -16,6 +16,7 @@ export enum Events {
   GoToView,
   SearchForGame,
   StartNewGame,
+  SetUserId,
 }
 
 export type AllStateEvents = [Events, unknown] &
@@ -28,6 +29,7 @@ export type AllStateEvents = [Events, unknown] &
     | GoToViewEvent
     | SearchForGameEvent
     | StartNewGameEvent
+    | SetUserIdEvent
   );
 
 export type UpdateEvent = (event: AllStateEvents) => true;
@@ -47,9 +49,12 @@ export const addMessages: UpdaterFunction<AddMessagesEvent> = (
   updateServerEvent,
   messages
 ) => {
-  setState((prevState) => {
-    return { ...prevState, messages: [...prevState.messages, ...messages] };
-  });
+  setState(
+    (prevState): AppState => ({
+      ...prevState,
+      messages: [...prevState.messages, ...messages],
+    })
+  );
   return true;
 };
 
@@ -83,9 +88,9 @@ type UpdateConnectionStatusEvent = [
 export const updateConnectionStatus: UpdaterFunction<
   UpdateConnectionStatusEvent
 > = (setState, updateServerEvent, newStatus) => {
-  setState((prevState) => {
-    return { ...prevState, connectionStatus: newStatus };
-  });
+  setState(
+    (prevState): AppState => ({ ...prevState, connectionStatus: newStatus })
+  );
   return true;
 };
 
@@ -96,9 +101,7 @@ export const setGame: UpdaterFunction<SetGameEvent> = (
   updateServerEvent,
   game
 ) => {
-  setState((prevState) => {
-    return { ...prevState, game };
-  });
+  setState((prevState): AppState => ({ ...prevState, game }));
   return true;
 };
 
@@ -109,9 +112,7 @@ export const goToView: UpdaterFunction<GoToViewEvent> = (
   updateServerEvent,
   view
 ) => {
-  setState((prevState) => {
-    return { ...prevState, view };
-  });
+  setState((prevState): AppState => ({ ...prevState, view }));
   return true;
 };
 
@@ -122,9 +123,13 @@ export const searchForGame: UpdaterFunction<SearchForGameEvent> = (
   updateServerEvent,
   playerName
 ) => {
-  setState((prevState) => {
-    return { ...prevState, view: Views.Lobby, playerName };
-  });
+  setState(
+    (prevState): AppState => ({
+      ...prevState,
+      view: Views.Lobby,
+      player: { ...prevState.player, name: playerName },
+    })
+  );
   return true;
 };
 
@@ -135,9 +140,26 @@ export const startNewGame: UpdaterFunction<StartNewGameEvent> = (
   updateServerEvent,
   playerName
 ) => {
-  setState((prevState) => {
-    return { ...prevState, playerName, loadingMessage: "Spiel wird erstellt" };
-  });
+  setState(
+    (prevState): AppState => ({
+      ...prevState,
+      player: { ...prevState.player, name: playerName },
+      loadingMessage: "Spiel wird erstellt",
+    })
+  );
   updateServerEvent([ServerEventTypes.CreateGame, playerName]);
+  return true;
+};
+
+type SetUserIdEvent = [Events.SetUserId, UID];
+
+export const setUserId: UpdaterFunction<SetUserIdEvent> = (
+  setState,
+  updateServerEvent,
+  userId
+) => {
+  setState((prevState): AppState => {
+    return { ...prevState, player: { ...prevState.player, id: userId } };
+  });
   return true;
 };
