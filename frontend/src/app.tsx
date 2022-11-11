@@ -9,8 +9,14 @@ import { Router } from "./views/Router";
 import { BaseLayout } from "./layouts/BaseLayout";
 
 export function App() {
-  const [send, setSend] = useState<SendMessage>((type, data) =>
-    console.error("not yet connected", { type, data })
+  const [send, setSend] = useState<SendMessage>(
+    (type, data) =>
+      new Promise(() =>
+        console.error("not yet connected", {
+          type,
+          data,
+        })
+      )
   );
   const [state, updateEvent] = useGameState(send);
 

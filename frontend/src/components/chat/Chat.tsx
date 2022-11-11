@@ -11,7 +11,7 @@ export function Chat(props: Props): JSX.Element {
   const onSubmit = (e: Event) => {
     e.preventDefault();
     if (message.length) {
-      props.send("message", message);
+      props.send("message", [message]);
       setMessage("");
     }
   };

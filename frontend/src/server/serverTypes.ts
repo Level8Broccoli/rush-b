@@ -12,4 +12,4 @@ export type Params = {
 
 export type MessageType = "keyPress" | "message";
 
-export type SendMessage = (type: MessageType, data: string | string[]) => void;
+export type SendMessage = (type: MessageType, data: string[]) => Promise<void>;

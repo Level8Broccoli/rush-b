@@ -18,11 +18,10 @@ export function initWebSocket({
 }: Params): SendMessage {
   onConnectionChange(ConnectionStatus.CONNECTING);
 
-  let sendMessage: SendMessage = (
-    type: MessageType,
-    data: string | string[]
-  ) => {
-    console.error("Aktuell noch keine Verbindung aufgebaut", { type, data });
+  let sendMessage: SendMessage = (type, data) => {
+    return new Promise(() =>
+      console.error("Aktuell noch keine Verbindung aufgebaut", { type, data })
+    );
   };
 
   function connect() {
@@ -46,9 +45,13 @@ export function initWebSocket({
       setTimeout(connect, Math.random() * 60_000);
     };
 
-    sendMessage = function (type: MessageType, data: string | string[]): void {
-      if (webSocket.readyState === ConnectionStatus.OPEN)
-        webSocket.send(JSON.stringify({ type, data }));
+    sendMessage = function (type: MessageType, data: string[]): Promise<void> {
+      if (webSocket.readyState === ConnectionStatus.OPEN) {
+        return new Promise(() =>
+          webSocket.send(JSON.stringify({ type, data }))
+        );
+      }
+      return new Promise(() => {});
     };
   }
 
@@ -57,7 +60,6 @@ export function initWebSocket({
   return sendMessage;
 }
 
-export type ServerEvent = typeof serverEvent;
 export const serverEvent: (sendMessage: SendMessage) => UpdateServerEvent =
   (sendMessage) => (event) => {
     const [eventType, payload] = event;
