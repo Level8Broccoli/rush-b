@@ -9,7 +9,7 @@ import ch.ffhs.rushb.enums.Color
 import ch.ffhs.rushb.enums.Orientation
 import kotlin.random.Random
 
-class Npc(
+class NPC(
     override val id: String,
     override val color: Color,
     override var position: Vector,
@@ -26,7 +26,7 @@ class Npc(
 
     override fun applyGameLoop(level: Level, gameObjects: MutableList<Movable>) {
         var distance = Double.MAX_VALUE
-        var radius = 16 * 3
+        val radius = 16 * 3
         var nearestCharacter: Character? = null
         for (obj in gameObjects) {
             if (!(obj is Character)) {
@@ -44,7 +44,7 @@ class Npc(
         if (nearestCharacter != null) {
             val pos = nearestCharacter.position.get()
             pos.subtract(this.position)
-            var direction = pos.div(this.position.magnitude())
+            val direction = pos.div(this.position.magnitude())
             if (!isChaser) {
                 direction.switch()
             }

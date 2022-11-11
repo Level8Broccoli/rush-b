@@ -4,7 +4,6 @@ import ch.ffhs.rushb.behavior.AIable
 import ch.ffhs.rushb.behavior.Movable
 import ch.ffhs.rushb.behavior.Paintable
 import ch.ffhs.rushb.behavior.Serializable
-import ch.ffhs.rushb.behavior.ai.SeedUtil
 import ch.ffhs.rushb.enums.CharacterType
 import ch.ffhs.rushb.enums.Color
 import ch.ffhs.rushb.model.*
@@ -29,7 +28,7 @@ class Game(
         Character(
             CharacterType.MASK_DUDE.name,
             Color.RED,
-            Vector(Random.nextInt(gridStart,gridEnd).toDouble(), 0.0),
+            Vector(Random.nextInt(gridStart, gridEnd).toDouble(), 0.0),
             100
 
         )
@@ -37,7 +36,7 @@ class Game(
         RandomBot(
             CharacterType.PINK_MAN.name,
             Color.PURPLE,
-            Vector(Random.nextInt(gridStart,gridEnd).toDouble(), 0.0),
+            Vector(Random.nextInt(gridStart, gridEnd).toDouble(), 0.0),
             101,
         )
 
@@ -62,7 +61,7 @@ class Game(
 
         val numberOfBrushes = 10
         val numberOfBots = 4
-        val numberOfNpcs = 5
+        val numberOfNPCs = 5
 
 
         // add brush
@@ -71,7 +70,7 @@ class Game(
                 Brush(
                     CharacterType.VIRTUAL_GUY.name,
                     Color.PINK,
-                    Vector(Random.nextInt(gridStart,gridEnd).toDouble(), 0.0)
+                    Vector(Random.nextInt(gridStart, gridEnd).toDouble(), 0.0)
                 )
             )
         }
@@ -82,26 +81,26 @@ class Game(
                 RandomBot(
                     CharacterType.PINK_MAN.name,
                     Color.PURPLE,
-                    Vector(Random.nextInt(gridStart,gridEnd).toDouble(), 0.0),
+                    Vector(Random.nextInt(gridStart, gridEnd).toDouble(), 0.0),
                     110 + 1
                 )
             )
         }
 
-        // add npcs
-        for (i in 0 until numberOfNpcs) {
+        // add NPCs
+        for (i in 0 until numberOfNPCs) {
             gameObjects.add(
-                Npc(
+                NPC(
                     CharacterType.NINJA_FROG.name,
                     Color.PINK,
-                    Vector(Random.nextInt(gridStart,gridEnd).toDouble(), 0.0)
+                    Vector(Random.nextInt(gridStart, gridEnd).toDouble(), 0.0)
                 )
             )
         }
 
 
         val period = 100L
-        timer.schedule(100,period) {
+        timer.schedule(100, period) {
             millis += period
             if (millis >= limit) {
                 timer.cancel()
@@ -115,8 +114,8 @@ class Game(
         }
     }
 
-    fun isActive(): Boolean {
-        return (limit-millis) >= 0
+    private fun isActive(): Boolean {
+        return (limit - millis) >= 0
     }
 
     fun applyGameLoop() {
@@ -142,12 +141,13 @@ class Game(
 
     override fun toJSON(): String {
         val characterJSON = gameObjects.map { it.toJSON() }.joinToString(",")
-        var levelJSON = "[" +level.tiles.map { "[" +it.map{it -> it}.joinToString(",") +"]"}.joinToString(",")+"]"
+        val levelJSON =
+            "[" + level.tiles.joinToString(",") { "[" + it.joinToString(",") + "]" } + "]"
         val out = """
             {
                 "id": "$id" , 
                 "timer": "${counterToTime()}" , 
-                "level": "${levelJSON}" , 
+                "level": "$levelJSON" , 
                 "characters": [$characterJSON]
             }
             """.trimIndent()
@@ -158,7 +158,8 @@ class Game(
      * Method to transform milliseconds to nice formatted time string.
      */
     private fun counterToTime(): String {
-        return ((limit-millis)/(1000*60)).toString().padStart(2,'0') + ":" + (((limit-millis)/(1000))%60).toString().padStart(2,'0')
+        return ((limit - millis) / (1000 * 60)).toString()
+            .padStart(2, '0') + ":" + (((limit - millis) / (1000)) % 60).toString().padStart(2, '0')
     }
 
     fun setVelocityX(player: Movable, d: Double) {

@@ -3,10 +3,9 @@ package ch.ffhs.rushb.controller
 import ch.ffhs.rushb.behavior.Movable
 import ch.ffhs.rushb.model.TileMap
 import java.lang.Double.MAX_VALUE
-import kotlin.random.Random
 
 
-class Level(val tileMap: TileMap) {
+class Level(tileMap: TileMap) {
 
     private val tileSize = tileMap.tileSize
     var tiles = tileMap.tiles.copyOf()
@@ -127,7 +126,7 @@ class Level(val tileMap: TileMap) {
 
     fun getDistanceToRight(character: Movable): Double {
         val col = (character.right() / tileSize).toInt()
-        if (col >= tiles.size -1) {
+        if (col >= tiles.size - 1) {
             return 0.0
         }
         if (isCharacterStuck(character)) {
@@ -157,7 +156,7 @@ class Level(val tileMap: TileMap) {
         return distance
     }
 
-    fun isCharacterStuck(character: Movable): Boolean {
+    private fun isCharacterStuck(character: Movable): Boolean {
         val center = character.center().getGridValue()
         if (center.x < 0 || center.x >= tiles.size || center.y < 0 || center.y >= tiles[0].size) {
             return false
@@ -165,7 +164,7 @@ class Level(val tileMap: TileMap) {
         return tiles[center.x.toInt()][center.y.toInt()] != 0
     }
 
-    fun isCoordinateInvalid(character: Movable): Boolean {
+    private fun isCoordinateInvalid(character: Movable): Boolean {
         val center = character.center().getGridValue()
         if (center.x < 0 || center.x >= tiles.size || center.y < 0 || center.y >= tiles[0].size) {
             return true

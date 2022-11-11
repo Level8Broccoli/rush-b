@@ -1,6 +1,5 @@
 package ch.ffhs.rushb.behavior.ai
 
-import ch.ffhs.rushb.behavior.AIable
 import ch.ffhs.rushb.behavior.Movable
 import ch.ffhs.rushb.controller.Level
 import ch.ffhs.rushb.enums.CharacterType
@@ -21,7 +20,13 @@ class MockGame(neuralNetwork: NeuralNetwork?) : GeneticObject(neuralNetwork) {
     val limit = 600     // (1000 * 60 * 2) / 200 -> two minutes / calculation step
     var counter = 100
     val gameObjects = mutableListOf<Movable>()
-    val bot = DeepBot(CharacterType.MASK_DUDE.name, Color.PURPLE, Vector(Random.nextDouble(100.0,600.0),0.0), 200, neuralNetwork!!)
+    val bot = DeepBot(
+        CharacterType.MASK_DUDE.name,
+        Color.PURPLE,
+        Vector(Random.nextDouble(100.0, 600.0), 0.0),
+        200,
+        neuralNetwork!!
+    )
     var rated = false
 
     init {
@@ -58,11 +63,11 @@ class MockGame(neuralNetwork: NeuralNetwork?) : GeneticObject(neuralNetwork) {
         // add npcs
         for (i in 0 until numberOfNpcs) {
             gameObjects.add(
-                Npc(
-                CharacterType.NINJA_FROG.name,
-                Color.PINK,
-                Vector(Random.nextDouble(100.0, 600.0), 0.0)
-            )
+                NPC(
+                    CharacterType.NINJA_FROG.name,
+                    Color.PINK,
+                    Vector(Random.nextDouble(100.0, 600.0), 0.0)
+                )
             )
         }
     }
@@ -94,7 +99,10 @@ class MockGame(neuralNetwork: NeuralNetwork?) : GeneticObject(neuralNetwork) {
         if (bot.brush != null) {
             bot.fitness += 1
         }
-        if ((Math.abs(bot.velocity.x) > 0 || Math.abs(bot.velocity.y) > 0) && !level.collidesLeft(bot as Movable)  && !level.collidesRight(bot as Movable)) {
+        if ((Math.abs(bot.velocity.x) > 0 || Math.abs(bot.velocity.y) > 0) && !level.collidesLeft(bot as Movable) && !level.collidesRight(
+                bot as Movable
+            )
+        ) {
             bot.fitness += 10
         }
         return counter <= limit
@@ -113,13 +121,13 @@ class MockGame(neuralNetwork: NeuralNetwork?) : GeneticObject(neuralNetwork) {
     }
 
     fun toJSON(): String {
-        val characterJSON = gameObjects.map { it.toJSON() }.joinToString(",")
-        var levelJSON = "[" +level.tiles.map { "[" +it.map{it -> it}.joinToString(",") +"]"}.joinToString(",")+"]"
+        val characterJSON = gameObjects.joinToString(",") { it.toJSON() }
+        val levelJSON = "[" + level.tiles.joinToString(",") { "[" + it.joinToString(",") + "]" } + "]"
         val out = """
             {
                 "id": "mock game" , 
                 "timer": "00:00" , 
-                "level": "${levelJSON}" , 
+                "level": "$levelJSON" , 
                 "characters": [$characterJSON]
             }
             """.trimIndent()

@@ -1,8 +1,5 @@
 package ch.ffhs.rushb.controller
 
-import ch.ffhs.rushb.behavior.ai.GeneticFitter
-import ch.ffhs.rushb.behavior.ai.MockGame
-import ch.ffhs.rushb.behavior.ai.SeedUtil
 import ch.ffhs.rushb.model.TileMap
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.scheduling.annotation.EnableScheduling
