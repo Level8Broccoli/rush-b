@@ -1,13 +1,12 @@
 import { h } from "preact";
 import { useEffect, useState } from "preact/compat";
 import { isMessage } from "./utils/parse";
-import Logs from "./components/log/Logs";
-import { Chat } from "./components/chat/Chat";
 import { useGameState } from "./state/state";
 import { SendMessage } from "./websocket/websocketTypes";
 import { initWebSocket } from "./websocket/websocket";
 import { Events } from "./state/stateEvents";
 import { Router } from "./views/Router";
+import { BaseLayout } from "./layouts/BaseLayout";
 
 export function App() {
   const [state, updateEvent] = useGameState();
@@ -36,16 +35,18 @@ export function App() {
   }, []);
 
   return (
-    <div>
-      <div style="display: flex; flex-wrap: wrap; align-items: baseline; gap: 1rem; padding: 0.5rem;">
-        <h1 style="margin: 0;">rush-b</h1>
-        <small>
-          <em>by Lena & Oliver</em>
-        </small>
-      </div>
-      <div style="display: grid; grid-template-columns: 1fr 20rem; gap: 1rem; padding-block: 3rem;">
-        <Router state={state} updateEvent={updateEvent} send={send} />
-      </div>
-    </div>
+    <BaseLayout>
+      <>
+        <div style="display: flex; flex-wrap: wrap; align-items: baseline; gap: 1rem; padding: 0.5rem;">
+          <h1 style="margin: 0;">rush-b</h1>
+          <small>
+            <em>by Lena & Oliver</em>
+          </small>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 20rem; gap: 1rem; padding-block: 3rem;">
+          <Router state={state} updateEvent={updateEvent} send={send} />
+        </div>
+      </>
+    </BaseLayout>
   );
 }
