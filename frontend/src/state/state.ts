@@ -6,7 +6,9 @@ import {
   Events,
   goToView,
   newMessage,
+  searchForGame,
   setGame,
+  startNewGame,
   updateConnectionStatus,
   UpdateEvent,
 } from "./stateEvents";
@@ -21,6 +23,7 @@ const initalGameState: GameState = {
     id: "",
     characters: [],
   },
+  playerName: "",
 };
 
 const updateEvent: (setState: StateUpdater<GameState>) => UpdateEvent =
@@ -36,6 +39,10 @@ const updateEvent: (setState: StateUpdater<GameState>) => UpdateEvent =
         return setGame(setState, payload);
       case Events.GoToView:
         return goToView(setState, payload);
+      case Events.SearchForGame:
+        return searchForGame(setState, payload);
+      case Events.StartNewGame:
+        return startNewGame(setState, payload);
     }
   };
 

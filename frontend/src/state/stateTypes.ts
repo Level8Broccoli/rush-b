@@ -34,4 +34,5 @@ export type GameState = {
   connectionStatus: ConnectionStatus;
   messages: Message[];
   game: Game;
+  playerName: string;
 };

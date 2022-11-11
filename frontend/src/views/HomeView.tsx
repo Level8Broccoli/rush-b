@@ -9,7 +9,7 @@ type Props = {
 export function HomeView(props: Props): JSX.Element {
   return (
     <>
-      <Login />
+      <Login updateEvent={props.updateEvent} />
     </>
   );
 }

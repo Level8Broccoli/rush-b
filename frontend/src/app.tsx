@@ -35,7 +35,7 @@ export function App() {
   }, []);
 
   return (
-    <BaseLayout>
+    <BaseLayout playerName={state.playerName}>
       <Router state={state} updateEvent={updateEvent} send={send} />
     </BaseLayout>
   );
