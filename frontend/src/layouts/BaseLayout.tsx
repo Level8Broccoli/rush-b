@@ -1,10 +1,12 @@
 import { h } from "preact";
 import classes from "./BaseLayout.module.css";
 import backgroundImg from "./img/background.png";
+import { Loader } from "../components/general/Loader";
 
 type Props = {
   playerName: string;
   children: JSX.Element;
+  loadingMessage: string;
 };
 
 export function BaseLayout(props: Props): JSX.Element {
@@ -26,6 +28,7 @@ export function BaseLayout(props: Props): JSX.Element {
       <footer class="has-background-danger-dark has-text-white p-5">
         <small>2022 @ FFHS</small>
       </footer>
+      {props.loadingMessage && <Loader label={props.loadingMessage} />}
     </>
   );
 }

@@ -21,7 +21,7 @@ export type Character = {
 
 export type Message = string;
 
-export type Game = {
+export type GameState = {
   id: string;
   timer: string;
   level: TileMap;
@@ -34,11 +34,12 @@ export enum Views {
   Game,
 }
 
-export type GameState = {
+export type AppState = {
   view: Views;
   connectionStatus: ConnectionStatus;
   messages: Message[];
-  game: Game;
+  game: GameState;
   playerName: string;
   openGames: OpenGame[];
+  loadingMessage: string;
 };

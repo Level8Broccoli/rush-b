@@ -14,12 +14,12 @@ export function LobbyView(props: Props): JSX.Element {
   return (
     <div class={`card ${classes.lobbyCard}`}>
       <header class="card-header">
-        <p className="card-header-title">Lobby</p>
+        <p class="card-header-title">Lobby</p>
       </header>
-      <div className="card-content">
+      <div class="card-content">
         <GameList openGames={props.openGames} />
       </div>
-      <div className="card-footer">
+      <div class="card-footer">
         <a
           href="#"
           class="card-footer-item"

@@ -1,12 +1,12 @@
 import { h } from "preact";
 import { GameUI } from "../components/canvas/GameUI";
-import { GameState } from "../state/stateTypes";
+import { AppState } from "../state/stateTypes";
 import { SendMessage } from "../websocket/websocketTypes";
 import Logs from "../components/log/Logs";
 import { Chat } from "../components/chat/Chat";
 
 type Props = {
-  state: GameState;
+  state: AppState;
   send: SendMessage;
 };
 

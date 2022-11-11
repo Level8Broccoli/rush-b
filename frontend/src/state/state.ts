@@ -1,6 +1,6 @@
 import { StateUpdater, useState } from "preact/compat";
 import { ConnectionStatus } from "../websocket/websocketTypes";
-import { GameState, Views } from "./stateTypes";
+import { AppState, Views } from "./stateTypes";
 import {
   AllEvents,
   Events,
@@ -13,7 +13,7 @@ import {
   UpdateEvent,
 } from "./stateEvents";
 
-const initalGameState: GameState = {
+const initalGameState: AppState = {
   view: Views.Home,
   connectionStatus: ConnectionStatus.CLOSED,
   messages: [],
@@ -28,10 +28,11 @@ const initalGameState: GameState = {
     { gameId: "hi", playerName: "hi" },
     { gameId: "hi", playerName: "h5" },
   ],
+  loadingMessage: "Warten auf Server.",
 };
 
-const updateEvent: (setState: StateUpdater<GameState>) => UpdateEvent =
-  (setState: StateUpdater<GameState>) =>
+const updateEvent: (setState: StateUpdater<AppState>) => UpdateEvent =
+  (setState: StateUpdater<AppState>) =>
   (event: AllEvents): true => {
     const [eventType, payload] = event;
     switch (eventType) {
@@ -50,7 +51,7 @@ const updateEvent: (setState: StateUpdater<GameState>) => UpdateEvent =
     }
   };
 
-export function useGameState(): [GameState, UpdateEvent] {
-  const [state, setState] = useState<GameState>(initalGameState);
+export function useGameState(): [AppState, UpdateEvent] {
+  const [state, setState] = useState<AppState>(initalGameState);
   return [state, updateEvent(setState)];
 }

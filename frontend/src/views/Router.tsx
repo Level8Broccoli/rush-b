@@ -1,4 +1,4 @@
-import { GameState, Views } from "../state/stateTypes";
+import { AppState, Views } from "../state/stateTypes";
 import { HomeView } from "./HomeView";
 import { LobbyView } from "./LobbyView";
 import { GameView } from "./GameView";
@@ -7,7 +7,7 @@ import { SendMessage } from "../websocket/websocketTypes";
 import { UpdateEvent } from "../state/stateEvents";
 
 type Props = {
-  state: GameState;
+  state: AppState;
   updateEvent: UpdateEvent;
   send: SendMessage;
 };

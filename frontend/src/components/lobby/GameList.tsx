@@ -12,7 +12,7 @@ export function GameList(props: Props): JSX.Element {
   }
 
   return (
-    <div className="table-container">
+    <div class="table-container">
       <table class="table is-fullwidth is-hoverable is-striped is-narrow">
         <tr>
           <th class={"has-text-grey-light"} style={"width: 1%"}>

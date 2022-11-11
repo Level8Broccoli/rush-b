@@ -35,7 +35,10 @@ export function App() {
   }, []);
 
   return (
-    <BaseLayout playerName={state.playerName}>
+    <BaseLayout
+      playerName={state.playerName}
+      loadingMessage={state.loadingMessage}
+    >
       <Router state={state} updateEvent={updateEvent} send={send} />
     </BaseLayout>
   );
