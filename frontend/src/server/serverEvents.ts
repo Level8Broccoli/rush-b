@@ -1,5 +1,10 @@
 import { MessageType, SendToServer } from "./serverTypes";
-import { UID } from "../state/stateTypes";
+import { UUID } from "../state/session";
+import { User } from "../state/stateTypes";
+import { StateUpdater } from "preact/compat";
+import { initWebSocket } from "./server";
+import { Events, UpdateEvent } from "../state/stateEvents";
+import { isMessage } from "../utils/parse";
 
 // should be kept in sync with `ClientEvents.kt`
 
@@ -20,12 +25,33 @@ type UpdaterServerFunction<T extends AllServerEvents> = (
 
 // UpdateFunctions (Server)
 
-type SubscribeEvent = [ServerEventTypes.Subscribe, UID];
-export const subscribe: UpdaterServerFunction<SubscribeEvent> = (
+type SubscribeEvent = [
+  ServerEventTypes.Subscribe,
+  [User, UpdateEvent, StateUpdater<SendToServer>]
+];
+export const subscribe: UpdaterServerFunction<SubscribeEvent> = async (
   sendToServer,
-  userId
+  [user, updateEvent, setSend]
 ) => {
-  return sendToServer(MessageType.Subscribe, [userId]);
+  await sendToServer(MessageType.Subscribe, [user.name, user.id.value]);
+  const [sendMessage] = initWebSocket({
+    onConnectionChange: (newStatus) =>
+      updateEvent([Events.UpdateConnectionStatus, newStatus]),
+    onMessageReceived: (data) => {
+      if (!isMessage(data)) {
+        return;
+      }
+      if (data["msgType"] === "message" || data["msgType"] === "keyPress") {
+        updateEvent([Events.AddMessages, [data["data"]]]);
+      } else if (data["msgType"] === "game") {
+        const game = JSON.parse(data["data"]);
+        game["level"] = JSON.parse(game["level"]);
+        updateEvent([Events.SetGame, game]);
+      }
+    },
+  });
+  setSend(() => sendMessage);
+  return new Promise((res) => res(true));
 };
 
 export enum Keys {
@@ -61,10 +87,10 @@ export const keyPress: UpdaterServerFunction<KeyPressEvent> = (
   );
 };
 
-type CreateGameEvent = [ServerEventTypes.CreateGame, [UID, string]];
+type CreateGameEvent = [ServerEventTypes.CreateGame, [UUID, string]];
 export const createGame: UpdaterServerFunction<CreateGameEvent> = (
   sendToServer,
   [userId, userName]
 ) => {
-  return sendToServer(MessageType.CreateGame, [userId, userName]);
+  return sendToServer(MessageType.CreateGame, [userId.value, userName]);
 };

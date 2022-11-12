@@ -13,11 +13,6 @@ import {
   subscribe,
   UpdateServerEvent,
 } from "./serverEvents";
-import { UID } from "../state/stateTypes";
-
-function generateUserId(): UID {
-  return String(Math.floor(Math.random() * 9999));
-}
 
 function send(
   socket: WebSocket,
@@ -35,13 +30,16 @@ function send(
 export function initWebSocket({
   onMessageReceived,
   onConnectionChange,
-}: Params): [UID, SendToServer] {
+}: Params): [SendToServer] {
   onConnectionChange(ConnectionStatus.CONNECTING);
-  const userId = generateUserId();
+  // const userId = generateUserId();
 
   let sendMessage: SendToServer = (type, data) => {
     return new Promise(() =>
-      console.error("Aktuell noch keine Verbindung aufgebaut", { type, data })
+      console.error("Es konnte keine Verbinung zum Server aufgebaut werden", {
+        type,
+        data,
+      })
     );
   };
 
@@ -51,7 +49,8 @@ export function initWebSocket({
     );
     webSocket.onopen = function () {
       onConnectionChange(ConnectionStatus.OPEN);
-      return send(webSocket, MessageType.Subscribe, [userId]);
+      const userName = "TODO";
+      return send(webSocket, MessageType.Subscribe, [userName]);
     };
     webSocket.onmessage = function (e: { data: string }) {
       onMessageReceived(JSON.parse(e.data) as unknown);
@@ -74,7 +73,7 @@ export function initWebSocket({
 
   connect();
 
-  return [userId, sendMessage];
+  return [sendMessage];
 }
 
 export const serverEvent: (sendMessage: SendToServer) => UpdateServerEvent =

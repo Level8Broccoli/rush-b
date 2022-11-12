@@ -3,11 +3,13 @@ import classes from "./Login.module.css";
 import logoUrl from "../../assets/img.png";
 import { Button } from "../general/Button";
 import { Input } from "../general/Input";
-import { useState } from "preact/compat";
+import { StateUpdater, useState } from "preact/compat";
 import { Events, UpdateEvent } from "../../state/stateEvents";
+import { SendToServer } from "../../server/serverTypes";
 
 type Props = {
   updateEvent: UpdateEvent;
+  setSend: StateUpdater<SendToServer>;
 };
 
 export function Login(props: Props): JSX.Element {
@@ -30,13 +32,17 @@ export function Login(props: Props): JSX.Element {
   const startNewGame = () => {
     const isValid = validateName();
     if (isValid) {
-      props.updateEvent([Events.StartNewGame, name]);
+      props.updateEvent([Events.StartNewGame, [{ value: "TODO" }, name]]);
     }
   };
 
   const goToLobby = () => {
     const isValid = validateName();
     if (isValid) {
+      props.updateEvent([
+        Events.StartNewSession,
+        [name, props.updateEvent, props.setSend],
+      ]);
       props.updateEvent([Events.SearchForGame, name]);
     }
   };

@@ -13,6 +13,7 @@ import {
   sendMessages,
   sendKeys,
   setUserId,
+  startNewSession,
 } from "./stateEvents";
 import { serverEvent } from "../server/server";
 import { UpdateServerEvent } from "../server/serverEvents";
@@ -27,7 +28,7 @@ const initalGameState: AppState = {
     id: "",
     characters: [],
   },
-  player: { id: "", name: "" },
+  user: { id: { value: "" }, name: "" },
   openGames: [],
   loadingMessage: "",
 };
@@ -38,6 +39,8 @@ const updateEvent: (
 ) => UpdateEvent = (setState, updateServerEvent) => (event) => {
   const [eventType, payload] = event;
   switch (eventType) {
+    case Events.StartNewSession:
+      return startNewSession(setState, updateServerEvent, payload);
     case Events.AddMessages:
       return addMessages(setState, updateServerEvent, payload);
     case Events.SendMessages:
