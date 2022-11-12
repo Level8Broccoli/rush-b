@@ -1,7 +1,8 @@
 package ch.ffhs.rushb.controller
 
 import ch.ffhs.rushb.api.*
-import ch.ffhs.rushb.model.TileMap
+import ch.ffhs.rushb.model.OpenGame
+import ch.ffhs.rushb.model.User
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.scheduling.annotation.EnableScheduling
 import org.springframework.scheduling.annotation.Scheduled
@@ -10,10 +11,8 @@ import org.springframework.web.socket.CloseStatus
 import org.springframework.web.socket.TextMessage
 import org.springframework.web.socket.WebSocketSession
 import org.springframework.web.socket.handler.TextWebSocketHandler
-import java.util.concurrent.atomic.AtomicLong
 
 
-data class Subscriber(val user: User)
 data class Message(val msgType: String, val data: Any)
 
 @EnableScheduling
@@ -24,10 +23,11 @@ class GameController : TextWebSocketHandler() {
         var instance: GameController? = null
     }
 
-    val sessionList = HashMap<WebSocketSession, Subscriber>()
-    val gameList = mutableListOf<Game>()
-    private var uid = AtomicLong(0)
-    private var game = Game("game 0", User(0L, "0", "DemoPlayer"), Level(TileMap.ONE))
+    val sessionList = HashMap<WebSocketSession, User>()
+    val userList = mutableListOf<User>()
+    val openGameList = mutableListOf<OpenGame>()
+    val runningGameList = mutableListOf<Game>()
+//    private var game = Game("game 0", User("0", "DemoPlayer"), Level(TileMap.ONE))
 
     init {
         if (instance == null) {
@@ -57,12 +57,12 @@ class GameController : TextWebSocketHandler() {
 
     @Scheduled(fixedRate = 200)
     fun sendGameStatus() {
-        instance!!.gameList.forEach { game ->
-            if (!game.isOpen()) {
-                game.applyGameLoop()
-                val gameData = game.toJSON()
-                broadcast(Message("game", gameData))
-            }
+        instance!!.runningGameList.forEach { game ->
+            game.applyGameLoop()
+            val gameData = game.toJSON()
+            broadcast(Message("game", gameData))
+            println("Push Running Game")
+            println(game.toJSON())
         }
 
         // TODO: remove inactive games
@@ -70,42 +70,46 @@ class GameController : TextWebSocketHandler() {
 
     @Scheduled(fixedRate = 10_000)
     fun sendOpenGames() {
-        instance!!.gameList.forEach { game ->
-            println("This runs inside")
-            val creator = game.creator
-            if (game.isOpen()) {
-                broadcast(Message("openGame", creator.toJSON()))
-            }
+        instance!!.openGameList.forEach { game ->
+            broadcast(Message("openGame", game.toJSON()))
+            println("Push Open Game")
+            println(game.toJSON())
         }
     }
 
     override fun handleTextMessage(session: WebSocketSession, message: TextMessage) {
         val json = ObjectMapper().readTree(message.payload)
-        val event = parseFromClient(json)
+        val event = parseFromClient(json, instance!!.userList)
         when (event?.event) {
             ClientEventType.Subscribe -> {
                 val e = event as SubscribeEvent
-                val subscriber = Subscriber(User(instance!!.uid.getAndIncrement(), e.userId, e.userName))
-                println(subscriber)
-                instance!!.sessionList += mapOf(session to subscriber)
-                broadcast(Message("subscriber", instance!!.sessionList.values))
+                instance!!.sessionList += mapOf(session to e.user)
+                instance!!.userList += e.user
+                instance!!.openGameList.forEach { game ->
+                    emit(session, Message("openGame", game.toJSON()))
+                }
+//                broadcast(Message("subscriber", instance!!.sessionList.values))
+                println("Subscribe Event")
+                println(e.user)
             }
 
             ClientEventType.Message -> {
-                broadcast(Message("message", (event as MessageEvent).messages))
+                val e = event as MessageEvent
+//                broadcast(Message("message", e.messages))
             }
 
             ClientEventType.KeyPress -> {
-                val keys = (event as KeyPressEvent).keys
+                val e = event as KeyPressEvent
+                val keys = e.keys
                 for (key in keys) {
                     if (key == Key.ARROW_LEFT) {
-                        instance!!.game.setVelocityX(instance!!.game.getPlayer1(), -1.0)
+//                        instance!!.game.setVelocityX(instance!!.game.getPlayer1(), -1.0)
                     } else if (key == Key.ARROW_RIGHT) {
-                        instance!!.game.setVelocityX(instance!!.game.getPlayer1(), 1.0)
+//                        instance!!.game.setVelocityX(instance!!.game.getPlayer1(), 1.0)
                     } else if (key == Key.ARROW_UP || key == Key.SPACE) {
-                        instance!!.game.setVelocityY(instance!!.game.getPlayer1())
+//                        instance!!.game.setVelocityY(instance!!.game.getPlayer1())
                     } else if (key == Key.KEY_E) {
-                        instance!!.game.paint(instance!!.game.getPlayer1())
+//                        instance!!.game.paint(instance!!.game.getPlayer1())
                     } else if (key == Key.KEY_Q) {
                         // TODO: quit
                     }
@@ -113,26 +117,16 @@ class GameController : TextWebSocketHandler() {
             }
 
             ClientEventType.CreateGame -> {
-                println("Create Game")
-                val clientId = (event as CreateGameEvent).clientId
-                val userName = event.userName
-                val subscriber = getSubscriberByClientId(clientId, instance!!.sessionList)
-                subscriber?.user?.name = userName
-                println(clientId)
-                println(subscriber)
-                if (subscriber != null) {
-                    instance!!.gameList.add(
-                        Game(
-                            subscriber.user.serverId.toString(),
-                            subscriber.user,
-                            Level(TileMap.ONE)
-                        )
-                    )
-                }
+                val e = event as CreateGameEvent
+                val newGame = OpenGame(e.gameId, e.user)
+                instance!!.openGameList += newGame
+
+                println("Create Game Event")
+                println(newGame)
             }
 
             null -> {
-                // Do nothing
+                println("Event couln't get parsed. $json")
             }
         }
     }
@@ -148,16 +142,12 @@ class GameController : TextWebSocketHandler() {
 
     @Synchronized
     private fun emit(session: WebSocketSession, msg: Message) {
+        println("Try to emit $session $msg")
         try {
             session.sendMessage(TextMessage(ObjectMapper().writeValueAsBytes(msg)))
         } catch (e: RuntimeException) { // org.springframework.web.socket.sockjs.SockJsTransportFailureException, com.fasterxml.jackson.databind.exc.InvalidDefinitionException
             println(e)
         }
-    }
-
-
-    private fun getSubscriberByClientId(clientId: String, sessions: Map<WebSocketSession, Subscriber>): Subscriber? {
-        return sessions.values.find { s -> s.user.clientId == clientId }
     }
 }
 

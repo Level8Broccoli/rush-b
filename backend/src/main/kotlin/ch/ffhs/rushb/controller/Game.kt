@@ -4,8 +4,8 @@ import ch.ffhs.rushb.behavior.AIable
 import ch.ffhs.rushb.behavior.Movable
 import ch.ffhs.rushb.behavior.Paintable
 import ch.ffhs.rushb.behavior.Serializable
-import ch.ffhs.rushb.enums.CharacterType
-import ch.ffhs.rushb.enums.Color
+import ch.ffhs.rushb.enums.CharacterType.*
+import ch.ffhs.rushb.enums.Color.*
 import ch.ffhs.rushb.model.*
 import ch.ffhs.rushb.model.Vector
 import java.util.*
@@ -14,7 +14,7 @@ import kotlin.random.Random
 
 class Game(
     override val id: String,
-    val creator: User,
+    private val creator: User,
     private val level: Level,
 
     ) : Serializable {
@@ -27,16 +27,16 @@ class Game(
 
     private val player1 =
         Character(
-            CharacterType.MASK_DUDE.name,
-            Color.RED,
+            MASK_DUDE.name,
+            RED,
             Vector(Random.nextInt(gridStart, gridEnd).toDouble(), 0.0),
             100,
             creator,
         )
     private val player2 =
         RandomBot(
-            CharacterType.PINK_MAN.name,
-            Color.PURPLE,
+            PINK_MAN.name,
+            PURPLE,
             Vector(Random.nextInt(gridStart, gridEnd).toDouble(), 0.0),
             101,
         )
@@ -69,8 +69,8 @@ class Game(
         for (i in 0 until numberOfBrushes) {
             gameObjects.add(
                 Brush(
-                    CharacterType.VIRTUAL_GUY.name,
-                    Color.PINK,
+                    VIRTUAL_GUY.name,
+                    PINK,
                     Vector(Random.nextInt(gridStart, gridEnd).toDouble(), 0.0)
                 )
             )
@@ -80,8 +80,8 @@ class Game(
         for (i in 0 until numberOfBots) {
             gameObjects.add(
                 RandomBot(
-                    CharacterType.PINK_MAN.name,
-                    Color.PURPLE,
+                    PINK_MAN.name,
+                    PURPLE,
                     Vector(Random.nextInt(gridStart, gridEnd).toDouble(), 0.0),
                     110 + 1
                 )
@@ -92,8 +92,8 @@ class Game(
         for (i in 0 until numberOfNPCs) {
             gameObjects.add(
                 NPC(
-                    CharacterType.NINJA_FROG.name,
-                    Color.PINK,
+                    NINJA_FROG.name,
+                    PINK,
                     Vector(Random.nextInt(gridStart, gridEnd).toDouble(), 0.0)
                 )
             )
@@ -169,10 +169,5 @@ class Game(
 
     fun setVelocityY(player: Movable) {
         player.setVelocityY(level)
-    }
-
-    fun isOpen(): Boolean {
-        // TODO
-        return true
     }
 }

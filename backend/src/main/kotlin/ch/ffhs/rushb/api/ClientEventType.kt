@@ -1,5 +1,7 @@
 package ch.ffhs.rushb.api
 
+import ch.ffhs.rushb.model.User
+
 // should be kept in sync with `serverEvents.ts`
 
 enum class ClientEventType(val value: String) {
@@ -34,7 +36,7 @@ interface ClientEvent {
     val event: ClientEventType
 }
 
-data class SubscribeEvent(val userId: String, val userName: String) : ClientEvent {
+data class SubscribeEvent(val user: User) : ClientEvent {
     override val event: ClientEventType
         get() = ClientEventType.Subscribe
 }
@@ -49,7 +51,7 @@ data class KeyPressEvent(val keys: List<Key>) : ClientEvent {
         get() = ClientEventType.KeyPress
 }
 
-data class CreateGameEvent(val clientId: String, val userName: String) : ClientEvent {
+data class CreateGameEvent(val user: User, val gameId: String) : ClientEvent {
     override val event: ClientEventType
         get() = ClientEventType.CreateGame
 }

@@ -2,7 +2,6 @@ package ch.ffhs.rushb.model
 
 import ch.ffhs.rushb.behavior.*
 import ch.ffhs.rushb.controller.Level
-import ch.ffhs.rushb.controller.User
 import ch.ffhs.rushb.enums.CharacterState
 import ch.ffhs.rushb.enums.Color
 import ch.ffhs.rushb.enums.Orientation

@@ -1,9 +1,10 @@
 package ch.ffhs.rushb.api
 
+import ch.ffhs.rushb.model.User
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.node.JsonNodeType
 
-fun parseFromClient(json: JsonNode): ClientEvent? {
+fun parseFromClient(json: JsonNode, userList: List<User>): ClientEvent? {
     val type = json.get("type").asText()
     if (type.trim().isBlank()) {
         println("No Type found on the incoming message: $json")
@@ -19,16 +20,15 @@ fun parseFromClient(json: JsonNode): ClientEvent? {
         ClientEventType.Subscribe -> parseSubscribe(data)
         ClientEventType.KeyPress -> parseKeypress(data)
         ClientEventType.Message -> parseMessage(data)
-        ClientEventType.CreateGame -> parseCreateGame(data)
+        ClientEventType.CreateGame -> parseCreateGame(data, userList)
     }
 }
 
 
 private fun parseSubscribe(data: List<String>): ClientEvent? {
     if (data.size == 2) {
-        val clientId = data[0]
-        val clientName = data[1]
-        return SubscribeEvent(clientId, clientName)
+        val user = User(data[0], data[1])
+        return SubscribeEvent(user)
     }
     println("Data didn't match expected form: $data")
     return null
@@ -43,11 +43,17 @@ private fun parseMessage(data: List<String>): ClientEvent {
     return MessageEvent(data)
 }
 
-private fun parseCreateGame(data: List<String>): ClientEvent? {
+private fun parseCreateGame(data: List<String>, userList: List<User>): ClientEvent? {
     if (data.size == 2) {
-        val clientId = data[0]
-        val userName = data[1]
-        return CreateGameEvent(clientId, userName)
+        val userId = data[0]
+        val user = userList.find { u -> u.id == userId }
+        if (user == null) {
+            println(userList)
+            println("User does not exist: $userId")
+            return null
+        }
+        val gameId = data[1]
+        return CreateGameEvent(user, gameId)
     }
     println("Data didn't match expected form: $data")
     return null
