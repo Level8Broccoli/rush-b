@@ -1,10 +1,10 @@
 import { h } from "preact";
-import { Events, UpdateEvent } from "../state/stateEvents";
+import { GuiEvents, UpdateGuiEvent } from "../state/stateEvents";
 import { User, Views } from "../state/stateTypes";
 import classes from "./GameConfigView.module.css";
 
 type Props = {
-  updateEvent: UpdateEvent;
+  updateEvent: UpdateGuiEvent;
   user: User;
 };
 
@@ -19,7 +19,7 @@ export function GameConfigView(props: Props): JSX.Element {
         <a
           href="#"
           class="card-footer-item"
-          onClick={() => props.updateEvent([Events.GoToView, Views.Lobby])}
+          onClick={() => props.updateEvent([GuiEvents.GoToView, Views.Lobby])}
         >
           oder trette einem anderen Spiel bei, {props.user.name}
         </a>

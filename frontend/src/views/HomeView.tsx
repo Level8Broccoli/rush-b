@@ -1,5 +1,5 @@
 import { h } from "preact";
-import { UpdateEvent } from "../state/stateEvents";
+import { UpdateGuiEvent } from "../state/stateEvents";
 import { Login } from "../components/login/Login";
 import { StateUpdater } from "preact/compat";
 import { SendToServer } from "../api/ClientEventTypes";
@@ -7,7 +7,7 @@ import { User } from "../state/stateTypes";
 
 type Props = {
   user: User;
-  updateEvent: UpdateEvent;
+  updateEvent: UpdateGuiEvent;
   setSend: StateUpdater<SendToServer>;
 };
 

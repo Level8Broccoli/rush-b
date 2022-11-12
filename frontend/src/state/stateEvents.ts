@@ -1,10 +1,10 @@
 import { StateUpdater } from "preact/compat";
 import { AppState, GameState, Message, User, Views } from "./stateTypes";
 import { ConnectionStatus, SendToServer } from "../api/ClientEventTypes";
-import { Keys, ServerEventTypes, UpdateServerEvent } from "../api/ClientEvents";
+import { Keys, ClientEventTypes, UpdateClientEvent } from "../api/ClientEvents";
 import { startNewSessionOnClient, UUID } from "./session";
 
-export enum Events {
+export enum GuiEvents {
   StartNewSession,
   AddMessages,
   SendMessages,
@@ -16,7 +16,7 @@ export enum Events {
   SetUserId,
 }
 
-export type AllStateEvents = [Events, unknown] &
+export type AllGuiStateEvents = [GuiEvents, unknown] &
   (
     | StartNewSessionEvent
     | AddMessagesEvent
@@ -29,24 +29,24 @@ export type AllStateEvents = [Events, unknown] &
     | SetUserIdEvent
   );
 
-export type UpdateEvent = (event: AllStateEvents) => true;
+export type UpdateGuiEvent = (event: AllGuiStateEvents) => true;
 
-type UpdaterFunction<T extends AllStateEvents> = (
+type UpdaterGuiFunction<T extends AllGuiStateEvents> = (
   setState: StateUpdater<AppState>,
-  updateServerEvent: UpdateServerEvent,
+  updateClientEvent: UpdateClientEvent,
   payload: T[1]
 ) => true;
 
 // UpdaterFunctions
 
 type StartNewSessionEvent = [
-  Events.StartNewSession,
-  [string, UpdateEvent, StateUpdater<SendToServer>]
+  GuiEvents.StartNewSession,
+  [string, UpdateGuiEvent, StateUpdater<SendToServer>]
 ];
 
-export const startNewSession: UpdaterFunction<StartNewSessionEvent> = (
+export const startNewSession: UpdaterGuiFunction<StartNewSessionEvent> = (
   setState,
-  updateServerEvent,
+  updateClientEvent,
   [userName, updateEvent, setSend]
 ) => {
   const userId = startNewSessionOnClient(userName);
@@ -57,15 +57,15 @@ export const startNewSession: UpdaterFunction<StartNewSessionEvent> = (
       user,
     })
   );
-  updateServerEvent([ServerEventTypes.Subscribe, [user, updateEvent, setSend]]);
+  updateClientEvent([ClientEventTypes.Subscribe, [user, updateEvent, setSend]]);
   return true;
 };
 
-type AddMessagesEvent = [Events.AddMessages, Message[]];
+type AddMessagesEvent = [GuiEvents.AddMessages, Message[]];
 
-export const addMessages: UpdaterFunction<AddMessagesEvent> = (
+export const addMessages: UpdaterGuiFunction<AddMessagesEvent> = (
   setState,
-  updateServerEvent,
+  updateClientEvent,
   messages
 ) => {
   setState(
@@ -77,69 +77,69 @@ export const addMessages: UpdaterFunction<AddMessagesEvent> = (
   return true;
 };
 
-type SendMessagesEvent = [Events.SendMessages, Message[]];
+type SendMessagesEvent = [GuiEvents.SendMessages, Message[]];
 
-export const sendMessages: UpdaterFunction<SendMessagesEvent> = (
+export const sendMessages: UpdaterGuiFunction<SendMessagesEvent> = (
   setState,
-  updateServerEvent,
+  updateClientEvent,
   messages
 ) => {
-  updateServerEvent([ServerEventTypes.Message, messages]);
+  updateClientEvent([ClientEventTypes.Message, messages]);
   return true;
 };
 
-type SendKeysEvent = [Events.SendKeys, Keys[]];
+type SendKeysEvent = [GuiEvents.SendKeys, Keys[]];
 
-export const sendKeys: UpdaterFunction<SendKeysEvent> = (
+export const sendKeys: UpdaterGuiFunction<SendKeysEvent> = (
   setState,
-  updateServerEvent,
+  updateClientEvent,
   keys
 ) => {
-  updateServerEvent([ServerEventTypes.KeyPress, keys]);
+  updateClientEvent([ClientEventTypes.KeyPress, keys]);
   return true;
 };
 
 type UpdateConnectionStatusEvent = [
-  Events.UpdateConnectionStatus,
+  GuiEvents.UpdateConnectionStatus,
   ConnectionStatus
 ];
 
-export const updateConnectionStatus: UpdaterFunction<
+export const updateConnectionStatus: UpdaterGuiFunction<
   UpdateConnectionStatusEvent
-> = (setState, updateServerEvent, newStatus) => {
+> = (setState, updateClientEvent, newStatus) => {
   setState(
     (prevState): AppState => ({ ...prevState, connectionStatus: newStatus })
   );
   return true;
 };
 
-type SetGameEvent = [Events.SetGame, GameState];
+type SetGameEvent = [GuiEvents.SetGame, GameState];
 
-export const setGame: UpdaterFunction<SetGameEvent> = (
+export const setGame: UpdaterGuiFunction<SetGameEvent> = (
   setState,
-  updateServerEvent,
+  updateClientEvent,
   game
 ) => {
   setState((prevState): AppState => ({ ...prevState, activeGame: game }));
   return true;
 };
 
-type GoToViewEvent = [Events.GoToView, Views];
+type GoToViewEvent = [GuiEvents.GoToView, Views];
 
-export const goToView: UpdaterFunction<GoToViewEvent> = (
+export const goToView: UpdaterGuiFunction<GoToViewEvent> = (
   setState,
-  updateServerEvent,
+  updateClientEvent,
   view
 ) => {
   setState((prevState): AppState => ({ ...prevState, view }));
   return true;
 };
 
-type StartNewGameEvent = [Events.StartNewGame, UUID];
+type StartNewGameEvent = [GuiEvents.StartNewGame, UUID];
 
-export const startNewGame: UpdaterFunction<StartNewGameEvent> = (
+export const startNewGame: UpdaterGuiFunction<StartNewGameEvent> = (
   setState,
-  updateServerEvent,
+  updateClientEvent,
   userId
 ) => {
   // setState(
@@ -148,15 +148,15 @@ export const startNewGame: UpdaterFunction<StartNewGameEvent> = (
   //     loadingMessage: "Spiel wird erstellt",
   //   })
   // );
-  updateServerEvent([ServerEventTypes.CreateGame, userId]);
+  updateClientEvent([ClientEventTypes.CreateGame, userId]);
   return true;
 };
 
-type SetUserIdEvent = [Events.SetUserId, UUID];
+type SetUserIdEvent = [GuiEvents.SetUserId, UUID];
 
-export const setUserId: UpdaterFunction<SetUserIdEvent> = (
+export const setUserId: UpdaterGuiFunction<SetUserIdEvent> = (
   setState,
-  updateServerEvent,
+  updateClientEvent,
   userId
 ) => {
   setState((prevState): AppState => {

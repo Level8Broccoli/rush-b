@@ -8,7 +8,7 @@ export enum ConnectionStatus {
 }
 
 export type Params = {
-  onMessageReceived: (data: unknown) => void;
+  onMessageReceived: (payload: unknown) => void;
   onConnectionChange: (status: ConnectionStatus) => void;
   getUser: () => User;
 };

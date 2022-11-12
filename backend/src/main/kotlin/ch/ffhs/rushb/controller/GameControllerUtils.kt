@@ -6,14 +6,21 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.web.socket.TextMessage
 import org.springframework.web.socket.WebSocketSession
 
-data class Message(val eventType: ServerEventTypes, val data: String)
+data class Message(val type: ServerEventTypes, val data: String) {
+    data class Data(val type: String, val data: String)
+
+    fun toData(): Data {
+        return Data(type.value, data)
+    }
+}
+
 
 typealias Emit = (WebSocketSession, Message) -> Unit
 typealias EmitWrapper = () -> Emit
 
 val createFnEmit: EmitWrapper = {
     { session, message ->
-        session.sendMessage(TextMessage(ObjectMapper().writeValueAsBytes(message)))
+        session.sendMessage(TextMessage(ObjectMapper().writeValueAsBytes(message.toData())))
     }
 }
 

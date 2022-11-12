@@ -9,9 +9,9 @@ import {
   createGame,
   keyPress,
   message,
-  ServerEventTypes,
+  ClientEventTypes,
   subscribe,
-  UpdateServerEvent,
+  UpdateClientEvent,
 } from "./ClientEvents";
 
 function send(socket: WebSocket, type: MessageType, data: string[]): boolean {
@@ -48,8 +48,8 @@ export function initWebSocket({
       const user = getUser();
       send(webSocket, MessageType.Subscribe, [user.id.value, user.name]);
     };
-    webSocket.onmessage = function (e: { data: string }) {
-      onMessageReceived(JSON.parse(e.data) as unknown);
+    webSocket.onmessage = function (payload) {
+      onMessageReceived(payload.data);
     };
     webSocket.onclose = function () {
       onConnectionChange(ConnectionStatus.CLOSED);
@@ -71,17 +71,17 @@ export function initWebSocket({
   return [sendMessage];
 }
 
-export const serverEvent: (sendMessage: SendToServer) => UpdateServerEvent =
+export const serverEvent: (sendMessage: SendToServer) => UpdateClientEvent =
   (sendMessage) => (event) => {
     const [eventType, payload] = event;
     switch (eventType) {
-      case ServerEventTypes.Subscribe:
+      case ClientEventTypes.Subscribe:
         return subscribe(sendMessage, payload);
-      case ServerEventTypes.Message:
+      case ClientEventTypes.Message:
         return message(sendMessage, payload);
-      case ServerEventTypes.KeyPress:
+      case ClientEventTypes.KeyPress:
         return keyPress(sendMessage, payload);
-      case ServerEventTypes.CreateGame:
+      case ClientEventTypes.CreateGame:
         return createGame(sendMessage, payload);
     }
   };

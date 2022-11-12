@@ -4,12 +4,12 @@ import logoUrl from "../../assets/img.png";
 import { Button } from "../general/Button";
 import { Input } from "../general/Input";
 import { StateUpdater, TargetedEvent, useState } from "preact/compat";
-import { Events, UpdateEvent } from "../../state/stateEvents";
+import { GuiEvents, UpdateGuiEvent } from "../../state/stateEvents";
 import { SendToServer } from "../../api/ClientEventTypes";
 import { User, Views } from "../../state/stateTypes";
 
 type Props = {
-  updateEvent: UpdateEvent;
+  updateEvent: UpdateGuiEvent;
   setSend: StateUpdater<SendToServer>;
   user: User;
 };
@@ -36,10 +36,10 @@ export function Login(props: Props): JSX.Element {
     const isValid = validateName();
     if (isValid) {
       props.updateEvent([
-        Events.StartNewSession,
+        GuiEvents.StartNewSession,
         [name, props.updateEvent, props.setSend],
       ]);
-      props.updateEvent([Events.GoToView, Views.Lobby]);
+      props.updateEvent([GuiEvents.GoToView, Views.Lobby]);
     }
   };
 

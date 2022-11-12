@@ -7,7 +7,7 @@ import {
 import { AppState, Views } from "./stateTypes";
 import {
   addMessages,
-  Events,
+  GuiEvents,
   goToView,
   sendKeys,
   sendMessages,
@@ -16,10 +16,10 @@ import {
   startNewGame,
   startNewSession,
   updateConnectionStatus,
-  UpdateEvent,
+  UpdateGuiEvent,
 } from "./stateEvents";
 import { serverEvent } from "../api/server";
-import { UpdateServerEvent } from "../api/ClientEvents";
+import { UpdateClientEvent } from "../api/ClientEvents";
 
 const initalGameState: AppState = {
   view: Views.Home,
@@ -38,34 +38,34 @@ const initalGameState: AppState = {
 
 const updateEvent: (
   setState: StateUpdater<AppState>,
-  updateServerEvent: UpdateServerEvent
-) => UpdateEvent = (setState, updateServerEvent) => (event) => {
+  updateServerEvent: UpdateClientEvent
+) => UpdateGuiEvent = (setState, updateServerEvent) => (event) => {
   const [eventType, payload] = event;
   switch (eventType) {
-    case Events.StartNewSession:
+    case GuiEvents.StartNewSession:
       return startNewSession(setState, updateServerEvent, payload);
-    case Events.AddMessages:
+    case GuiEvents.AddMessages:
       return addMessages(setState, updateServerEvent, payload);
-    case Events.SendMessages:
+    case GuiEvents.SendMessages:
       return sendMessages(setState, updateServerEvent, payload);
-    case Events.SendKeys:
+    case GuiEvents.SendKeys:
       return sendKeys(setState, updateServerEvent, payload);
-    case Events.UpdateConnectionStatus:
+    case GuiEvents.UpdateConnectionStatus:
       return updateConnectionStatus(setState, updateServerEvent, payload);
-    case Events.SetGame:
+    case GuiEvents.SetGame:
       return setGame(setState, updateServerEvent, payload);
-    case Events.GoToView:
+    case GuiEvents.GoToView:
       return goToView(setState, updateServerEvent, payload);
-    case Events.StartNewGame:
+    case GuiEvents.StartNewGame:
       return startNewGame(setState, updateServerEvent, payload);
-    case Events.SetUserId:
+    case GuiEvents.SetUserId:
       return setUserId(setState, updateServerEvent, payload);
   }
 };
 
 export function useGameState(
   sendMessage: SendToServer
-): [AppState, UpdateEvent] {
+): [AppState, UpdateGuiEvent] {
   const [state, setState] = useState<AppState>(initalGameState);
   return [state, updateEvent(setState, serverEvent(sendMessage))];
 }

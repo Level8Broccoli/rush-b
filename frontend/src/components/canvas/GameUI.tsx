@@ -4,14 +4,14 @@ import { useEffect, useRef, useState } from "preact/compat";
 import { drawBackground, drawCharacters } from "./draw";
 import { Character } from "../../state/stateTypes";
 import { TileMap } from "../../state/tileMap.enum";
-import { Events, UpdateEvent } from "../../state/stateEvents";
+import { GuiEvents, UpdateGuiEvent } from "../../state/stateEvents";
 import { Keys, toKey } from "../../api/ClientEvents";
 
 type Props = {
   timer: string;
   tileMap: TileMap;
   characters: Character[];
-  updateEvent: UpdateEvent;
+  updateEvent: UpdateGuiEvent;
 };
 
 export function GameUI(props: Props): JSX.Element {
@@ -48,7 +48,7 @@ export function GameUI(props: Props): JSX.Element {
       setMessage((prev) => [...prev, key]);
     }
     if (message.length) {
-      props.updateEvent([Events.SendKeys, message]);
+      props.updateEvent([GuiEvents.SendKeys, message]);
     }
   };
 
@@ -59,7 +59,7 @@ export function GameUI(props: Props): JSX.Element {
       setMessage((prev) => [...prev].filter((item) => item !== key));
     }
     if (message.length) {
-      props.updateEvent([Events.SendKeys, message]);
+      props.updateEvent([GuiEvents.SendKeys, message]);
     }
   };
 

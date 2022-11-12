@@ -78,10 +78,9 @@ class GameController : TextWebSocketHandler() {
         val json = ObjectMapper().readTree(message.payload)
         val event = parseFromClient(json, instance!!.userList)
         if (event == null) {
-            println("Event couln't get parsed. $json")
+            println("Event couldn't get parsed. $json")
             return
         }
-
         val addToSessions = createFnAddToSessions(instance!!.sessionList)
         val addToUsers = createAddToUsers(instance!!.userList)
         val addToOpenGames = createAddToOpenGames(instance!!.openGameList)

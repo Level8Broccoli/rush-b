@@ -1,19 +1,19 @@
 import { h } from "preact";
-import { Events, UpdateEvent } from "../state/stateEvents";
+import { GuiEvents, UpdateGuiEvent } from "../state/stateEvents";
 import { GameList } from "../components/lobby/GameList";
 import { OpenGame, User, Views } from "../state/stateTypes";
 import classes from "./LobbyView.module.css";
 
 type Props = {
-  updateEvent: UpdateEvent;
+  updateEvent: UpdateGuiEvent;
   openGames: OpenGame[];
   user: User;
 };
 
 export function LobbyView(props: Props): JSX.Element {
   const createNewGame = () => {
-    props.updateEvent([Events.StartNewGame, props.user.id]);
-    props.updateEvent([Events.GoToView, Views.GameConfig]);
+    props.updateEvent([GuiEvents.StartNewGame, props.user.id]);
+    props.updateEvent([GuiEvents.GoToView, Views.GameConfig]);
   };
 
   return (

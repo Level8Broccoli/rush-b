@@ -3,14 +3,14 @@ import { HomeView } from "./HomeView";
 import { LobbyView } from "./LobbyView";
 import { GameView } from "./GameView";
 import { h } from "preact";
-import { UpdateEvent } from "../state/stateEvents";
+import { UpdateGuiEvent } from "../state/stateEvents";
 import { StateUpdater } from "preact/compat";
 import { SendToServer } from "../api/ClientEventTypes";
 import { GameConfigView } from "./GameConfigView";
 
 type Props = {
   state: AppState;
-  updateEvent: UpdateEvent;
+  updateEvent: UpdateGuiEvent;
   setSend: StateUpdater<SendToServer>;
 };
 

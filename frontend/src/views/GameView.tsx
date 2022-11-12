@@ -3,11 +3,11 @@ import { GameUI } from "../components/canvas/GameUI";
 import { AppState } from "../state/stateTypes";
 import Logs from "../components/log/Logs";
 import { Chat } from "../components/chat/Chat";
-import { UpdateEvent } from "../state/stateEvents";
+import { UpdateGuiEvent } from "../state/stateEvents";
 
 type Props = {
   state: AppState;
-  updateEvent: UpdateEvent;
+  updateEvent: UpdateGuiEvent;
 };
 
 export function GameView(props: Props): JSX.Element {

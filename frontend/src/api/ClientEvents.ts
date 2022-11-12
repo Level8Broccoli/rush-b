@@ -3,22 +3,22 @@ import { UUID } from "../state/session";
 import { User } from "../state/stateTypes";
 import { StateUpdater } from "preact/compat";
 import { initWebSocket } from "./server";
-import { Events, UpdateEvent } from "../state/stateEvents";
-import { isMessage } from "../utils/parse";
+import { GuiEvents, UpdateGuiEvent } from "../state/stateEvents";
+import { parseFromServer } from "./ServerParser";
 
 // should be kept in sync with `ClientEvents.kt`
 
-export enum ServerEventTypes {
+export enum ClientEventTypes {
   Subscribe,
   Message,
   KeyPress,
   CreateGame,
 }
 
-export type AllServerEvents = [ServerEventTypes, unknown] &
+export type AllClientEvents = [ClientEventTypes, unknown] &
   (SubscribeEvent | MessageEvent | KeyPressEvent | CreateGameEvent);
-export type UpdateServerEvent = (event: AllServerEvents) => boolean;
-type UpdaterServerFunction<T extends AllServerEvents> = (
+export type UpdateClientEvent = (event: AllClientEvents) => boolean;
+type UpdaterClientFunction<T extends AllClientEvents> = (
   server: SendToServer,
   payload: T[1]
 ) => boolean;
@@ -26,27 +26,24 @@ type UpdaterServerFunction<T extends AllServerEvents> = (
 // UpdateFunctions (Server)
 
 type SubscribeEvent = [
-  ServerEventTypes.Subscribe,
-  [User, UpdateEvent, StateUpdater<SendToServer>]
+  ClientEventTypes.Subscribe,
+  [User, UpdateGuiEvent, StateUpdater<SendToServer>]
 ];
-export const subscribe: UpdaterServerFunction<SubscribeEvent> = (
+export const subscribe: UpdaterClientFunction<SubscribeEvent> = (
   server,
-  [user, updateEvent, setSend]
+  [user, updateGuiEvent, setSend]
 ) => {
   const [sendMessage] = initWebSocket({
     onConnectionChange: (newStatus) =>
-      updateEvent([Events.UpdateConnectionStatus, newStatus]),
-    onMessageReceived: (data) => {
-      if (!isMessage(data)) {
+      updateGuiEvent([GuiEvents.UpdateConnectionStatus, newStatus]),
+    onMessageReceived: (payload) => {
+      const event = parseFromServer(updateGuiEvent, payload);
+      if (event === null) {
+        console.error(`Event couldn't get parsed. ${payload}`);
+        console.log(payload);
         return;
       }
-      if (data["msgType"] === "message" || data["msgType"] === "keyPress") {
-        updateEvent([Events.AddMessages, [data["data"]]]);
-      } else if (data["msgType"] === "game") {
-        const game = JSON.parse(data["data"]);
-        game["level"] = JSON.parse(game["level"]);
-        updateEvent([Events.SetGame, game]);
-      }
+      event.execute();
     },
     getUser: () => {
       return user;
@@ -70,16 +67,16 @@ export function toKey(code: string): Keys {
   return Keys.ARROW_UP;
 }
 
-type MessageEvent = [ServerEventTypes.Message, string[]];
-export const message: UpdaterServerFunction<MessageEvent> = (
+type MessageEvent = [ClientEventTypes.Message, string[]];
+export const message: UpdaterClientFunction<MessageEvent> = (
   server,
   messages
 ) => {
   return server.send(MessageType.Message, messages);
 };
 
-type KeyPressEvent = [ServerEventTypes.KeyPress, Keys[]];
-export const keyPress: UpdaterServerFunction<KeyPressEvent> = (
+type KeyPressEvent = [ClientEventTypes.KeyPress, Keys[]];
+export const keyPress: UpdaterClientFunction<KeyPressEvent> = (
   server,
   keys
 ) => {
@@ -89,8 +86,8 @@ export const keyPress: UpdaterServerFunction<KeyPressEvent> = (
   );
 };
 
-type CreateGameEvent = [ServerEventTypes.CreateGame, UUID];
-export const createGame: UpdaterServerFunction<CreateGameEvent> = (
+type CreateGameEvent = [ClientEventTypes.CreateGame, UUID];
+export const createGame: UpdaterClientFunction<CreateGameEvent> = (
   server,
   userId
 ) => {
