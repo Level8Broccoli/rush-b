@@ -1,6 +1,7 @@
 package ch.ffhs.rushb.controller
 
 import ch.ffhs.rushb.api.*
+import ch.ffhs.rushb.behavior.listToJSON
 import ch.ffhs.rushb.model.OpenGame
 import ch.ffhs.rushb.model.User
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -70,11 +71,8 @@ class GameController : TextWebSocketHandler() {
 
     @Scheduled(fixedRate = 10_000)
     fun sendOpenGames() {
-        instance!!.openGameList.forEach { game ->
-            broadcast(Message("openGame", game.toJSON()))
-            println("Push Open Game")
-            println(game.toJSON())
-        }
+        broadcast(Message("openGames", listToJSON(instance!!.openGameList)))
+        println("Push Open Games")
     }
 
     override fun handleTextMessage(session: WebSocketSession, message: TextMessage) {
@@ -85,9 +83,9 @@ class GameController : TextWebSocketHandler() {
                 val e = event as SubscribeEvent
                 instance!!.sessionList += mapOf(session to e.user)
                 instance!!.userList += e.user
-                instance!!.openGameList.forEach { game ->
-                    emit(session, Message("openGame", game.toJSON()))
-                }
+                emit(
+                    session, Message("openGames", listToJSON(instance!!.openGameList))
+                )
 //                broadcast(Message("subscriber", instance!!.sessionList.values))
                 println("Subscribe Event")
                 println(e.user)
