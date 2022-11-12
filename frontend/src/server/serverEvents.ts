@@ -87,10 +87,10 @@ export const keyPress: UpdaterServerFunction<KeyPressEvent> = (
   );
 };
 
-type CreateGameEvent = [ServerEventTypes.CreateGame, [UUID, string]];
+type CreateGameEvent = [ServerEventTypes.CreateGame, UUID];
 export const createGame: UpdaterServerFunction<CreateGameEvent> = (
   sendToServer,
-  [userId, userName]
+  userId
 ) => {
-  return sendToServer(MessageType.CreateGame, [userId.value, userName]);
+  return sendToServer(MessageType.CreateGame, [userId.value]);
 };

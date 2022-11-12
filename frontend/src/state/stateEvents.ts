@@ -139,21 +139,20 @@ export const goToView: UpdaterFunction<GoToViewEvent> = (
   return true;
 };
 
-type StartNewGameEvent = [Events.StartNewGame, [UUID, string]];
+type StartNewGameEvent = [Events.StartNewGame, UUID];
 
 export const startNewGame: UpdaterFunction<StartNewGameEvent> = (
   setState,
   updateServerEvent,
-  [userId, playerName]
+  userId
 ) => {
   setState(
     (prevState): AppState => ({
       ...prevState,
-      user: { ...prevState.user, name: playerName },
       loadingMessage: "Spiel wird erstellt",
     })
   );
-  updateServerEvent([ServerEventTypes.CreateGame, [userId, playerName]]);
+  updateServerEvent([ServerEventTypes.CreateGame, userId]);
   return true;
 };
 

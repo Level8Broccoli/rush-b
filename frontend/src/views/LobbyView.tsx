@@ -1,13 +1,13 @@
 import { h } from "preact";
 import { Events, UpdateEvent } from "../state/stateEvents";
 import { GameList } from "../components/lobby/GameList";
-import { OpenGame } from "../state/stateTypes";
+import { OpenGame, User } from "../state/stateTypes";
 import classes from "./LobbyView.module.css";
 
 type Props = {
   updateEvent: UpdateEvent;
   openGames: OpenGame[];
-  playerName: string;
+  user: User;
 };
 
 export function LobbyView(props: Props): JSX.Element {
@@ -24,10 +24,10 @@ export function LobbyView(props: Props): JSX.Element {
           href="#"
           class="card-footer-item"
           onClick={() =>
-            props.updateEvent([Events.StartNewGame, props.playerName])
+            props.updateEvent([Events.StartNewGame, props.user.id])
           }
         >
-          oder starte ein eigenes Spiel, {props.playerName}
+          oder starte ein eigenes Spiel, {props.user.name}
         </a>
       </div>
     </div>

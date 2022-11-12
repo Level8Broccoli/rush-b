@@ -6,11 +6,12 @@ import { Input } from "../general/Input";
 import { StateUpdater, useState } from "preact/compat";
 import { Events, UpdateEvent } from "../../state/stateEvents";
 import { SendToServer } from "../../server/serverTypes";
-import { Views } from "../../state/stateTypes";
+import { User, Views } from "../../state/stateTypes";
 
 type Props = {
   updateEvent: UpdateEvent;
   setSend: StateUpdater<SendToServer>;
+  user: User;
 };
 
 export function Login(props: Props): JSX.Element {
@@ -33,7 +34,12 @@ export function Login(props: Props): JSX.Element {
   const startNewGame = () => {
     const isValid = validateName();
     if (isValid) {
-      props.updateEvent([Events.StartNewGame, [{ value: "TODO" }, name]]);
+      props.updateEvent([
+        Events.StartNewSession,
+        [name, props.updateEvent, props.setSend],
+      ]);
+      props.updateEvent([Events.GoToView, Views.GameConfig]);
+      props.updateEvent([Events.StartNewGame, props.user.id]);
     }
   };
 

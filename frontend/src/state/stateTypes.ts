@@ -32,6 +32,7 @@ export type GameState = {
 export enum Views {
   Home,
   Lobby,
+  GameConfig,
   Game,
 }
 
