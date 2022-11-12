@@ -25,9 +25,10 @@ fun parseFromClient(json: JsonNode): ClientEvent? {
 
 
 private fun parseSubscribe(data: List<String>): ClientEvent? {
-    if (data.size == 1) {
+    if (data.size == 2) {
         val clientId = data[0]
-        return SubscribeEvent(clientId)
+        val clientName = data[1]
+        return SubscribeEvent(clientId, clientName)
     }
     println("Data didn't match expected form: $data")
     return null

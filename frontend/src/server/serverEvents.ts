@@ -48,9 +48,11 @@ export const subscribe: UpdaterServerFunction<SubscribeEvent> = (
         updateEvent([Events.SetGame, game]);
       }
     },
+    getUser: () => {
+      return user;
+    },
   });
   setSend(() => sendMessage);
-  sendMessage.send(MessageType.Subscribe, [user.name, user.id.value]);
   return true;
 };
 

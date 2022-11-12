@@ -1,3 +1,5 @@
+import { User } from "../state/stateTypes";
+
 export enum ConnectionStatus {
   CONNECTING,
   OPEN,
@@ -8,6 +10,7 @@ export enum ConnectionStatus {
 export type Params = {
   onMessageReceived: (data: unknown) => void;
   onConnectionChange: (status: ConnectionStatus) => void;
+  getUser: () => User;
 };
 
 export enum MessageType {

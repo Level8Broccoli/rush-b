@@ -27,10 +27,9 @@ function send(socket: WebSocket, type: MessageType, data: string[]): boolean {
 export function initWebSocket({
   onMessageReceived,
   onConnectionChange,
+  getUser,
 }: Params): [SendToServer] {
   onConnectionChange(ConnectionStatus.CONNECTING);
-  // const userId = generateUserId();
-
   let sendMessage: SendToServer = {
     send: () => {
       throw new Error(
@@ -46,8 +45,8 @@ export function initWebSocket({
     );
     webSocket.onopen = function () {
       onConnectionChange(ConnectionStatus.OPEN);
-      const userName = "TODO";
-      return send(webSocket, MessageType.Subscribe, [userName]);
+      const user = getUser();
+      send(webSocket, MessageType.Subscribe, [user.id.value, user.name]);
     };
     webSocket.onmessage = function (e: { data: string }) {
       onMessageReceived(JSON.parse(e.data) as unknown);

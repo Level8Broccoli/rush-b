@@ -84,10 +84,8 @@ class GameController : TextWebSocketHandler() {
         val event = parseFromClient(json)
         when (event?.event) {
             ClientEventType.Subscribe -> {
-                val userId = (event as SubscribeEvent).userId
-                val subscriber = Subscriber(User(instance!!.uid.getAndIncrement(), userId, ""))
-                println("Subscribe")
-                println(userId)
+                val e = event as SubscribeEvent
+                val subscriber = Subscriber(User(instance!!.uid.getAndIncrement(), e.userId, e.userName))
                 println(subscriber)
                 instance!!.sessionList += mapOf(session to subscriber)
                 broadcast(Message("subscriber", instance!!.sessionList.values))

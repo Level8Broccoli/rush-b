@@ -34,7 +34,7 @@ interface ClientEvent {
     val event: ClientEventType
 }
 
-data class SubscribeEvent(val userId: String) : ClientEvent {
+data class SubscribeEvent(val userId: String, val userName: String) : ClientEvent {
     override val event: ClientEventType
         get() = ClientEventType.Subscribe
 }
