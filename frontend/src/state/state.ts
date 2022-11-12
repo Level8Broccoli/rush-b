@@ -2,18 +2,17 @@ import { StateUpdater, useState } from "preact/compat";
 import { ConnectionStatus, SendToServer } from "../server/serverTypes";
 import { AppState, Views } from "./stateTypes";
 import {
+  addMessages,
   Events,
   goToView,
-  addMessages,
-  searchForGame,
+  sendKeys,
+  sendMessages,
   setGame,
+  setUserId,
   startNewGame,
+  startNewSession,
   updateConnectionStatus,
   UpdateEvent,
-  sendMessages,
-  sendKeys,
-  setUserId,
-  startNewSession,
 } from "./stateEvents";
 import { serverEvent } from "../server/server";
 import { UpdateServerEvent } from "../server/serverEvents";
@@ -53,8 +52,6 @@ const updateEvent: (
       return setGame(setState, updateServerEvent, payload);
     case Events.GoToView:
       return goToView(setState, updateServerEvent, payload);
-    case Events.SearchForGame:
-      return searchForGame(setState, updateServerEvent, payload);
     case Events.StartNewGame:
       return startNewGame(setState, updateServerEvent, payload);
     case Events.SetUserId:

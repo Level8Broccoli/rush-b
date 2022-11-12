@@ -16,7 +16,6 @@ export enum Events {
   UpdateConnectionStatus,
   SetGame,
   GoToView,
-  SearchForGame,
   StartNewGame,
   SetUserId,
 }
@@ -30,7 +29,6 @@ export type AllStateEvents = [Events, unknown] &
     | UpdateConnectionStatusEvent
     | SetGameEvent
     | GoToViewEvent
-    | SearchForGameEvent
     | StartNewGameEvent
     | SetUserIdEvent
   );
@@ -138,23 +136,6 @@ export const goToView: UpdaterFunction<GoToViewEvent> = (
   view
 ) => {
   setState((prevState): AppState => ({ ...prevState, view }));
-  return true;
-};
-
-type SearchForGameEvent = [Events.SearchForGame, string];
-
-export const searchForGame: UpdaterFunction<SearchForGameEvent> = (
-  setState,
-  updateServerEvent,
-  playerName
-) => {
-  setState(
-    (prevState): AppState => ({
-      ...prevState,
-      view: Views.Lobby,
-      user: { ...prevState.user, name: playerName },
-    })
-  );
   return true;
 };
 

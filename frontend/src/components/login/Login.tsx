@@ -6,6 +6,7 @@ import { Input } from "../general/Input";
 import { StateUpdater, useState } from "preact/compat";
 import { Events, UpdateEvent } from "../../state/stateEvents";
 import { SendToServer } from "../../server/serverTypes";
+import { Views } from "../../state/stateTypes";
 
 type Props = {
   updateEvent: UpdateEvent;
@@ -43,7 +44,7 @@ export function Login(props: Props): JSX.Element {
         Events.StartNewSession,
         [name, props.updateEvent, props.setSend],
       ]);
-      props.updateEvent([Events.SearchForGame, name]);
+      props.updateEvent([Events.GoToView, Views.Lobby]);
     }
   };
 
