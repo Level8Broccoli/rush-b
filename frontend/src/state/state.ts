@@ -1,5 +1,9 @@
 import { StateUpdater, useState } from "preact/compat";
-import { ConnectionStatus, SendToServer } from "../server/serverTypes";
+import {
+  ConnectionStatus,
+  MessageType,
+  SendToServer,
+} from "../server/serverTypes";
 import { AppState, Views } from "./stateTypes";
 import {
   addMessages,

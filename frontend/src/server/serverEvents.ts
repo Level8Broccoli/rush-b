@@ -17,11 +17,11 @@ export enum ServerEventTypes {
 
 export type AllServerEvents = [ServerEventTypes, unknown] &
   (SubscribeEvent | MessageEvent | KeyPressEvent | CreateGameEvent);
-export type UpdateServerEvent = (event: AllServerEvents) => Promise<boolean>;
+export type UpdateServerEvent = (event: AllServerEvents) => boolean;
 type UpdaterServerFunction<T extends AllServerEvents> = (
-  sendToServer: SendToServer,
+  server: SendToServer,
   payload: T[1]
-) => Promise<boolean>;
+) => boolean;
 
 // UpdateFunctions (Server)
 
@@ -29,11 +29,10 @@ type SubscribeEvent = [
   ServerEventTypes.Subscribe,
   [User, UpdateEvent, StateUpdater<SendToServer>]
 ];
-export const subscribe: UpdaterServerFunction<SubscribeEvent> = async (
-  sendToServer,
+export const subscribe: UpdaterServerFunction<SubscribeEvent> = (
+  server,
   [user, updateEvent, setSend]
 ) => {
-  await sendToServer(MessageType.Subscribe, [user.name, user.id.value]);
   const [sendMessage] = initWebSocket({
     onConnectionChange: (newStatus) =>
       updateEvent([Events.UpdateConnectionStatus, newStatus]),
@@ -51,7 +50,8 @@ export const subscribe: UpdaterServerFunction<SubscribeEvent> = async (
     },
   });
   setSend(() => sendMessage);
-  return new Promise((res) => res(true));
+  sendMessage.send(MessageType.Subscribe, [user.name, user.id.value]);
+  return true;
 };
 
 export enum Keys {
@@ -70,18 +70,18 @@ export function toKey(code: string): Keys {
 
 type MessageEvent = [ServerEventTypes.Message, string[]];
 export const message: UpdaterServerFunction<MessageEvent> = (
-  sendToServer,
+  server,
   messages
 ) => {
-  return sendToServer(MessageType.Message, messages);
+  return server.send(MessageType.Message, messages);
 };
 
 type KeyPressEvent = [ServerEventTypes.KeyPress, Keys[]];
 export const keyPress: UpdaterServerFunction<KeyPressEvent> = (
-  sendToServer,
+  server,
   keys
 ) => {
-  return sendToServer(
+  return server.send(
     MessageType.KeyPress,
     keys.map((k) => k.toString())
   );
@@ -89,8 +89,9 @@ export const keyPress: UpdaterServerFunction<KeyPressEvent> = (
 
 type CreateGameEvent = [ServerEventTypes.CreateGame, UUID];
 export const createGame: UpdaterServerFunction<CreateGameEvent> = (
-  sendToServer,
+  server,
   userId
 ) => {
-  return sendToServer(MessageType.CreateGame, [userId.value]);
+  const gameId = crypto.randomUUID();
+  return server.send(MessageType.CreateGame, [userId.value, gameId]);
 };

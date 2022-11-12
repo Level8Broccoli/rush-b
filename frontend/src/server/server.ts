@@ -14,16 +14,13 @@ import {
   UpdateServerEvent,
 } from "./serverEvents";
 
-function send(
-  socket: WebSocket,
-  type: MessageType,
-  data: string[]
-): Promise<boolean> {
+function send(socket: WebSocket, type: MessageType, data: string[]): boolean {
   try {
     socket.send(JSON.stringify({ type, data }));
-    return new Promise((resolve) => resolve(true));
+    return true;
   } catch (e) {
-    return new Promise((_, reject) => reject(e));
+    console.error(e);
+    return false;
   }
 }
 
@@ -34,13 +31,13 @@ export function initWebSocket({
   onConnectionChange(ConnectionStatus.CONNECTING);
   // const userId = generateUserId();
 
-  let sendMessage: SendToServer = (type, data) => {
-    return new Promise(() =>
-      console.error("Es konnte keine Verbinung zum Server aufgebaut werden", {
-        type,
-        data,
-      })
-    );
+  let sendMessage: SendToServer = {
+    send: () => {
+      throw new Error(
+        "Es konnte keine Verbindung zum Server aufgebaut werden",
+        ...arguments
+      );
+    },
   };
 
   function connect() {
@@ -60,14 +57,13 @@ export function initWebSocket({
       setTimeout(connect, Math.random() * 60_000);
     };
 
-    sendMessage = function (
-      type: MessageType,
-      data: string[]
-    ): Promise<boolean> {
-      if (webSocket.readyState === ConnectionStatus.OPEN) {
-        return send(webSocket, type, data);
-      }
-      return new Promise((_, reject) => reject("Connection is not open"));
+    sendMessage = {
+      send(type: MessageType, data: string[]): boolean {
+        if (webSocket.readyState === ConnectionStatus.OPEN) {
+          return send(webSocket, type, data);
+        }
+        return false;
+      },
     };
   }
 

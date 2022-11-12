@@ -17,7 +17,6 @@ export enum MessageType {
   CreateGame = "createGame",
 }
 
-export type SendToServer = (
-  type: MessageType,
-  data: string[]
-) => Promise<boolean>;
+export type SendToServer = {
+  send: (type: MessageType, data: string[]) => boolean;
+};

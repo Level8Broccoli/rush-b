@@ -1,6 +1,6 @@
-import {h} from "preact";
-import {Events, UpdateEvent} from "../state/stateEvents";
-import {User, Views} from "../state/stateTypes";
+import { h } from "preact";
+import { Events, UpdateEvent } from "../state/stateEvents";
+import { User, Views } from "../state/stateTypes";
 import classes from "./GameConfigView.module.css";
 
 type Props = {
