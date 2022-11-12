@@ -3,8 +3,9 @@ import { h } from "preact";
 type Props = {
   label: string;
   variant?: "black" | "ghost" | "light";
-  onClick: () => void;
+  onClick?: () => void;
   size?: "md" | "sm";
+  type?: "submit";
 };
 
 export function Button(props: Props): JSX.Element {
@@ -15,7 +16,7 @@ export function Button(props: Props): JSX.Element {
   ].join(" ");
 
   return (
-    <button class={classes} onClick={props.onClick}>
+    <button class={classes} onClick={props.onClick} type={props.type}>
       {props.label}
     </button>
   );

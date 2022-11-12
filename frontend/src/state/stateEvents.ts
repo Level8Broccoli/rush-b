@@ -146,12 +146,12 @@ export const startNewGame: UpdaterFunction<StartNewGameEvent> = (
   updateServerEvent,
   userId
 ) => {
-  setState(
-    (prevState): AppState => ({
-      ...prevState,
-      loadingMessage: "Spiel wird erstellt",
-    })
-  );
+  // setState(
+  //   (prevState): AppState => ({
+  //     ...prevState,
+  //     loadingMessage: "Spiel wird erstellt",
+  //   })
+  // );
   updateServerEvent([ServerEventTypes.CreateGame, userId]);
   return true;
 };

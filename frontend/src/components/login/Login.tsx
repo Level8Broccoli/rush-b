@@ -3,7 +3,7 @@ import classes from "./Login.module.css";
 import logoUrl from "../../assets/img.png";
 import { Button } from "../general/Button";
 import { Input } from "../general/Input";
-import { StateUpdater, useState } from "preact/compat";
+import { StateUpdater, TargetedEvent, useState } from "preact/compat";
 import { Events, UpdateEvent } from "../../state/stateEvents";
 import { SendToServer } from "../../server/serverTypes";
 import { User, Views } from "../../state/stateTypes";
@@ -31,19 +31,8 @@ export function Login(props: Props): JSX.Element {
     return false;
   };
 
-  const startNewGame = () => {
-    const isValid = validateName();
-    if (isValid) {
-      props.updateEvent([
-        Events.StartNewSession,
-        [name, props.updateEvent, props.setSend],
-      ]);
-      props.updateEvent([Events.GoToView, Views.GameConfig]);
-      props.updateEvent([Events.StartNewGame, props.user.id]);
-    }
-  };
-
-  const goToLobby = () => {
+  const login = (e: TargetedEvent<HTMLFormElement, Event>) => {
+    e.preventDefault();
     const isValid = validateName();
     if (isValid) {
       props.updateEvent([
@@ -65,25 +54,16 @@ export function Login(props: Props): JSX.Element {
           </div>
           <div class="media-content">
             <h2 class="title is-4">Jetzt Spielen!</h2>
-            <Input
-              label={"Name"}
-              placeholder={"Wähle dein Anzeigename"}
-              value={name}
-              onUpdate={updateName}
-              error={isInvalid ? "Bitte einen Namen angeben" : ""}
-            />
-            <div class={`mt-6 buttons ${classes.buttonGroup}`}>
-              <Button
-                label="Neues Spiel starten"
-                variant={"black"}
-                onClick={startNewGame}
+            <form onSubmit={login}>
+              <Input
+                label={"Name"}
+                placeholder={"Wähle dein Anzeigename"}
+                value={name}
+                onUpdate={updateName}
+                error={isInvalid ? "Bitte einen Namen angeben" : ""}
               />
-              <Button
-                label="Spiel suchen"
-                variant={"light"}
-                onClick={goToLobby}
-              />
-            </div>
+              <Button label="Anmelden" variant={"black"} type={"submit"} />
+            </form>
           </div>
         </div>
       </div>

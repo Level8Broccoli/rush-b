@@ -14,7 +14,7 @@ data class OpenGame(override val id: String, val creator: User, var secondPlayer
             {
                 "id": "$id",
                  "creator": ${creator.toJSON()},
-                 "secondPlayer": ${secondPlayer?.toJSON() ?: "\"null\""}
+                 "secondPlayer": ${secondPlayer?.toJSON() ?: "null"}
             }
             """.trimIndent()
     }

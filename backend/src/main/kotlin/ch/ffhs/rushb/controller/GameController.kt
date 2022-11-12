@@ -1,7 +1,6 @@
 package ch.ffhs.rushb.controller
 
 import ch.ffhs.rushb.api.*
-import ch.ffhs.rushb.behavior.listToJSON
 import ch.ffhs.rushb.model.OpenGame
 import ch.ffhs.rushb.model.User
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -28,6 +27,9 @@ class GameController : TextWebSocketHandler() {
     val userList = mutableListOf<User>()
     val openGameList = mutableListOf<OpenGame>()
     val runningGameList = mutableListOf<Game>()
+    private final val emit: Emit
+    private final val broadcast: Broadcast
+    private final val broadcastToOthers: BroadcastToOthers
 //    private var game = Game("game 0", User("0", "DemoPlayer"), Level(TileMap.ONE))
 
     init {
@@ -46,6 +48,10 @@ class GameController : TextWebSocketHandler() {
 
             // GeneticFitter().run()
         }
+        emit = createFnEmit()
+        broadcast = createFnBroadcast(instance!!.sessionList, emit)
+        broadcastToOthers = createFnBroadcastToOthers(instance!!.sessionList, emit)
+
     }
 
 
@@ -69,83 +75,35 @@ class GameController : TextWebSocketHandler() {
         // TODO: remove inactive games
     }
 
-    @Scheduled(fixedRate = 10_000)
-    fun sendOpenGames() {
-        broadcast(Message("openGames", listToJSON(instance!!.openGameList)))
-        println("Push Open Games")
-    }
 
     override fun handleTextMessage(session: WebSocketSession, message: TextMessage) {
         val json = ObjectMapper().readTree(message.payload)
         val event = parseFromClient(json, instance!!.userList)
-        when (event?.event) {
-            ClientEventType.Subscribe -> {
-                val e = event as SubscribeEvent
-                instance!!.sessionList += mapOf(session to e.user)
-                instance!!.userList += e.user
-                emit(
-                    session, Message("openGames", listToJSON(instance!!.openGameList))
-                )
-//                broadcast(Message("subscriber", instance!!.sessionList.values))
-                println("Subscribe Event")
-                println(e.user)
-            }
-
-            ClientEventType.Message -> {
-                val e = event as MessageEvent
-//                broadcast(Message("message", e.messages))
-            }
-
-            ClientEventType.KeyPress -> {
-                val e = event as KeyPressEvent
-                val keys = e.keys
-                for (key in keys) {
-                    if (key == Key.ARROW_LEFT) {
-//                        instance!!.game.setVelocityX(instance!!.game.getPlayer1(), -1.0)
-                    } else if (key == Key.ARROW_RIGHT) {
-//                        instance!!.game.setVelocityX(instance!!.game.getPlayer1(), 1.0)
-                    } else if (key == Key.ARROW_UP || key == Key.SPACE) {
-//                        instance!!.game.setVelocityY(instance!!.game.getPlayer1())
-                    } else if (key == Key.KEY_E) {
-//                        instance!!.game.paint(instance!!.game.getPlayer1())
-                    } else if (key == Key.KEY_Q) {
-                        // TODO: quit
-                    }
-                }
-            }
-
-            ClientEventType.CreateGame -> {
-                val e = event as CreateGameEvent
-                val newGame = OpenGame(e.gameId, e.user)
-                instance!!.openGameList += newGame
-
-                println("Create Game Event")
-                println(newGame)
-            }
-
-            null -> {
-                println("Event couln't get parsed. $json")
-            }
+        if (event == null) {
+            println("Event couln't get parsed. $json")
+            return
         }
-    }
 
+        val addToSessions = createFnAddToSessions(instance!!.sessionList)
+        val addToUsers = createAddToUsers(instance!!.userList)
+        val addToOpenGames = createAddToOpenGames(instance!!.openGameList)
 
-    private fun broadcast(msg: Message) {
-        instance!!.sessionList.forEach { emit(it.key, msg) }
-    }
+        event.execute(
+            session,
+            addToSessions,
+            addToUsers,
+            addToOpenGames,
+            instance!!.openGameList,
+            emit,
+            broadcast,
+            broadcastToOthers
+        )
 
-    private fun broadcastToOthers(me: WebSocketSession, msg: Message) {
-        instance!!.sessionList.filterNot { it.key == me }.forEach { emit(it.key, msg) }
-    }
-
-    @Synchronized
-    private fun emit(session: WebSocketSession, msg: Message) {
-        println("Try to emit $session $msg")
-        try {
-            session.sendMessage(TextMessage(ObjectMapper().writeValueAsBytes(msg)))
-        } catch (e: RuntimeException) { // org.springframework.web.socket.sockjs.SockJsTransportFailureException, com.fasterxml.jackson.databind.exc.InvalidDefinitionException
-            println(e)
-        }
+        println("****")
+        println(instance!!.sessionList)
+        println(instance!!.userList)
+        println(instance!!.openGameList)
+        println("****")
     }
 }
 
