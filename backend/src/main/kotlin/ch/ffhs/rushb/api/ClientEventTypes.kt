@@ -61,7 +61,7 @@ data class SubscribeEvent(val user: User) : ClientEvent {
     ) {
         addToSessions(session, user)
         addToUsers(user)
-        emit(session, Message(ServerEventType.OPEN_GAMES, listToJSON(openGames)))
+        emit(session, Message(ServerEventTypes.OPEN_GAMES, listToJSON(openGames)))
         println("Subscribe Event")
         println(user)
     }
@@ -81,7 +81,7 @@ data class MessageEvent(val messages: List<String>) : ClientEvent {
         broadcast: Broadcast,
         broadcastToOthers: BroadcastToOthers
     ) {
-        broadcast(Message(ServerEventType.MESSAGE, stringListToJSON(messages)))
+        broadcast(Message(ServerEventTypes.MESSAGE, stringListToJSON(messages)))
     }
 
     override val event: ClientEventType

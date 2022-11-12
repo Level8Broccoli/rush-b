@@ -3,7 +3,7 @@ import {
   ConnectionStatus,
   MessageType,
   SendToServer,
-} from "../server/serverTypes";
+} from "../api/ClientEventTypes";
 import { AppState, Views } from "./stateTypes";
 import {
   addMessages,
@@ -18,8 +18,8 @@ import {
   updateConnectionStatus,
   UpdateEvent,
 } from "./stateEvents";
-import { serverEvent } from "../server/server";
-import { UpdateServerEvent } from "../server/serverEvents";
+import { serverEvent } from "../api/server";
+import { UpdateServerEvent } from "../api/ClientEvents";
 
 const initalGameState: AppState = {
   view: Views.Home,

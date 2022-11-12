@@ -1,7 +1,7 @@
 import { h } from "preact";
 import { useState } from "preact/compat";
 import { useGameState } from "./state/state";
-import { SendToServer } from "./server/serverTypes";
+import { SendToServer } from "./api/ClientEventTypes";
 import { Router } from "./views/Router";
 import { BaseLayout } from "./layouts/BaseLayout";
 

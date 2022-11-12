@@ -5,7 +5,7 @@ import { drawBackground, drawCharacters } from "./draw";
 import { Character } from "../../state/stateTypes";
 import { TileMap } from "../../state/tileMap.enum";
 import { Events, UpdateEvent } from "../../state/stateEvents";
-import { Keys, toKey } from "../../server/serverEvents";
+import { Keys, toKey } from "../../api/ClientEvents";
 
 type Props = {
   timer: string;

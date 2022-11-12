@@ -5,7 +5,7 @@ import { Button } from "../general/Button";
 import { Input } from "../general/Input";
 import { StateUpdater, TargetedEvent, useState } from "preact/compat";
 import { Events, UpdateEvent } from "../../state/stateEvents";
-import { SendToServer } from "../../server/serverTypes";
+import { SendToServer } from "../../api/ClientEventTypes";
 import { User, Views } from "../../state/stateTypes";
 
 type Props = {

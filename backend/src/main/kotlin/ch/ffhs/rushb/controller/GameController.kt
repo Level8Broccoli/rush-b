@@ -56,7 +56,7 @@ class GameController : TextWebSocketHandler() {
     override fun afterConnectionClosed(session: WebSocketSession, status: CloseStatus) {
         val subscriber = instance!!.sessionList[session]
         println("Left: $subscriber")
-        broadcastToOthers(session, Message(ServerEventType.SESSION_CLOSED, session.toString()))
+        broadcastToOthers(session, Message(ServerEventTypes.SESSION_CLOSED, session.toString()))
         instance!!.sessionList -= session
     }
 
@@ -65,7 +65,7 @@ class GameController : TextWebSocketHandler() {
         instance!!.runningGameList.forEach { game ->
             game.applyGameLoop()
             val gameData = game.toJSON()
-            broadcast(Message(ServerEventType.GAME, gameData))
+            broadcast(Message(ServerEventTypes.GAME, gameData))
             println("Push Running Game")
             println(game.toJSON())
         }

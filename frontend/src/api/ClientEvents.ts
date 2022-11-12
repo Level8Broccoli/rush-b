@@ -1,4 +1,4 @@
-import { MessageType, SendToServer } from "./serverTypes";
+import { MessageType, SendToServer } from "./ClientEventTypes";
 import { UUID } from "../state/session";
 import { User } from "../state/stateTypes";
 import { StateUpdater } from "preact/compat";

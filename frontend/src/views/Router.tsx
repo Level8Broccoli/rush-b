@@ -5,7 +5,7 @@ import { GameView } from "./GameView";
 import { h } from "preact";
 import { UpdateEvent } from "../state/stateEvents";
 import { StateUpdater } from "preact/compat";
-import { SendToServer } from "../server/serverTypes";
+import { SendToServer } from "../api/ClientEventTypes";
 import { GameConfigView } from "./GameConfigView";
 
 type Props = {

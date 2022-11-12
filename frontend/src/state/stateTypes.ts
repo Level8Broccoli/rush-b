@@ -1,4 +1,4 @@
-import { ConnectionStatus } from "../server/serverTypes";
+import { ConnectionStatus } from "../api/ClientEventTypes";
 import { TileMap } from "./tileMap.enum";
 import { UUID } from "./session";
 

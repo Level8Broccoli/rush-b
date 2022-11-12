@@ -1,5 +1,5 @@
 import { h } from "preact";
-import { ConnectionStatus } from "../../server/serverTypes";
+import { ConnectionStatus } from "../../api/ClientEventTypes";
 
 type Props = {
   logs: string[];

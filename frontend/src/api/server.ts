@@ -4,7 +4,7 @@ import {
   MessageType,
   Params,
   SendToServer,
-} from "./serverTypes";
+} from "./ClientEventTypes";
 import {
   createGame,
   keyPress,
@@ -12,7 +12,7 @@ import {
   ServerEventTypes,
   subscribe,
   UpdateServerEvent,
-} from "./serverEvents";
+} from "./ClientEvents";
 
 function send(socket: WebSocket, type: MessageType, data: string[]): boolean {
   try {

@@ -1,12 +1,12 @@
 package ch.ffhs.rushb.controller
 
-import ch.ffhs.rushb.api.ServerEventType
+import ch.ffhs.rushb.api.ServerEventTypes
 import ch.ffhs.rushb.model.User
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.web.socket.TextMessage
 import org.springframework.web.socket.WebSocketSession
 
-data class Message(val eventType: ServerEventType, val data: String)
+data class Message(val eventType: ServerEventTypes, val data: String)
 
 typealias Emit = (WebSocketSession, Message) -> Unit
 typealias EmitWrapper = () -> Emit

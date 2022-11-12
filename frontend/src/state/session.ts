@@ -1,5 +1,5 @@
-import { hasProp, isNonNullObject } from "../utils/parse";
 import { User } from "./stateTypes";
+import { hasProp, isNonNullObject } from "../utils/parseUtils";
 
 export type UUID = { value: string };
 

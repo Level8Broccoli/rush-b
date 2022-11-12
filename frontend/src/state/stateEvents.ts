@@ -1,11 +1,7 @@
 import { StateUpdater } from "preact/compat";
 import { AppState, GameState, Message, User, Views } from "./stateTypes";
-import { ConnectionStatus, SendToServer } from "../server/serverTypes";
-import {
-  Keys,
-  ServerEventTypes,
-  UpdateServerEvent,
-} from "../server/serverEvents";
+import { ConnectionStatus, SendToServer } from "../api/ClientEventTypes";
+import { Keys, ServerEventTypes, UpdateServerEvent } from "../api/ClientEvents";
 import { startNewSessionOnClient, UUID } from "./session";
 
 export enum Events {
