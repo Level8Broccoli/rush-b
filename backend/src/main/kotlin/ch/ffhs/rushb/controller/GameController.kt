@@ -13,8 +13,6 @@ import org.springframework.web.socket.WebSocketSession
 import org.springframework.web.socket.handler.TextWebSocketHandler
 
 
-data class Message(val msgType: String, val data: Any)
-
 @EnableScheduling
 @Controller
 class GameController : TextWebSocketHandler() {
@@ -58,7 +56,7 @@ class GameController : TextWebSocketHandler() {
     override fun afterConnectionClosed(session: WebSocketSession, status: CloseStatus) {
         val subscriber = instance!!.sessionList[session]
         println("Left: $subscriber")
-        broadcastToOthers(session, Message("left", session))
+        broadcastToOthers(session, Message(ServerEventType.SESSION_CLOSED, session.toString()))
         instance!!.sessionList -= session
     }
 
@@ -67,7 +65,7 @@ class GameController : TextWebSocketHandler() {
         instance!!.runningGameList.forEach { game ->
             game.applyGameLoop()
             val gameData = game.toJSON()
-            broadcast(Message("game", gameData))
+            broadcast(Message(ServerEventType.GAME, gameData))
             println("Push Running Game")
             println(game.toJSON())
         }

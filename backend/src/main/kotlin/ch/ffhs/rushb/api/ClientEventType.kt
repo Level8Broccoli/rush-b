@@ -1,7 +1,11 @@
 package ch.ffhs.rushb.api
 
 import ch.ffhs.rushb.behavior.listToJSON
-import ch.ffhs.rushb.controller.*
+import ch.ffhs.rushb.behavior.stringListToJSON
+import ch.ffhs.rushb.controller.Broadcast
+import ch.ffhs.rushb.controller.BroadcastToOthers
+import ch.ffhs.rushb.controller.Emit
+import ch.ffhs.rushb.controller.Message
 import ch.ffhs.rushb.model.OpenGame
 import ch.ffhs.rushb.model.User
 import org.springframework.web.socket.WebSocketSession
@@ -57,7 +61,7 @@ data class SubscribeEvent(val user: User) : ClientEvent {
     ) {
         addToSessions(session, user)
         addToUsers(user)
-        emit(session, Message("openGames", listToJSON(openGames)))
+        emit(session, Message(ServerEventType.OPEN_GAMES, listToJSON(openGames)))
         println("Subscribe Event")
         println(user)
     }
@@ -77,7 +81,7 @@ data class MessageEvent(val messages: List<String>) : ClientEvent {
         broadcast: Broadcast,
         broadcastToOthers: BroadcastToOthers
     ) {
-        broadcast(Message("message", messages))
+        broadcast(Message(ServerEventType.MESSAGE, stringListToJSON(messages)))
     }
 
     override val event: ClientEventType

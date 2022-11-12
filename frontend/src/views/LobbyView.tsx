@@ -1,7 +1,7 @@
 import { h } from "preact";
 import { Events, UpdateEvent } from "../state/stateEvents";
 import { GameList } from "../components/lobby/GameList";
-import { OpenGame, User } from "../state/stateTypes";
+import { OpenGame, User, Views } from "../state/stateTypes";
 import classes from "./LobbyView.module.css";
 
 type Props = {
@@ -11,6 +11,11 @@ type Props = {
 };
 
 export function LobbyView(props: Props): JSX.Element {
+  const createNewGame = () => {
+    props.updateEvent([Events.StartNewGame, props.user.id]);
+    props.updateEvent([Events.GoToView, Views.GameConfig]);
+  };
+
   return (
     <div class={`card ${classes.lobbyCard}`}>
       <header class="card-header">
@@ -20,13 +25,7 @@ export function LobbyView(props: Props): JSX.Element {
         <GameList openGames={props.openGames} />
       </div>
       <div class="card-footer">
-        <a
-          href="#"
-          class="card-footer-item"
-          onClick={() =>
-            props.updateEvent([Events.StartNewGame, props.user.id])
-          }
-        >
+        <a href="#" class="card-footer-item" onClick={createNewGame}>
           oder starte ein eigenes Spiel, {props.user.name}
         </a>
       </div>
