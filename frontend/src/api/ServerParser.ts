@@ -1,6 +1,6 @@
 import { ServerEvent, ServerEventTyp } from "./ServerEventTypes";
 import { UpdateGuiEvent } from "../state/stateEvents";
-import { hasProp, isNonNullObject } from "../utils/parseUtils";
+import {hasProp, isArray, isNonNullObject} from "../utils/parseUtils";
 
 function safeParseJSON(payload: string): unknown {
   try {
@@ -72,8 +72,9 @@ function parseGame(_data: object): ServerEvent | null {
 }
 
 function parseOpenGames(data: object): ServerEvent | null {
-  console.log("open games");
-  console.log(data);
+  if (!isArray(data)) {
+    return null;
+  }
   return null;
 }
 
