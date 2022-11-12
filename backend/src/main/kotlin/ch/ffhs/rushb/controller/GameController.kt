@@ -13,7 +13,7 @@ import org.springframework.web.socket.handler.TextWebSocketHandler
 import java.util.concurrent.atomic.AtomicLong
 
 
-data class Subscriber(val serverId: Long, val clientId: String)
+data class Subscriber(val user: User)
 data class Message(val msgType: String, val data: Any)
 
 @EnableScheduling
@@ -27,7 +27,7 @@ class GameController : TextWebSocketHandler() {
     val sessionList = HashMap<WebSocketSession, Subscriber>()
     val gameList = mutableListOf<Game>()
     private var uid = AtomicLong(0)
-    private var game = Game("game 0", Level(TileMap.ONE))
+    private var game = Game("game 0", User(0L, "0", "DemoPlayer"), Level(TileMap.ONE))
 
     init {
         if (instance == null) {
@@ -49,19 +49,34 @@ class GameController : TextWebSocketHandler() {
 
 
     override fun afterConnectionClosed(session: WebSocketSession, status: CloseStatus) {
+        val subscriber = instance!!.sessionList[session]
+        println("Left: $subscriber")
         broadcastToOthers(session, Message("left", session))
         instance!!.sessionList -= session
     }
 
     @Scheduled(fixedRate = 200)
     fun sendGameStatus() {
-        instance!!.gameList.forEach { it ->
-            it.applyGameLoop()
-            val gameData = it.toJSON()
-            broadcast(Message("game", gameData))
+        instance!!.gameList.forEach { game ->
+            if (!game.isOpen()) {
+                game.applyGameLoop()
+                val gameData = game.toJSON()
+                broadcast(Message("game", gameData))
+            }
         }
 
         // TODO: remove inactive games
+    }
+
+    @Scheduled(fixedRate = 10_000)
+    fun sendOpenGames() {
+        instance!!.gameList.forEach { game ->
+            println("This runs inside")
+            val creator = game.creator
+            if (game.isOpen()) {
+                broadcast(Message("openGame", creator.toJSON()))
+            }
+        }
     }
 
     override fun handleTextMessage(session: WebSocketSession, message: TextMessage) {
@@ -70,7 +85,10 @@ class GameController : TextWebSocketHandler() {
         when (event?.event) {
             ClientEventType.Subscribe -> {
                 val userId = (event as SubscribeEvent).userId
-                val subscriber = Subscriber(instance!!.uid.getAndIncrement(), userId)
+                val subscriber = Subscriber(User(instance!!.uid.getAndIncrement(), userId, ""))
+                println("Subscribe")
+                println(userId)
+                println(subscriber)
                 instance!!.sessionList += mapOf(session to subscriber)
                 broadcast(Message("subscriber", instance!!.sessionList.values))
             }
@@ -97,10 +115,21 @@ class GameController : TextWebSocketHandler() {
             }
 
             ClientEventType.CreateGame -> {
+                println("Create Game")
                 val clientId = (event as CreateGameEvent).clientId
+                val userName = event.userName
                 val subscriber = getSubscriberByClientId(clientId, instance!!.sessionList)
+                subscriber?.user?.name = userName
+                println(clientId)
+                println(subscriber)
                 if (subscriber != null) {
-                    instance!!.gameList.add(Game("" + subscriber.serverId, Level(TileMap.ONE)))
+                    instance!!.gameList.add(
+                        Game(
+                            subscriber.user.serverId.toString(),
+                            subscriber.user,
+                            Level(TileMap.ONE)
+                        )
+                    )
                 }
             }
 
@@ -130,7 +159,7 @@ class GameController : TextWebSocketHandler() {
 
 
     private fun getSubscriberByClientId(clientId: String, sessions: Map<WebSocketSession, Subscriber>): Subscriber? {
-        return sessions.values.find { s -> s.clientId == clientId }
+        return sessions.values.find { s -> s.user.clientId == clientId }
     }
 }
 

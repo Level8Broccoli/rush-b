@@ -21,17 +21,14 @@ const initalGameState: AppState = {
   view: Views.Home,
   connectionStatus: ConnectionStatus.CLOSED,
   messages: [],
-  game: {
+  activeGame: {
     level: { tiles: [[]] },
     timer: "",
     id: "",
     characters: [],
   },
   player: { id: "", name: "" },
-  openGames: [
-    { gameId: "hi", playerName: "hi" },
-    { gameId: "hi", playerName: "h5" },
-  ],
+  openGames: [],
   loadingMessage: "",
 };
 

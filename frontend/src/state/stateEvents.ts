@@ -101,7 +101,7 @@ export const setGame: UpdaterFunction<SetGameEvent> = (
   updateServerEvent,
   game
 ) => {
-  setState((prevState): AppState => ({ ...prevState, game }));
+  setState((prevState): AppState => ({ ...prevState, activeGame: game }));
   return true;
 };
 
@@ -133,12 +133,12 @@ export const searchForGame: UpdaterFunction<SearchForGameEvent> = (
   return true;
 };
 
-type StartNewGameEvent = [Events.StartNewGame, string];
+type StartNewGameEvent = [Events.StartNewGame, [UID, string]];
 
 export const startNewGame: UpdaterFunction<StartNewGameEvent> = (
   setState,
   updateServerEvent,
-  playerName
+  [userId, playerName]
 ) => {
   setState(
     (prevState): AppState => ({
@@ -147,7 +147,7 @@ export const startNewGame: UpdaterFunction<StartNewGameEvent> = (
       loadingMessage: "Spiel wird erstellt",
     })
   );
-  updateServerEvent([ServerEventTypes.CreateGame, playerName]);
+  updateServerEvent([ServerEventTypes.CreateGame, [userId, playerName]]);
   return true;
 };
 

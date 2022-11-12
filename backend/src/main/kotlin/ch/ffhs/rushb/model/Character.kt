@@ -2,6 +2,7 @@ package ch.ffhs.rushb.model
 
 import ch.ffhs.rushb.behavior.*
 import ch.ffhs.rushb.controller.Level
+import ch.ffhs.rushb.controller.User
 import ch.ffhs.rushb.enums.CharacterState
 import ch.ffhs.rushb.enums.Color
 import ch.ffhs.rushb.enums.Orientation
@@ -10,7 +11,8 @@ class Character(
     override val id: String,
     override val color: Color,
     override var position: Vector,
-    override var paintId: Int
+    override var paintId: Int,
+    val user: User,
 ) : Movable, Scorable, Paintable {
     override var orientation = Orientation.FACE
     override var width = 14.0
@@ -39,7 +41,8 @@ class Character(
                 "y": ${position.y}, 
                 "score": $score, 
                 "state": "$state", 
-                "orientation": "$orientation"
+                "orientation": "$orientation",
+                "user": ${user.toJSON()}
             }
         """.trimIndent(); }
 }

@@ -45,7 +45,7 @@ export type AppState = {
   view: Views;
   connectionStatus: ConnectionStatus;
   messages: Message[];
-  game: GameState;
+  activeGame: GameState;
   player: Player;
   openGames: OpenGame[];
   loadingMessage: string;

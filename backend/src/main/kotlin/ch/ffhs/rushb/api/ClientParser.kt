@@ -14,7 +14,7 @@ fun parseFromClient(json: JsonNode): ClientEvent? {
         println("Type of message is not implemented: $type, dump: $json")
         return null
     }
-    val data = json.get("data").asIterable().toList()
+    val data = nodeToString(json.get("data").asIterable().toList())
     return when (eventType) {
         ClientEventType.Subscribe -> parseSubscribe(data)
         ClientEventType.KeyPress -> parseKeypress(data)
@@ -24,42 +24,34 @@ fun parseFromClient(json: JsonNode): ClientEvent? {
 }
 
 
-private fun parseSubscribe(data: List<JsonNode>): ClientEvent? {
-    if (data.size == 1 && data[0].nodeType == JsonNodeType.STRING) {
-        val clientId = data[0].textValue()
+private fun parseSubscribe(data: List<String>): ClientEvent? {
+    if (data.size == 1) {
+        val clientId = data[0]
         return SubscribeEvent(clientId)
     }
     println("Data didn't match expected form: $data")
     return null
 }
 
-private fun parseKeypress(data: List<JsonNode>): ClientEvent? {
-    for (key in data) {
-        if (key.nodeType != JsonNodeType.STRING) {
-            println("Data didn't match expected form: $data")
-            return null
-        }
-    }
-    val keys = data.map { j -> j.asText() }.mapNotNull { s -> Key.fromString(s) }
+private fun parseKeypress(data: List<String>): ClientEvent {
+    val keys = data.mapNotNull { s -> Key.fromString(s) }
     return KeyPressEvent(keys)
 }
 
-private fun parseMessage(data: List<JsonNode>): ClientEvent? {
-    for (key in data) {
-        if (key.nodeType != JsonNodeType.STRING) {
-            println("Data didn't match expected form: $data")
-            return null
-        }
-    }
-    val messages = data.map { j -> j.asText() }
-    return MessageEvent(messages)
+private fun parseMessage(data: List<String>): ClientEvent {
+    return MessageEvent(data)
 }
 
-private fun parseCreateGame(data: List<JsonNode>): ClientEvent? {
-    if (data.size == 1 && data[0].nodeType == JsonNodeType.STRING) {
-        val clientId = data[0].textValue()
-        return CreateGameEvent(clientId)
+private fun parseCreateGame(data: List<String>): ClientEvent? {
+    if (data.size == 2) {
+        val clientId = data[0]
+        val userName = data[1]
+        return CreateGameEvent(clientId, userName)
     }
     println("Data didn't match expected form: $data")
     return null
+}
+
+private fun nodeToString(nodes: List<JsonNode>): List<String> {
+    return nodes.filter { n -> n.nodeType == JsonNodeType.STRING }.map { n -> n.asText() }
 }

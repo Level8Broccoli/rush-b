@@ -14,9 +14,9 @@ export function GameView(props: Props): JSX.Element {
   return (
     <>
       <GameUI
-        timer={props.state.game.timer}
-        tileMap={props.state.game.level}
-        characters={props.state.game.characters}
+        timer={props.state.activeGame.timer}
+        tileMap={props.state.activeGame.level}
+        characters={props.state.activeGame.characters}
         updateEvent={props.updateEvent}
       />
       <div style="background-color: lightgray; border-radius: 0.3rem; padding-inline: 1rem;">

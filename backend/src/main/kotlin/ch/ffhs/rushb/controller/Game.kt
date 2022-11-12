@@ -14,6 +14,7 @@ import kotlin.random.Random
 
 class Game(
     override val id: String,
+    val creator: User,
     private val level: Level,
 
     ) : Serializable {
@@ -29,8 +30,8 @@ class Game(
             CharacterType.MASK_DUDE.name,
             Color.RED,
             Vector(Random.nextInt(gridStart, gridEnd).toDouble(), 0.0),
-            100
-
+            100,
+            creator,
         )
     private val player2 =
         RandomBot(
@@ -168,5 +169,10 @@ class Game(
 
     fun setVelocityY(player: Movable) {
         player.setVelocityY(level)
+    }
+
+    fun isOpen(): Boolean {
+        // TODO
+        return true
     }
 }
