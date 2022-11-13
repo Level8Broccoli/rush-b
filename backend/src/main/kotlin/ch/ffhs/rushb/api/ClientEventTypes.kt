@@ -2,10 +2,7 @@ package ch.ffhs.rushb.api
 
 import ch.ffhs.rushb.behavior.listToJSON
 import ch.ffhs.rushb.behavior.stringListToJSON
-import ch.ffhs.rushb.controller.Broadcast
-import ch.ffhs.rushb.controller.BroadcastToOthers
-import ch.ffhs.rushb.controller.Emit
-import ch.ffhs.rushb.controller.Message
+import ch.ffhs.rushb.controller.*
 import ch.ffhs.rushb.model.OpenGame
 import ch.ffhs.rushb.model.User
 import org.springframework.web.socket.WebSocketSession
@@ -29,7 +26,7 @@ enum class ClientEventType(val value: String) {
 }
 
 enum class Key(val value: String) {
-    ARROW_LEFT("ArrowLeft"), ARROW_RIGHT("ArrowRight"), ARROW_UP("ArrowLeft"), SPACE("SPACE"), KEY_E("KeyE"), KEY_Q("KeyQ");
+    ARROW_LEFT("ArrowLeft"), ARROW_RIGHT("ArrowRight"), ARROW_UP("ArrowUp"), SPACE("Space"), KEY_E("KeyE"), KEY_Q("KeyQ");
 
     companion object {
         fun fromString(value: String): Key? {
@@ -100,7 +97,7 @@ data class MessageEvent(val messages: List<String>) : ClientEvent {
         get() = ClientEventType.Message
 }
 
-data class KeyPressEvent(val keys: List<Key>) : ClientEvent {
+data class KeyPressEvent(val keys: List<Key>, val runningGame: RunningGame) : ClientEvent {
     override fun execute(
         session: WebSocketSession,
         addToSessions: AddToSessions,
@@ -115,13 +112,13 @@ data class KeyPressEvent(val keys: List<Key>) : ClientEvent {
     ) {
         for (key in keys) {
             if (key == Key.ARROW_LEFT) {
-//                        instance!!.game.setVelocityX(instance!!.game.getPlayer1(), -1.0)
+                runningGame.setVelocityX(runningGame.getPlayer1(), -1.0)
             } else if (key == Key.ARROW_RIGHT) {
-//                        instance!!.game.setVelocityX(instance!!.game.getPlayer1(), 1.0)
+                runningGame.setVelocityX(runningGame.getPlayer1(), 1.0)
             } else if (key == Key.ARROW_UP || key == Key.SPACE) {
-//                        instance!!.game.setVelocityY(instance!!.game.getPlayer1())
+                runningGame.setVelocityY(runningGame.getPlayer1())
             } else if (key == Key.KEY_E) {
-//                        instance!!.game.paint(instance!!.game.getPlayer1())
+                runningGame.paint(runningGame.getPlayer1())
             } else if (key == Key.KEY_Q) {
                 // TODO: quit
             }

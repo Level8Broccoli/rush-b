@@ -122,6 +122,11 @@ class GameController : TextWebSocketHandler() {
         if (secondPlayerOfOpenGame != null) {
             return RequestContext(session, user, secondPlayerOfOpenGame, null, Role.SECOND_PLAYER)
         }
+        val creatorOfRunningGame = instance!!.runningGameList.find { g -> g.creator == user }
+        if (creatorOfRunningGame != null) {
+            return RequestContext(session, user, null, creatorOfRunningGame, Role.CREATOR)
+        }
+        // TODO: Implement secondPlayer in running Game
         return RequestContext(session, user, null, null, null)
     }
 }

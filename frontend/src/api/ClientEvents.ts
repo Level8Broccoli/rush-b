@@ -63,19 +63,7 @@ export const subscribe: UpdaterClientFunction<SubscribeEvent> = (
   return true;
 };
 
-export enum Keys {
-  ARROW_LEFT = "ArrowLeft",
-  ARROW_RIGHT = "ArrowRight",
-  ARROW_UP = "ArrowLeft",
-  SPACE = "SPACE",
-  KEY_E = "KeyE",
-  KEY_Q = "KeyQ",
-}
-
-export function toKey(code: string): Keys {
-  // To do mapping
-  return Keys.ARROW_UP;
-}
+export const Keys = ["ArrowLeft", "ArrowRight", "ArrowUp", "Space", "KeyE", "KeyQ"];
 
 type MessageEvent = [ClientEventTypes.Message, string[]];
 export const message: UpdaterClientFunction<MessageEvent> = (
@@ -85,7 +73,7 @@ export const message: UpdaterClientFunction<MessageEvent> = (
   return server.send(MessageType.Message, messages);
 };
 
-type KeyPressEvent = [ClientEventTypes.KeyPress, Keys[]];
+type KeyPressEvent = [ClientEventTypes.KeyPress, typeof Keys];
 export const keyPress: UpdaterClientFunction<KeyPressEvent> = (
   server,
   keys

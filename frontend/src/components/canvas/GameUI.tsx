@@ -5,7 +5,7 @@ import { drawBackground, drawCharacters } from "./draw";
 import { Character } from "../../state/stateTypes";
 import { TileMap } from "../../state/tileMap.enum";
 import { GuiEvents, UpdateGuiEvent } from "../../state/stateEvents";
-import { Keys, toKey } from "../../api/ClientEvents";
+import { Keys } from "../../api/ClientEvents";
 
 type Props = {
   timer: string;
@@ -16,7 +16,7 @@ type Props = {
 
 export function GameUI(props: Props): JSX.Element {
   const contextRef = useRef<CanvasContext>();
-  const [message, setMessage] = useState<Keys[]>([]);
+  const [message, setMessage] = useState<typeof Keys>([]);
   useEffect(() => {
     requestAnimationFrame(async () => {
       if (contextRef.current === undefined) {
@@ -43,9 +43,8 @@ export function GameUI(props: Props): JSX.Element {
 
   const onKeyDown = (e: KeyboardEvent) => {
     e.preventDefault();
-    const key = toKey(e.code);
-    if (!message.includes(key)) {
-      setMessage((prev) => [...prev, key]);
+    if (!message.includes(e.code)) {
+      setMessage((prev) => [...prev, e.code]);
     }
     if (message.length) {
       props.updateGuiEvent([GuiEvents.SendKeys, message]);
@@ -54,9 +53,8 @@ export function GameUI(props: Props): JSX.Element {
 
   const onKeyUp = (e: KeyboardEvent) => {
     e.preventDefault();
-    const key = toKey(e.code);
-    if (message.includes(key)) {
-      setMessage((prev) => [...prev].filter((item) => item !== key));
+    if (message.includes(e.code)) {
+      setMessage((prev) => [...prev].filter((item) => item !== e.code));
     }
     if (message.length) {
       props.updateGuiEvent([GuiEvents.SendKeys, message]);

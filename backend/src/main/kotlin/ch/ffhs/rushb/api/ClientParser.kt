@@ -22,7 +22,7 @@ fun parseFromClient(
     val data = nodeToString(json.get("data").asIterable().toList())
     return when (eventType) {
         ClientEventType.Subscribe -> parseSubscribeEvent(data)
-        ClientEventType.KeyPress -> parseKeypressEvent(data)
+        ClientEventType.KeyPress -> parseKeypressEvent(data, ctx)
         ClientEventType.Message -> parseMessageEvent(data)
         ClientEventType.CreateOpenGame -> parseCreateOpenGameEvent(data, ctx)
         ClientEventType.DeleteOpenGame -> parseDeleteOpenGameEvent(data, ctx)
@@ -41,9 +41,13 @@ private fun parseSubscribeEvent(data: List<String>): ClientEvent? {
     return null
 }
 
-private fun parseKeypressEvent(data: List<String>): ClientEvent {
+private fun parseKeypressEvent(data: List<String>, ctx: RequestContext?): ClientEvent? {
+    if (ctx?.runningGame == null) {
+        println("Missing or false request context: $data")
+        return null
+    }
     val keys = data.mapNotNull { s -> Key.fromString(s) }
-    return KeyPressEvent(keys)
+    return KeyPressEvent(keys, ctx.runningGame)
 }
 
 private fun parseMessageEvent(data: List<String>): ClientEvent {
