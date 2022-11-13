@@ -1,4 +1,4 @@
-import { OpenGame } from "../state/stateTypes";
+import { GameState, OpenGame } from "../state/stateTypes";
 import { GuiEvents, UpdateGuiEvent } from "../state/stateEvents";
 
 export enum ServerEventTyp {
@@ -18,6 +18,16 @@ export const createFnOpenGamesServerEvent =
     return {
       execute() {
         updateGuiEvent([GuiEvents.UpdateOpenGames, openGames]);
+      },
+    };
+  };
+
+export const createFnRunningGameServerEvent =
+  (updateGuiEvent: UpdateGuiEvent) =>
+  (gameState: GameState): ServerEvent => {
+    return {
+      execute() {
+        updateGuiEvent([GuiEvents.SetGame, gameState]);
       },
     };
   };

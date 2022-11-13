@@ -14,7 +14,7 @@ import kotlin.random.Random
 
 class RunningGame(
     override val id: String,
-    private val creator: User,
+    val creator: User,
     private val level: Level,
 
     ) : Serializable {

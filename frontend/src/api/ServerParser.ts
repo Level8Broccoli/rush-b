@@ -1,17 +1,15 @@
 import {
   createFnOpenGamesServerEvent,
+  createFnRunningGameServerEvent,
   ServerEvent,
   ServerEventTyp,
 } from "./ServerEventTypes";
 import { UpdateGuiEvent } from "../state/stateEvents";
 import { parseOpenGames } from "./ServerParserOpenGames";
 import { initialParser } from "./ServerParserInitial";
+import { parseRunningGame } from "./ServerParserRunningGame";
 
 function parseMessage(_data: object): ServerEvent | null {
-  return null;
-}
-
-function parseRunningGame(_data: object): ServerEvent | null {
   return null;
 }
 
@@ -32,7 +30,10 @@ export function parseFromServer(
     case ServerEventTyp.MESSAGE:
       return parseMessage(data);
     case ServerEventTyp.RUNNING_GAME:
-      return parseRunningGame(data);
+      return parseRunningGame(
+        data,
+        createFnRunningGameServerEvent(updateGuiEvent)
+      );
     case ServerEventTyp.OPEN_GAMES:
       return parseOpenGames(data, createFnOpenGamesServerEvent(updateGuiEvent));
     case ServerEventTyp.SESSION_CLOSED:

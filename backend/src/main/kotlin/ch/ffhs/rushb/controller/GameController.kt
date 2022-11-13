@@ -66,9 +66,12 @@ class GameController : TextWebSocketHandler() {
         instance!!.runningGameList.forEach { runningGame ->
             runningGame.applyGameLoop()
             val gameData = runningGame.toJSON()
-            broadcast(Message(ServerEventTypes.RUNNING_GAME, gameData))
-            println("Push Running Game")
-            println(runningGame.toJSON())
+            val creator = runningGame.creator
+            instance!!.sessionList.forEach { (session, user) ->
+                if (user.id == creator.id) {
+                    emit(session, Message(ServerEventTypes.RUNNING_GAME, gameData))
+                }
+            }
         }
 
         // TODO: remove inactive games
