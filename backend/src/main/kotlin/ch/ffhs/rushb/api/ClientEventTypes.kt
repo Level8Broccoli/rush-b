@@ -13,7 +13,7 @@ import org.springframework.web.socket.WebSocketSession
 // should be kept in sync with `serverEvents.ts`
 
 enum class ClientEventType(val value: String) {
-    Subscribe("subscribe"), KeyPress("keyPress"), Message("message"), CreateGame("createGame"), DeleteOpenGame("deleteOpenGame");
+    Subscribe("subscribe"), KeyPress("keyPress"), Message("message"), CreateOpenGame("createOpenGame"), DeleteOpenGame("deleteOpenGame");
 
     companion object {
         fun fromString(value: String): ClientEventType? {
@@ -122,7 +122,7 @@ data class KeyPressEvent(val keys: List<Key>) : ClientEvent {
         get() = ClientEventType.KeyPress
 }
 
-data class CreateGameEvent(val user: User, val gameId: String) : ClientEvent {
+data class CreateOpenGameEvent(val user: User, val gameId: String) : ClientEvent {
     override fun execute(
         session: WebSocketSession,
         addToSessions: AddToSessions,
@@ -140,7 +140,7 @@ data class CreateGameEvent(val user: User, val gameId: String) : ClientEvent {
     }
 
     override val event: ClientEventType
-        get() = ClientEventType.CreateGame
+        get() = ClientEventType.CreateOpenGame
 }
 
 data class DeleteOpenGameEvent(val game: OpenGame) : ClientEvent {
@@ -160,5 +160,5 @@ data class DeleteOpenGameEvent(val game: OpenGame) : ClientEvent {
     }
 
     override val event: ClientEventType
-        get() = ClientEventType.CreateGame
+        get() = ClientEventType.CreateOpenGame
 }

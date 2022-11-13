@@ -159,7 +159,7 @@ export const startNewGame: UpdaterGuiFunction<StartNewGameEvent> = (
   //     loadingMessage: "Spiel wird erstellt",
   //   })
   // );
-  updateClientEvent([ClientEventTypes.CreateGame, userId]);
+  updateClientEvent([ClientEventTypes.CreateOpenGame, userId]);
   return true;
 };
 

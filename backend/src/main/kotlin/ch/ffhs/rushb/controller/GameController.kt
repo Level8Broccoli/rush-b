@@ -78,7 +78,7 @@ class GameController : TextWebSocketHandler() {
     override fun handleTextMessage(session: WebSocketSession, message: TextMessage) {
         val ctx = getRequestContext(session)
         val json = ObjectMapper().readTree(message.payload)
-        val event = parseFromClient(json, ctx, instance!!.userList)
+        val event = parseFromClient(json, ctx)
         if (event == null) {
             println("Event couldn't get parsed. $json")
             return

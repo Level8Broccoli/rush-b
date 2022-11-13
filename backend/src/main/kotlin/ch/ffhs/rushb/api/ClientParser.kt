@@ -7,8 +7,7 @@ import com.fasterxml.jackson.databind.node.JsonNodeType
 
 fun parseFromClient(
     json: JsonNode,
-    ctx: RequestContext?,
-    userList: List<User>
+    ctx: RequestContext?
 ): ClientEvent? {
     val type = json.get("type").asText()
     if (type.trim().isBlank()) {
@@ -25,7 +24,7 @@ fun parseFromClient(
         ClientEventType.Subscribe -> parseSubscribeEvent(data)
         ClientEventType.KeyPress -> parseKeypressEvent(data)
         ClientEventType.Message -> parseMessageEvent(data)
-        ClientEventType.CreateGame -> parseCreateGameEvent(data, userList)
+        ClientEventType.CreateOpenGame -> parseCreateOpenGameEvent(data, ctx)
         ClientEventType.DeleteOpenGame -> parseDeleteOpenGameEvent(data, ctx)
     }
 }
@@ -49,17 +48,14 @@ private fun parseMessageEvent(data: List<String>): ClientEvent {
     return MessageEvent(data)
 }
 
-private fun parseCreateGameEvent(data: List<String>, userList: List<User>): ClientEvent? {
-    if (data.size == 2) {
-        val userId = data[0]
-        val user = userList.find { u -> u.id == userId }
-        if (user == null) {
-            println(userList)
-            println("User does not exist: $userId")
-            return null
-        }
-        val gameId = data[1]
-        return CreateGameEvent(user, gameId)
+private fun parseCreateOpenGameEvent(data: List<String>, ctx: RequestContext?): ClientEvent? {
+    if (ctx?.user == null) {
+        println("Missing or false request context: $data")
+        return null
+    }
+    if (data.size == 1) {
+        val gameId = data[0]
+        return CreateOpenGameEvent(ctx.user, gameId)
     }
     println("Data didn't match expected form: $data")
     return null

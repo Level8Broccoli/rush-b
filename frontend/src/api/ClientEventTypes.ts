@@ -17,7 +17,7 @@ export enum MessageType {
   Subscribe = "subscribe",
   KeyPress = "keyPress",
   Message = "message",
-  CreateGame = "createGame",
+  CreateOpenGame = "createOpenGame",
   DeleteOpenGame = "deleteOpenGame",
 }
 

@@ -7,7 +7,7 @@ import {
 } from "./ClientEventTypes";
 import {
   ClientEventTypes,
-  createGame,
+  createOpenGame,
   deleteOpenGame,
   keyPress,
   message,
@@ -82,8 +82,8 @@ export const serverEvent: (sendMessage: SendToServer) => UpdateClientEvent =
         return message(sendMessage, payload);
       case ClientEventTypes.KeyPress:
         return keyPress(sendMessage, payload);
-      case ClientEventTypes.CreateGame:
-        return createGame(sendMessage, payload);
+      case ClientEventTypes.CreateOpenGame:
+        return createOpenGame(sendMessage, payload);
       case ClientEventTypes.DeleteOpenGame:
         return deleteOpenGame(sendMessage, payload);
     }
