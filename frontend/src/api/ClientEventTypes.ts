@@ -18,6 +18,7 @@ export enum MessageType {
   KeyPress = "keyPress",
   Message = "message",
   CreateGame = "createGame",
+  DeleteOpenGame = "deleteOpenGame",
 }
 
 export type SendToServer = {

@@ -13,10 +13,17 @@ export enum ClientEventTypes {
   Message,
   KeyPress,
   CreateGame,
+  DeleteOpenGame,
 }
 
 export type AllClientEvents = [ClientEventTypes, unknown] &
-  (SubscribeEvent | MessageEvent | KeyPressEvent | CreateGameEvent);
+  (
+    | SubscribeEvent
+    | MessageEvent
+    | KeyPressEvent
+    | CreateGameEvent
+    | DeleteOpenGameEvent
+  );
 export type UpdateClientEvent = (event: AllClientEvents) => boolean;
 type UpdaterClientFunction<T extends AllClientEvents> = (
   server: SendToServer,
@@ -93,4 +100,11 @@ export const createGame: UpdaterClientFunction<CreateGameEvent> = (
 ) => {
   const gameId = crypto.randomUUID();
   return server.send(MessageType.CreateGame, [userId.value, gameId]);
+};
+
+type DeleteOpenGameEvent = [ClientEventTypes.DeleteOpenGame, null];
+export const deleteOpenGame: UpdaterClientFunction<DeleteOpenGameEvent> = (
+  server
+) => {
+  return server.send(MessageType.DeleteOpenGame, []);
 };

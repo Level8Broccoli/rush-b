@@ -8,7 +8,7 @@ import {
   Views,
 } from "./stateTypes";
 import { ConnectionStatus, SendToServer } from "../api/ClientEventTypes";
-import { Keys, ClientEventTypes, UpdateClientEvent } from "../api/ClientEvents";
+import { ClientEventTypes, Keys, UpdateClientEvent } from "../api/ClientEvents";
 import { startNewSessionOnClient, UUID } from "./session";
 
 export enum GuiEvents {
@@ -22,6 +22,7 @@ export enum GuiEvents {
   StartNewGame,
   SetUserId,
   UpdateOpenGames,
+  DeleteOpenGame,
 }
 
 export type AllGuiStateEvents = [GuiEvents, unknown] &
@@ -36,6 +37,7 @@ export type AllGuiStateEvents = [GuiEvents, unknown] &
     | StartNewGameEvent
     | SetUserIdEvent
     | UpdateOpenGamesEvent
+    | DeleteOpenGameEvent
   );
 
 export type UpdateGuiEvent = (event: AllGuiStateEvents) => true;
@@ -184,5 +186,15 @@ export const updateOpenGames: UpdaterGuiFunction<UpdateOpenGamesEvent> = (
   setState((prevState): AppState => {
     return { ...prevState, openGames };
   });
+  return true;
+};
+
+type DeleteOpenGameEvent = [GuiEvents.DeleteOpenGame, null];
+
+export const deleteOpenGame: UpdaterGuiFunction<DeleteOpenGameEvent> = (
+  setState,
+  updateClientEvent
+) => {
+  updateClientEvent([ClientEventTypes.DeleteOpenGame, null]);
   return true;
 };

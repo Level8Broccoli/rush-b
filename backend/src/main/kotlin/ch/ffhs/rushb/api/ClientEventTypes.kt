@@ -13,7 +13,7 @@ import org.springframework.web.socket.WebSocketSession
 // should be kept in sync with `serverEvents.ts`
 
 enum class ClientEventType(val value: String) {
-    Subscribe("subscribe"), KeyPress("keyPress"), Message("message"), CreateGame("createGame");
+    Subscribe("subscribe"), KeyPress("keyPress"), Message("message"), CreateGame("createGame"), DeleteOpenGame("deleteOpenGame");
 
     companion object {
         fun fromString(value: String): ClientEventType? {
@@ -38,6 +38,7 @@ interface ClientEvent {
         addToSessions: AddToSessions,
         addToUsers: AddToUsers,
         addToOpenGames: AddToOpenGames,
+        removeFromOpenGames: RemoveFromOpenGames,
         openGames: List<OpenGame>,
         emit: Emit,
         broadcast: Broadcast,
@@ -54,6 +55,7 @@ data class SubscribeEvent(val user: User) : ClientEvent {
         addToSessions: AddToSessions,
         addToUsers: AddToUsers,
         addToOpenGames: AddToOpenGames,
+        removeFromOpenGames: RemoveFromOpenGames,
         openGames: List<OpenGame>,
         emit: Emit,
         broadcast: Broadcast,
@@ -76,6 +78,7 @@ data class MessageEvent(val messages: List<String>) : ClientEvent {
         addToSessions: AddToSessions,
         addToUsers: AddToUsers,
         addToOpenGames: AddToOpenGames,
+        removeFromOpenGames: RemoveFromOpenGames,
         openGames: List<OpenGame>,
         emit: Emit,
         broadcast: Broadcast,
@@ -94,6 +97,7 @@ data class KeyPressEvent(val keys: List<Key>) : ClientEvent {
         addToSessions: AddToSessions,
         addToUsers: AddToUsers,
         addToOpenGames: AddToOpenGames,
+        removeFromOpenGames: RemoveFromOpenGames,
         openGames: List<OpenGame>,
         emit: Emit,
         broadcast: Broadcast,
@@ -124,6 +128,7 @@ data class CreateGameEvent(val user: User, val gameId: String) : ClientEvent {
         addToSessions: AddToSessions,
         addToUsers: AddToUsers,
         addToOpenGames: AddToOpenGames,
+        removeFromOpenGames: RemoveFromOpenGames,
         openGames: List<OpenGame>,
         emit: Emit,
         broadcast: Broadcast,
@@ -131,6 +136,26 @@ data class CreateGameEvent(val user: User, val gameId: String) : ClientEvent {
     ) {
         val newGame = OpenGame(gameId, user)
         addToOpenGames(newGame)
+        broadcast(Message(ServerEventTypes.OPEN_GAMES, listToJSON(openGames)))
+    }
+
+    override val event: ClientEventType
+        get() = ClientEventType.CreateGame
+}
+
+data class DeleteOpenGameEvent(val game: OpenGame) : ClientEvent {
+    override fun execute(
+        session: WebSocketSession,
+        addToSessions: AddToSessions,
+        addToUsers: AddToUsers,
+        addToOpenGames: AddToOpenGames,
+        removeFromOpenGames: RemoveFromOpenGames,
+        openGames: List<OpenGame>,
+        emit: Emit,
+        broadcast: Broadcast,
+        broadcastToOthers: BroadcastToOthers
+    ) {
+        removeFromOpenGames(game)
         broadcast(Message(ServerEventTypes.OPEN_GAMES, listToJSON(openGames)))
     }
 

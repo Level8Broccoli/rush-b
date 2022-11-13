@@ -1,6 +1,7 @@
 package ch.ffhs.rushb.controller
 
 import ch.ffhs.rushb.api.*
+import ch.ffhs.rushb.enums.Role
 import ch.ffhs.rushb.model.OpenGame
 import ch.ffhs.rushb.model.User
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -75,8 +76,9 @@ class GameController : TextWebSocketHandler() {
 
 
     override fun handleTextMessage(session: WebSocketSession, message: TextMessage) {
+        val ctx = getRequestContext(session)
         val json = ObjectMapper().readTree(message.payload)
-        val event = parseFromClient(json, instance!!.userList)
+        val event = parseFromClient(json, ctx, instance!!.userList)
         if (event == null) {
             println("Event couldn't get parsed. $json")
             return
@@ -84,12 +86,14 @@ class GameController : TextWebSocketHandler() {
         val addToSessions = createFnAddToSessions(instance!!.sessionList)
         val addToUsers = createAddToUsers(instance!!.userList)
         val addToOpenGames = createAddToOpenGames(instance!!.openGameList)
+        val removeFromOpenGames = createRemoveFromOpenGames(instance!!.openGameList)
 
         event.execute(
             session,
             addToSessions,
             addToUsers,
             addToOpenGames,
+            removeFromOpenGames,
             instance!!.openGameList,
             emit,
             broadcast,
@@ -101,6 +105,19 @@ class GameController : TextWebSocketHandler() {
         println(instance!!.userList)
         println(instance!!.openGameList)
         println("****")
+    }
+
+    private fun getRequestContext(session: WebSocketSession): RequestContext? {
+        val user = instance!!.sessionList[session] ?: return null
+        val creatorOfOpenGame = instance!!.openGameList.find { g -> g.creator == user }
+        if (creatorOfOpenGame != null) {
+            return RequestContext(session, user, creatorOfOpenGame, null, Role.CREATOR)
+        }
+        val secondPlayerOfOpenGame = instance!!.openGameList.find { g -> g.secondPlayer == user }
+        if (secondPlayerOfOpenGame != null) {
+            return RequestContext(session, user, secondPlayerOfOpenGame, null, Role.SECOND_PLAYER)
+        }
+        return RequestContext(session, user, null, null, null)
     }
 }
 

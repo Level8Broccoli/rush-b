@@ -34,3 +34,13 @@ val createAddToOpenGames: AddToOpenGamesWrapper = { openGameList ->
     }
 }
 
+
+typealias RemoveFromOpenGames = (OpenGame) -> Unit
+typealias RemoveFromOpenGamesWrapper = (MutableList<OpenGame>) -> RemoveFromOpenGames
+
+val createRemoveFromOpenGames: RemoveFromOpenGamesWrapper = { openGameList ->
+    { openGame ->
+        openGameList.remove(openGame)
+    }
+}
+

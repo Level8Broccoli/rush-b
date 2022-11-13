@@ -1,14 +1,10 @@
 import { StateUpdater, useState } from "preact/compat";
-import {
-  ConnectionStatus,
-  MessageType,
-  SendToServer,
-} from "../api/ClientEventTypes";
+import { ConnectionStatus, SendToServer } from "../api/ClientEventTypes";
 import { AppState, Views } from "./stateTypes";
 import {
   addMessages,
-  GuiEvents,
   goToView,
+  GuiEvents,
   sendKeys,
   sendMessages,
   setGame,
@@ -16,6 +12,7 @@ import {
   startNewGame,
   startNewSession,
   updateConnectionStatus,
+  deleteOpenGame,
   UpdateGuiEvent,
   updateOpenGames,
 } from "./stateEvents";
@@ -63,6 +60,8 @@ const updateEvent: (
       return setUserId(setState, updateServerEvent, payload);
     case GuiEvents.UpdateOpenGames:
       return updateOpenGames(setState, updateServerEvent, payload);
+    case GuiEvents.DeleteOpenGame:
+      return deleteOpenGame(setState, updateServerEvent, payload);
   }
 };
 
