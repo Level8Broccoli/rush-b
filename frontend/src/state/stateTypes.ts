@@ -33,7 +33,7 @@ export type GameState = {
 export enum Views {
   Home,
   Lobby,
-  GameConfig,
+  YourGame,
   Game,
 }
 
@@ -49,5 +49,6 @@ export type AppState = {
   activeGame: GameState;
   user: User;
   openGames: OpenGame[];
+  currentOpenGameId?: UUID;
   loadingMessage: string;
 };

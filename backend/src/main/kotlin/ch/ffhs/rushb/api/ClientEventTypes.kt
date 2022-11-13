@@ -13,7 +13,12 @@ import org.springframework.web.socket.WebSocketSession
 // should be kept in sync with `serverEvents.ts`
 
 enum class ClientEventType(val value: String) {
-    Subscribe("subscribe"), KeyPress("keyPress"), Message("message"), CreateOpenGame("createOpenGame"), DeleteOpenGame("deleteOpenGame");
+    Subscribe("subscribe"),
+    KeyPress("keyPress"),
+    Message("message"),
+    CreateOpenGame("createOpenGame"),
+    DeleteOpenGame("deleteOpenGame"),
+    JoinOpenGame("joinOpenGame");
 
     companion object {
         fun fromString(value: String): ClientEventType? {
@@ -156,6 +161,35 @@ data class DeleteOpenGameEvent(val game: OpenGame) : ClientEvent {
         broadcastToOthers: BroadcastToOthers
     ) {
         removeFromOpenGames(game)
+        broadcast(Message(ServerEventTypes.OPEN_GAMES, listToJSON(openGames)))
+    }
+
+    override val event: ClientEventType
+        get() = ClientEventType.CreateOpenGame
+}
+
+data class JoinOpenGameEvent(val user: User, val openGameId: String) : ClientEvent {
+    override fun execute(
+        session: WebSocketSession,
+        addToSessions: AddToSessions,
+        addToUsers: AddToUsers,
+        addToOpenGames: AddToOpenGames,
+        removeFromOpenGames: RemoveFromOpenGames,
+        openGames: List<OpenGame>,
+        emit: Emit,
+        broadcast: Broadcast,
+        broadcastToOthers: BroadcastToOthers
+    ) {
+        val openGame = openGames.find { g -> g.id == openGameId }
+        if (openGame == null) {
+            println("Game not found")
+            return
+        }
+        if (openGame.secondPlayer != null) {
+            println("Game already has a second player: ${openGame.secondPlayer}")
+            return
+        }
+        openGame.secondPlayer = user
         broadcast(Message(ServerEventTypes.OPEN_GAMES, listToJSON(openGames)))
     }
 

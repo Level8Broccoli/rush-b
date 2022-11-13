@@ -11,9 +11,9 @@ type Props = {
 };
 
 export function LobbyView(props: Props): JSX.Element {
-  const createNewGame = () => {
-    props.updateGuiEvent([GuiEvents.StartNewGame, props.user.id]);
-    props.updateGuiEvent([GuiEvents.GoToView, Views.GameConfig]);
+  const createOpenGame = () => {
+    props.updateGuiEvent([GuiEvents.CreateOpenGame, null]);
+    props.updateGuiEvent([GuiEvents.GoToView, Views.YourGame]);
   };
 
   return (
@@ -22,10 +22,13 @@ export function LobbyView(props: Props): JSX.Element {
         <p class="card-header-title">Lobby</p>
       </header>
       <div class="card-content">
-        <GameList openGames={props.openGames} />
+        <GameList
+          openGames={props.openGames}
+          updateGuiEvent={props.updateGuiEvent}
+        />
       </div>
       <div class="card-footer">
-        <a href="#" class="card-footer-item" onClick={createNewGame}>
+        <a href="#" class="card-footer-item" onClick={createOpenGame}>
           oder starte ein eigenes Spiel, {props.user.name}
         </a>
       </div>

@@ -9,6 +9,7 @@ import {
   ClientEventTypes,
   createOpenGame,
   deleteOpenGame,
+  joinOpenGame,
   keyPress,
   message,
   subscribe,
@@ -86,5 +87,7 @@ export const serverEvent: (sendMessage: SendToServer) => UpdateClientEvent =
         return createOpenGame(sendMessage, payload);
       case ClientEventTypes.DeleteOpenGame:
         return deleteOpenGame(sendMessage, payload);
+      case ClientEventTypes.JoinOpenGame:
+        return joinOpenGame(sendMessage, payload);
     }
   };

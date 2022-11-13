@@ -9,12 +9,13 @@ import {
   sendMessages,
   setGame,
   setUserId,
-  startNewGame,
+  createOpenGame,
   startNewSession,
   updateConnectionStatus,
   deleteOpenGame,
   UpdateGuiEvent,
   updateOpenGames,
+  joinOpenGame,
 } from "./stateEvents";
 import { serverEvent } from "../api/server";
 import { UpdateClientEvent } from "../api/ClientEvents";
@@ -54,14 +55,16 @@ const updateEvent: (
       return setGame(setState, updateServerEvent, payload);
     case GuiEvents.GoToView:
       return goToView(setState, updateServerEvent, payload);
-    case GuiEvents.StartNewGame:
-      return startNewGame(setState, updateServerEvent, payload);
+    case GuiEvents.CreateOpenGame:
+      return createOpenGame(setState, updateServerEvent, payload);
     case GuiEvents.SetUserId:
       return setUserId(setState, updateServerEvent, payload);
     case GuiEvents.UpdateOpenGames:
       return updateOpenGames(setState, updateServerEvent, payload);
     case GuiEvents.DeleteOpenGame:
       return deleteOpenGame(setState, updateServerEvent, payload);
+    case GuiEvents.JoinOpenGame:
+      return joinOpenGame(setState, updateServerEvent, payload);
   }
 };
 

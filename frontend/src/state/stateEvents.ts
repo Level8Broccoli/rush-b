@@ -19,10 +19,11 @@ export enum GuiEvents {
   UpdateConnectionStatus,
   SetGame,
   GoToView,
-  StartNewGame,
+  CreateOpenGame,
   SetUserId,
   UpdateOpenGames,
   DeleteOpenGame,
+  JoinOpenGame,
 }
 
 export type AllGuiStateEvents = [GuiEvents, unknown] &
@@ -34,10 +35,11 @@ export type AllGuiStateEvents = [GuiEvents, unknown] &
     | UpdateConnectionStatusEvent
     | SetGameEvent
     | GoToViewEvent
-    | StartNewGameEvent
+    | CreateOpenGameEvent
     | SetUserIdEvent
     | UpdateOpenGamesEvent
     | DeleteOpenGameEvent
+    | JoinOpenGameEvent
   );
 
 export type UpdateGuiEvent = (event: AllGuiStateEvents) => true;
@@ -146,20 +148,20 @@ export const goToView: UpdaterGuiFunction<GoToViewEvent> = (
   return true;
 };
 
-type StartNewGameEvent = [GuiEvents.StartNewGame, UUID];
+type CreateOpenGameEvent = [GuiEvents.CreateOpenGame, null];
 
-export const startNewGame: UpdaterGuiFunction<StartNewGameEvent> = (
+export const createOpenGame: UpdaterGuiFunction<CreateOpenGameEvent> = (
   setState,
-  updateClientEvent,
-  userId
+  updateClientEvent
 ) => {
-  // setState(
-  //   (prevState): AppState => ({
-  //     ...prevState,
-  //     loadingMessage: "Spiel wird erstellt",
-  //   })
-  // );
-  updateClientEvent([ClientEventTypes.CreateOpenGame, userId]);
+  const gameId: UUID = { value: crypto.randomUUID() };
+  setState(
+    (prevState): AppState => ({
+      ...prevState,
+      currentOpenGameId: gameId,
+    })
+  );
+  updateClientEvent([ClientEventTypes.CreateOpenGame, gameId]);
   return true;
 };
 
@@ -183,9 +185,7 @@ export const updateOpenGames: UpdaterGuiFunction<UpdateOpenGamesEvent> = (
   updateClientEvent,
   openGames
 ) => {
-  setState((prevState): AppState => {
-    return { ...prevState, openGames };
-  });
+  setState((prevState): AppState => ({ ...prevState, openGames }));
   return true;
 };
 
@@ -195,6 +195,20 @@ export const deleteOpenGame: UpdaterGuiFunction<DeleteOpenGameEvent> = (
   setState,
   updateClientEvent
 ) => {
+  setState(
+    (prevState): AppState => ({ ...prevState, currentOpenGameId: undefined })
+  );
   updateClientEvent([ClientEventTypes.DeleteOpenGame, null]);
+  return true;
+};
+
+type JoinOpenGameEvent = [GuiEvents.JoinOpenGame, UUID];
+
+export const joinOpenGame: UpdaterGuiFunction<JoinOpenGameEvent> = (
+  setState,
+  updateClientEvent,
+  openGameId
+) => {
+  updateClientEvent([ClientEventTypes.JoinOpenGame, openGameId]);
   return true;
 };

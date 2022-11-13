@@ -26,6 +26,7 @@ fun parseFromClient(
         ClientEventType.Message -> parseMessageEvent(data)
         ClientEventType.CreateOpenGame -> parseCreateOpenGameEvent(data, ctx)
         ClientEventType.DeleteOpenGame -> parseDeleteOpenGameEvent(data, ctx)
+        ClientEventType.JoinOpenGame -> parseJoinOpenGameEvent(data, ctx)
     }
 }
 
@@ -74,6 +75,22 @@ private fun parseDeleteOpenGameEvent(
         return null
     }
     return DeleteOpenGameEvent(ctx.openGame)
+}
+
+private fun parseJoinOpenGameEvent(
+    data: List<String>,
+    ctx: RequestContext?,
+): ClientEvent? {
+    if (data.size != 1) {
+        println("Data didn't match expected form: $data")
+        return null
+    }
+    if (ctx?.user == null) {
+        println("Missing or false request context: $data")
+        return null
+    }
+    val openGameId = data[0]
+    return JoinOpenGameEvent(ctx.user, openGameId)
 }
 
 private fun nodeToString(nodes: List<JsonNode>): List<String> {

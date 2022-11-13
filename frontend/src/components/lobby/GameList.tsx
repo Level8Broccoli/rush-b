@@ -1,8 +1,11 @@
 import { h } from "preact";
 import { OpenGame } from "../../state/stateTypes";
 import { Button } from "../general/Button";
+import { UUID } from "../../state/session";
+import { GuiEvents, UpdateGuiEvent } from "../../state/stateEvents";
 
 type Props = {
+  updateGuiEvent: UpdateGuiEvent;
   openGames: OpenGame[];
 };
 
@@ -10,6 +13,10 @@ export function GameList(props: Props): JSX.Element {
   if (props.openGames.length === 0) {
     return <em>Keine Spiele gefunden.</em>;
   }
+
+  const joinOpenGame = (id: UUID) => () => {
+    props.updateGuiEvent([GuiEvents.JoinOpenGame, id]);
+  };
 
   return (
     <div class="table-container">
@@ -29,7 +36,7 @@ export function GameList(props: Props): JSX.Element {
               <Button
                 label={"Beitreten"}
                 variant={"ghost"}
-                onClick={() => {}}
+                onClick={joinOpenGame(game.id)}
                 size={"sm"}
               />
             </td>
