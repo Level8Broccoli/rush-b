@@ -17,6 +17,7 @@ export function GameList(props: Props): JSX.Element {
   const joinOpenGame = (id: UUID) => () => {
     props.updateGuiEvent([GuiEvents.JoinOpenGame, id]);
   };
+  props.openGames.map(console.log);
 
   return (
     <div class="table-container">
@@ -31,14 +32,19 @@ export function GameList(props: Props): JSX.Element {
         {props.openGames.map((game) => (
           <tr>
             <td class={"has-text-grey-light"}>{game.id.value.slice(0, 4)}</td>
-            <td>{game.creator.name}</td>
             <td>
-              <Button
-                label={"Beitreten"}
-                variant={"ghost"}
-                onClick={joinOpenGame(game.id)}
-                size={"sm"}
-              />
+              {game.creator.name}{" "}
+              {game.secondPlayer ? " versus " + game.secondPlayer?.name : ""}
+            </td>
+            <td>
+              {!game.secondPlayer && (
+                <Button
+                  label={"Beitreten"}
+                  variant={"ghost"}
+                  onClick={joinOpenGame(game.id)}
+                  size={"sm"}
+                />
+              )}
             </td>
           </tr>
         ))}
