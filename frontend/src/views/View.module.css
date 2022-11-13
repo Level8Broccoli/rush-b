@@ -1,3 +1,8 @@
 .customCard {
   min-width: min(50rem, 100vw - 2 * 2rem);
 }
+
+.centerChild {
+  display: grid;
+  place-content: center;
+}

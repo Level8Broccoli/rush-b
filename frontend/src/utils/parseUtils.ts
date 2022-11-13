@@ -29,3 +29,12 @@ export function mapNonNull<O, N>(
     return converted === null ? [] : [converted];
   });
 }
+
+export function safeParseJSON(payload: string): unknown {
+  try {
+    return JSON.parse(payload) as unknown;
+  } catch (e) {
+    console.error(`Couldn't parse JSON: ${payload}, because ${e}`);
+    return null;
+  }
+}

@@ -1,5 +1,5 @@
 import { ServerEventTyp } from "./ServerEventTypes";
-import { hasProp, isNonNullObject } from "../utils/parseUtils";
+import { hasProp, isNonNullObject, safeParseJSON } from "../utils/parseUtils";
 
 export function initialParser(payload: unknown): {
   type: ServerEventTyp;
@@ -15,7 +15,7 @@ export function initialParser(payload: unknown): {
     return null;
   }
   if (!isNonNullObject(parsed)) {
-    console.error(`(3) Parsed JSON was expected to be a object: ${parsed}`);
+    console.error(`(3) Parsed JSON was expected to be an object: ${parsed}`);
     return null;
   }
   if (!(hasProp(parsed, "type") && hasProp(parsed, "data"))) {
@@ -44,7 +44,9 @@ export function initialParser(payload: unknown): {
     return null;
   }
   if (!isNonNullObject(parsedData)) {
-    console.error(`(9) Parsed JSON was expected to be a object: ${parsedData}`);
+    console.error(
+      `(9) Parsed JSON was expected to be an object: ${parsedData}`
+    );
     return null;
   }
   return { type: serverEventType, data: parsedData };
@@ -52,8 +54,8 @@ export function initialParser(payload: unknown): {
 
 function toEnumServerEventTyp(s: string): ServerEventTyp | null {
   switch (s) {
-    case ServerEventTyp.GAME:
-      return ServerEventTyp.GAME;
+    case ServerEventTyp.RUNNING_GAME:
+      return ServerEventTyp.RUNNING_GAME;
     case ServerEventTyp.MESSAGE:
       return ServerEventTyp.MESSAGE;
     case ServerEventTyp.OPEN_GAMES:
@@ -62,13 +64,4 @@ function toEnumServerEventTyp(s: string): ServerEventTyp | null {
       return ServerEventTyp.SESSION_CLOSED;
   }
   return null;
-}
-
-function safeParseJSON(payload: string): unknown {
-  try {
-    return JSON.parse(payload) as unknown;
-  } catch (e) {
-    console.error(`Couldn't parse JSON: ${payload}, because ${e}`);
-    return null;
-  }
 }

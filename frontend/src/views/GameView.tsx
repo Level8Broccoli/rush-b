@@ -11,8 +11,8 @@ type Props = {
 
 export function GameView(props: Props): JSX.Element {
   return (
-    <div className={`card ${classes.customCard}`}>
-      <div className="card-content">
+    <div class={`card ${classes.customCard}`}>
+      <div class={`card-content ${classes.centerChild}`}>
         <GameUI
           timer={props.state.activeGame.timer}
           tileMap={props.state.activeGame.level}

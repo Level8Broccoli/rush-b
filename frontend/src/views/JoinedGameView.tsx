@@ -23,11 +23,9 @@ export function JoinedGameView(props: Props): JSX.Element {
       </header>
       <div class="card-content">
         <h1>
-          <span className="has-text-info-dark">
-            {props.openGame?.creator.name}
-          </span>{" "}
+          <span class="has-text-info-dark">{props.openGame?.creator.name}</span>{" "}
           versus{" "}
-          <span className="has-text-danger-dark">
+          <span class="has-text-danger-dark">
             {props.openGame?.secondPlayer?.name ?? "[offen]"}
           </span>
         </h1>

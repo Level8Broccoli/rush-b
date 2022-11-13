@@ -42,7 +42,7 @@ export function BaseLayout(props: Props): JSX.Element {
               <br />
               <span class="is-uppercase">{props.playerName}</span>
             </h1>
-            <div className={`has-text-danger p-3 ${classes.connectionIcon}`}>
+            <div class={`has-text-danger p-3 ${classes.connectionIcon}`}>
               {connectionStatus()}
             </div>
           </div>

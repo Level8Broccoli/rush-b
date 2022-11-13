@@ -51,7 +51,6 @@ export const subscribe: UpdaterClientFunction<SubscribeEvent> = (
       const event = parseFromServer(updateGuiEvent, payload);
       if (event === null) {
         console.error(`Event couldn't get parsed. ${payload}`);
-        console.log(payload);
         return;
       }
       event.execute();

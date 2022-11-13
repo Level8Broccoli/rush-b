@@ -7,8 +7,8 @@ type Props = {
 
 export function Icon(props: Props): JSX.Element {
   return (
-    <span className="icon" title={props.title}>
-      <i className={`fa-sharp fa-solid fa-${props.icon}`}></i>
+    <span class="icon" title={props.title}>
+      <i class={`fa-sharp fa-solid fa-${props.icon}`}></i>
     </span>
   );
 }

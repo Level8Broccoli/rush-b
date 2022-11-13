@@ -12,6 +12,7 @@ export function parseOpenGames(
   createOpenGamesServerEvent: (openGames: OpenGame[]) => ServerEvent
 ): ServerEvent | null {
   if (!isArray(data)) {
+    console.error(`OpenGames was expected to be an array: ${data}`);
     return null;
   }
   const openGames: OpenGame[] = mapNonNull(data, parseOpenGame);
@@ -20,7 +21,7 @@ export function parseOpenGames(
 
 function parseOpenGame(d: unknown): OpenGame | null {
   if (!isNonNullObject(d)) {
-    console.error(`OpenGame was expected to be a object: ${d}`);
+    console.error(`OpenGame was expected to be an object: ${d}`);
     return null;
   }
   if (
@@ -59,7 +60,7 @@ function parseOpenGame(d: unknown): OpenGame | null {
 
 function parseUser(d: unknown): User | null {
   if (!isNonNullObject(d)) {
-    console.error(`Data was expected to be a object: ${d}`);
+    console.error(`Data was expected to be an object: ${d}`);
     return null;
   }
   if (!(hasProp(d, "name") && hasProp(d, "id"))) {
