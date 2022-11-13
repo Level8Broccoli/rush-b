@@ -1,5 +1,6 @@
 package ch.ffhs.rushb.api
 
+import ch.ffhs.rushb.controller.RunningGame
 import ch.ffhs.rushb.model.OpenGame
 import ch.ffhs.rushb.model.User
 import org.springframework.web.socket.WebSocketSession
@@ -41,6 +42,15 @@ typealias RemoveFromOpenGamesWrapper = (MutableList<OpenGame>) -> RemoveFromOpen
 val createRemoveFromOpenGames: RemoveFromOpenGamesWrapper = { openGameList ->
     { openGame ->
         openGameList.remove(openGame)
+    }
+}
+
+typealias AddToGames = (RunningGame) -> Unit
+typealias AddToGamesWrapper = (MutableList<RunningGame>) -> AddToGames
+
+val createAddToRunningGames: AddToGamesWrapper = { gameList ->
+    { runningGame ->
+        gameList.add(runningGame)
     }
 }
 

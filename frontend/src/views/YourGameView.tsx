@@ -16,6 +16,11 @@ export function YourGameView(props: Props): JSX.Element {
     props.updateGuiEvent([GuiEvents.GoToView, Views.Lobby]);
   };
 
+  const startGame = () => {
+    props.updateGuiEvent([GuiEvents.StartGame, null]);
+    props.updateGuiEvent([GuiEvents.GoToView, Views.Game]);
+  };
+
   return (
     <div class={`card ${classes.gameConfigCard}`}>
       <header class="card-header">
@@ -32,7 +37,11 @@ export function YourGameView(props: Props): JSX.Element {
           ID: {props.openGame?.id.value}
         </small>
         <div class={"buttons mt-3"}>
-          <Button label={"Spiel mit AI starten"} variant={"black"} />
+          <Button
+            label={"Spiel mit AI starten"}
+            variant={"black"}
+            onClick={startGame}
+          />
           {props.openGame?.secondPlayer?.name && (
             <Button
               label={

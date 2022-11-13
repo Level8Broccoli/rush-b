@@ -11,7 +11,7 @@ function parseMessage(_data: object): ServerEvent | null {
   return null;
 }
 
-function parseGame(_data: object): ServerEvent | null {
+function parseRunningGame(_data: object): ServerEvent | null {
   return null;
 }
 
@@ -31,8 +31,8 @@ export function parseFromServer(
   switch (type) {
     case ServerEventTyp.MESSAGE:
       return parseMessage(data);
-    case ServerEventTyp.GAME:
-      return parseGame(data);
+    case ServerEventTyp.RUNNING_GAME:
+      return parseRunningGame(data);
     case ServerEventTyp.OPEN_GAMES:
       return parseOpenGames(data, createFnOpenGamesServerEvent(updateGuiEvent));
     case ServerEventTyp.SESSION_CLOSED:

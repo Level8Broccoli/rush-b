@@ -25,7 +25,7 @@ class GameController : TextWebSocketHandler() {
     val sessionList = HashMap<WebSocketSession, User>()
     val userList = mutableListOf<User>()
     val openGameList = mutableListOf<OpenGame>()
-    val runningGameList = mutableListOf<Game>()
+    val runningGameList = mutableListOf<RunningGame>()
     private final val emit: Emit
     private final val broadcast: Broadcast
     private final val broadcastToOthers: BroadcastToOthers
@@ -62,13 +62,13 @@ class GameController : TextWebSocketHandler() {
     }
 
     @Scheduled(fixedRate = 200)
-    fun sendGameStatus() {
-        instance!!.runningGameList.forEach { game ->
-            game.applyGameLoop()
-            val gameData = game.toJSON()
-            broadcast(Message(ServerEventTypes.GAME, gameData))
+    fun sendRunningGameStatus() {
+        instance!!.runningGameList.forEach { runningGame ->
+            runningGame.applyGameLoop()
+            val gameData = runningGame.toJSON()
+            broadcast(Message(ServerEventTypes.RUNNING_GAME, gameData))
             println("Push Running Game")
-            println(game.toJSON())
+            println(runningGame.toJSON())
         }
 
         // TODO: remove inactive games
@@ -87,6 +87,7 @@ class GameController : TextWebSocketHandler() {
         val addToUsers = createAddToUsers(instance!!.userList)
         val addToOpenGames = createAddToOpenGames(instance!!.openGameList)
         val removeFromOpenGames = createRemoveFromOpenGames(instance!!.openGameList)
+        val addToRunningGames = createAddToRunningGames(instance!!.runningGameList)
 
         event.execute(
             session,
@@ -94,6 +95,7 @@ class GameController : TextWebSocketHandler() {
             addToUsers,
             addToOpenGames,
             removeFromOpenGames,
+            addToRunningGames,
             instance!!.openGameList,
             emit,
             broadcast,

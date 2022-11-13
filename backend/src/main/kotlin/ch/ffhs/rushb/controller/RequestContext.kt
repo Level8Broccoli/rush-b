@@ -9,6 +9,6 @@ data class RequestContext(
     val session: WebSocketSession,
     val user: User,
     val openGame: OpenGame?,
-    val game: Game?,
+    val runningGame: RunningGame?,
     val role: Role?
 )

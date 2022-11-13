@@ -18,7 +18,8 @@ enum class ClientEventType(val value: String) {
     Message("message"),
     CreateOpenGame("createOpenGame"),
     DeleteOpenGame("deleteOpenGame"),
-    JoinOpenGame("joinOpenGame");
+    JoinOpenGame("joinOpenGame"),
+    StartGame("startGame");
 
     companion object {
         fun fromString(value: String): ClientEventType? {
@@ -44,6 +45,7 @@ interface ClientEvent {
         addToUsers: AddToUsers,
         addToOpenGames: AddToOpenGames,
         removeFromOpenGames: RemoveFromOpenGames,
+        addToGames: AddToGames,
         openGames: List<OpenGame>,
         emit: Emit,
         broadcast: Broadcast,
@@ -61,6 +63,7 @@ data class SubscribeEvent(val user: User) : ClientEvent {
         addToUsers: AddToUsers,
         addToOpenGames: AddToOpenGames,
         removeFromOpenGames: RemoveFromOpenGames,
+        addToGames: AddToGames,
         openGames: List<OpenGame>,
         emit: Emit,
         broadcast: Broadcast,
@@ -84,6 +87,7 @@ data class MessageEvent(val messages: List<String>) : ClientEvent {
         addToUsers: AddToUsers,
         addToOpenGames: AddToOpenGames,
         removeFromOpenGames: RemoveFromOpenGames,
+        addToGames: AddToGames,
         openGames: List<OpenGame>,
         emit: Emit,
         broadcast: Broadcast,
@@ -103,6 +107,7 @@ data class KeyPressEvent(val keys: List<Key>) : ClientEvent {
         addToUsers: AddToUsers,
         addToOpenGames: AddToOpenGames,
         removeFromOpenGames: RemoveFromOpenGames,
+        addToGames: AddToGames,
         openGames: List<OpenGame>,
         emit: Emit,
         broadcast: Broadcast,
@@ -134,6 +139,7 @@ data class CreateOpenGameEvent(val user: User, val gameId: String) : ClientEvent
         addToUsers: AddToUsers,
         addToOpenGames: AddToOpenGames,
         removeFromOpenGames: RemoveFromOpenGames,
+        addToGames: AddToGames,
         openGames: List<OpenGame>,
         emit: Emit,
         broadcast: Broadcast,
@@ -148,24 +154,25 @@ data class CreateOpenGameEvent(val user: User, val gameId: String) : ClientEvent
         get() = ClientEventType.CreateOpenGame
 }
 
-data class DeleteOpenGameEvent(val game: OpenGame) : ClientEvent {
+data class DeleteOpenGameEvent(val openGame: OpenGame) : ClientEvent {
     override fun execute(
         session: WebSocketSession,
         addToSessions: AddToSessions,
         addToUsers: AddToUsers,
         addToOpenGames: AddToOpenGames,
         removeFromOpenGames: RemoveFromOpenGames,
+        addToGames: AddToGames,
         openGames: List<OpenGame>,
         emit: Emit,
         broadcast: Broadcast,
         broadcastToOthers: BroadcastToOthers
     ) {
-        removeFromOpenGames(game)
+        removeFromOpenGames(openGame)
         broadcast(Message(ServerEventTypes.OPEN_GAMES, listToJSON(openGames)))
     }
 
     override val event: ClientEventType
-        get() = ClientEventType.CreateOpenGame
+        get() = ClientEventType.DeleteOpenGame
 }
 
 data class JoinOpenGameEvent(val user: User, val openGameId: String) : ClientEvent {
@@ -175,6 +182,7 @@ data class JoinOpenGameEvent(val user: User, val openGameId: String) : ClientEve
         addToUsers: AddToUsers,
         addToOpenGames: AddToOpenGames,
         removeFromOpenGames: RemoveFromOpenGames,
+        addToGames: AddToGames,
         openGames: List<OpenGame>,
         emit: Emit,
         broadcast: Broadcast,
@@ -194,5 +202,28 @@ data class JoinOpenGameEvent(val user: User, val openGameId: String) : ClientEve
     }
 
     override val event: ClientEventType
-        get() = ClientEventType.CreateOpenGame
+        get() = ClientEventType.JoinOpenGame
+}
+
+data class StartGameEvent(val openGame: OpenGame) : ClientEvent {
+    override fun execute(
+        session: WebSocketSession,
+        addToSessions: AddToSessions,
+        addToUsers: AddToUsers,
+        addToOpenGames: AddToOpenGames,
+        removeFromOpenGames: RemoveFromOpenGames,
+        addToGames: AddToGames,
+        openGames: List<OpenGame>,
+        emit: Emit,
+        broadcast: Broadcast,
+        broadcastToOthers: BroadcastToOthers
+    ) {
+        val runningGame = openGame.startGame()
+        addToGames(runningGame)
+        removeFromOpenGames(openGame)
+        broadcast(Message(ServerEventTypes.OPEN_GAMES, listToJSON(openGames)))
+    }
+
+    override val event: ClientEventType
+        get() = ClientEventType.StartGame
 }

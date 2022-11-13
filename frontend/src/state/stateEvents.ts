@@ -24,6 +24,7 @@ export enum GuiEvents {
   UpdateOpenGames,
   DeleteOpenGame,
   JoinOpenGame,
+  StartGame,
 }
 
 export type AllGuiStateEvents = [GuiEvents, unknown] &
@@ -40,10 +41,10 @@ export type AllGuiStateEvents = [GuiEvents, unknown] &
     | UpdateOpenGamesEvent
     | DeleteOpenGameEvent
     | JoinOpenGameEvent
+    | StartGameEvent
   );
 
 export type UpdateGuiEvent = (event: AllGuiStateEvents) => true;
-
 type UpdaterGuiFunction<T extends AllGuiStateEvents> = (
   setState: StateUpdater<AppState>,
   updateClientEvent: UpdateClientEvent,
@@ -56,7 +57,6 @@ type StartNewSessionEvent = [
   GuiEvents.StartNewSession,
   [string, UpdateGuiEvent, StateUpdater<SendToServer>]
 ];
-
 export const startNewSession: UpdaterGuiFunction<StartNewSessionEvent> = (
   setState,
   updateClientEvent,
@@ -75,7 +75,6 @@ export const startNewSession: UpdaterGuiFunction<StartNewSessionEvent> = (
 };
 
 type AddMessagesEvent = [GuiEvents.AddMessages, Message[]];
-
 export const addMessages: UpdaterGuiFunction<AddMessagesEvent> = (
   setState,
   updateClientEvent,
@@ -91,7 +90,6 @@ export const addMessages: UpdaterGuiFunction<AddMessagesEvent> = (
 };
 
 type SendMessagesEvent = [GuiEvents.SendMessages, Message[]];
-
 export const sendMessages: UpdaterGuiFunction<SendMessagesEvent> = (
   setState,
   updateClientEvent,
@@ -102,7 +100,6 @@ export const sendMessages: UpdaterGuiFunction<SendMessagesEvent> = (
 };
 
 type SendKeysEvent = [GuiEvents.SendKeys, Keys[]];
-
 export const sendKeys: UpdaterGuiFunction<SendKeysEvent> = (
   setState,
   updateClientEvent,
@@ -116,7 +113,6 @@ type UpdateConnectionStatusEvent = [
   GuiEvents.UpdateConnectionStatus,
   ConnectionStatus
 ];
-
 export const updateConnectionStatus: UpdaterGuiFunction<
   UpdateConnectionStatusEvent
 > = (setState, updateClientEvent, newStatus) => {
@@ -127,7 +123,6 @@ export const updateConnectionStatus: UpdaterGuiFunction<
 };
 
 type SetGameEvent = [GuiEvents.SetGame, GameState];
-
 export const setGame: UpdaterGuiFunction<SetGameEvent> = (
   setState,
   updateClientEvent,
@@ -138,7 +133,6 @@ export const setGame: UpdaterGuiFunction<SetGameEvent> = (
 };
 
 type GoToViewEvent = [GuiEvents.GoToView, Views];
-
 export const goToView: UpdaterGuiFunction<GoToViewEvent> = (
   setState,
   updateClientEvent,
@@ -149,7 +143,6 @@ export const goToView: UpdaterGuiFunction<GoToViewEvent> = (
 };
 
 type CreateOpenGameEvent = [GuiEvents.CreateOpenGame, null];
-
 export const createOpenGame: UpdaterGuiFunction<CreateOpenGameEvent> = (
   setState,
   updateClientEvent
@@ -166,7 +159,6 @@ export const createOpenGame: UpdaterGuiFunction<CreateOpenGameEvent> = (
 };
 
 type SetUserIdEvent = [GuiEvents.SetUserId, UUID];
-
 export const setUserId: UpdaterGuiFunction<SetUserIdEvent> = (
   setState,
   updateClientEvent,
@@ -179,7 +171,6 @@ export const setUserId: UpdaterGuiFunction<SetUserIdEvent> = (
 };
 
 type UpdateOpenGamesEvent = [GuiEvents.UpdateOpenGames, OpenGame[]];
-
 export const updateOpenGames: UpdaterGuiFunction<UpdateOpenGamesEvent> = (
   setState,
   updateClientEvent,
@@ -190,7 +181,6 @@ export const updateOpenGames: UpdaterGuiFunction<UpdateOpenGamesEvent> = (
 };
 
 type DeleteOpenGameEvent = [GuiEvents.DeleteOpenGame, null];
-
 export const deleteOpenGame: UpdaterGuiFunction<DeleteOpenGameEvent> = (
   setState,
   updateClientEvent
@@ -203,12 +193,20 @@ export const deleteOpenGame: UpdaterGuiFunction<DeleteOpenGameEvent> = (
 };
 
 type JoinOpenGameEvent = [GuiEvents.JoinOpenGame, UUID];
-
 export const joinOpenGame: UpdaterGuiFunction<JoinOpenGameEvent> = (
   setState,
   updateClientEvent,
   openGameId
 ) => {
   updateClientEvent([ClientEventTypes.JoinOpenGame, openGameId]);
+  return true;
+};
+
+type StartGameEvent = [GuiEvents.StartGame, null];
+export const startGame: UpdaterGuiFunction<StartGameEvent> = (
+  setState,
+  updateClientEvent
+) => {
+  updateClientEvent([ClientEventTypes.StartGame, null]);
   return true;
 };

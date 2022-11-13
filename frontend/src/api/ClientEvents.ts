@@ -15,6 +15,7 @@ export enum ClientEventTypes {
   CreateOpenGame,
   DeleteOpenGame,
   JoinOpenGame,
+  StartGame,
 }
 
 export type AllClientEvents = [ClientEventTypes, unknown] &
@@ -25,6 +26,7 @@ export type AllClientEvents = [ClientEventTypes, unknown] &
     | CreateOpenGameEvent
     | DeleteOpenGameEvent
     | JoinOpenGameEvent
+    | StartGameEvent
   );
 export type UpdateClientEvent = (event: AllClientEvents) => boolean;
 type UpdaterClientFunction<T extends AllClientEvents> = (
@@ -116,4 +118,9 @@ export const joinOpenGame: UpdaterClientFunction<JoinOpenGameEvent> = (
   openGameId
 ) => {
   return server.send(MessageType.JoinOpenGame, [openGameId.value]);
+};
+
+type StartGameEvent = [ClientEventTypes.StartGame, null];
+export const startGame: UpdaterClientFunction<StartGameEvent> = (server) => {
+  return server.send(MessageType.StartGame, []);
 };

@@ -12,7 +12,7 @@ import java.util.*
 import kotlin.concurrent.schedule
 import kotlin.random.Random
 
-class Game(
+class RunningGame(
     override val id: String,
     private val creator: User,
     private val level: Level,

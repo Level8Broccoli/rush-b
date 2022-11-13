@@ -16,6 +16,7 @@ import {
   UpdateGuiEvent,
   updateOpenGames,
   joinOpenGame,
+  startGame,
 } from "./stateEvents";
 import { serverEvent } from "../api/server";
 import { UpdateClientEvent } from "../api/ClientEvents";
@@ -65,6 +66,8 @@ const updateEvent: (
       return deleteOpenGame(setState, updateServerEvent, payload);
     case GuiEvents.JoinOpenGame:
       return joinOpenGame(setState, updateServerEvent, payload);
+    case GuiEvents.StartGame:
+      return startGame(setState, updateServerEvent, payload);
   }
 };
 

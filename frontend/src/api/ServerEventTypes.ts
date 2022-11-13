@@ -4,7 +4,7 @@ import { GuiEvents, UpdateGuiEvent } from "../state/stateEvents";
 export enum ServerEventTyp {
   OPEN_GAMES = "openGames",
   MESSAGE = "message",
-  GAME = "game",
+  RUNNING_GAME = "runningGame",
   SESSION_CLOSED = "sessionClosed",
 }
 
