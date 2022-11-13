@@ -2,7 +2,7 @@ import { h } from "preact";
 import { GuiEvents, UpdateGuiEvent } from "../state/stateEvents";
 import { GameList } from "../components/lobby/GameList";
 import { OpenGame, User, Views } from "../state/stateTypes";
-import classes from "./LobbyView.module.css";
+import classes from "./View.module.css";
 
 type Props = {
   updateGuiEvent: UpdateGuiEvent;
@@ -17,7 +17,7 @@ export function LobbyView(props: Props): JSX.Element {
   };
 
   return (
-    <div class={`card ${classes.lobbyCard}`}>
+    <div class={`card ${classes.customCard}`}>
       <header class="card-header">
         <p class="card-header-title">Lobby</p>
       </header>

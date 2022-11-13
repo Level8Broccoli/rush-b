@@ -20,7 +20,9 @@ typealias EmitWrapper = () -> Emit
 
 val createFnEmit: EmitWrapper = {
     { session, message ->
-        session.sendMessage(TextMessage(ObjectMapper().writeValueAsBytes(message.toData())))
+        if (session.isOpen) {
+            session.sendMessage(TextMessage(ObjectMapper().writeValueAsBytes(message.toData())))
+        }
     }
 }
 

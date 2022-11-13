@@ -1,7 +1,7 @@
 import { h } from "preact";
 import { GuiEvents, UpdateGuiEvent } from "../state/stateEvents";
 import { OpenGame, User, Views } from "../state/stateTypes";
-import classes from "./GameConfigView.module.css";
+import classes from "./View.module.css";
 import { Button } from "../components/general/Button";
 
 type Props = {
@@ -22,13 +22,14 @@ export function YourGameView(props: Props): JSX.Element {
   };
 
   return (
-    <div class={`card ${classes.gameConfigCard}`}>
+    <div class={`card ${classes.customCard}`}>
       <header class="card-header">
         <p class="card-header-title">Dein Spiel</p>
       </header>
       <div class="card-content">
         <h1>
-          <span class="has-text-info-dark">{props.user.name}</span> versus{" "}
+          <span class="has-text-info-dark">{props.openGame?.creator.name}</span>{" "}
+          versus{" "}
           <span class="has-text-danger-dark">
             {props.openGame?.secondPlayer?.name ?? "[offen]"}
           </span>
@@ -53,7 +54,7 @@ export function YourGameView(props: Props): JSX.Element {
       </div>
       <div class="card-footer">
         <a href="#" class="card-footer-item" onClick={abort}>
-          Abbrechen
+          Spiel löschen
         </a>
       </div>
     </div>

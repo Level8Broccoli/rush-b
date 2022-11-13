@@ -198,6 +198,12 @@ export const joinOpenGame: UpdaterGuiFunction<JoinOpenGameEvent> = (
   updateClientEvent,
   openGameId
 ) => {
+  setState(
+    (prevState): AppState => ({
+      ...prevState,
+      currentOpenGameId: openGameId,
+    })
+  );
   updateClientEvent([ClientEventTypes.JoinOpenGame, openGameId]);
   return true;
 };

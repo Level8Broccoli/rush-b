@@ -7,6 +7,7 @@ import { UpdateGuiEvent } from "../state/stateEvents";
 import { StateUpdater, useEffect, useState } from "preact/compat";
 import { SendToServer } from "../api/ClientEventTypes";
 import { YourGameView } from "./YourGameView";
+import { JoinedGameView } from "./JoinedGameView";
 
 type Props = {
   state: AppState;
@@ -47,6 +48,14 @@ export function Router(props: Props): JSX.Element {
     case Views.YourGame:
       return (
         <YourGameView
+          updateGuiEvent={props.updateGuiEvent}
+          user={props.state.user}
+          openGame={currentOpenGame}
+        />
+      );
+    case Views.JoinedGame:
+      return (
+        <JoinedGameView
           updateGuiEvent={props.updateGuiEvent}
           user={props.state.user}
           openGame={currentOpenGame}

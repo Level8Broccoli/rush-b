@@ -35,6 +35,7 @@ export enum Views {
   Lobby,
   YourGame,
   Game,
+  JoinedGame,
 }
 
 export type User = {
