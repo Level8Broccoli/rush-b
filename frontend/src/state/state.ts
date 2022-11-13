@@ -17,6 +17,7 @@ import {
   startNewSession,
   updateConnectionStatus,
   UpdateGuiEvent,
+  updateOpenGames,
 } from "./stateEvents";
 import { serverEvent } from "../api/server";
 import { UpdateClientEvent } from "../api/ClientEvents";
@@ -60,6 +61,8 @@ const updateEvent: (
       return startNewGame(setState, updateServerEvent, payload);
     case GuiEvents.SetUserId:
       return setUserId(setState, updateServerEvent, payload);
+    case GuiEvents.UpdateOpenGames:
+      return updateOpenGames(setState, updateServerEvent, payload);
   }
 };
 

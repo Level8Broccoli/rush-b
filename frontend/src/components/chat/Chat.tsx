@@ -3,7 +3,7 @@ import { useState } from "preact/compat";
 import { GuiEvents, UpdateGuiEvent } from "../../state/stateEvents";
 
 type Props = {
-  updateEvent: UpdateGuiEvent;
+  updateGuiEvent: UpdateGuiEvent;
 };
 
 export function Chat(props: Props): JSX.Element {
@@ -11,7 +11,7 @@ export function Chat(props: Props): JSX.Element {
   const onSubmit = (e: Event) => {
     e.preventDefault();
     if (message.length) {
-      props.updateEvent([GuiEvents.SendMessages, [message]]);
+      props.updateGuiEvent([GuiEvents.SendMessages, [message]]);
       setMessage("");
     }
   };

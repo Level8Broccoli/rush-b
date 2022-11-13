@@ -19,7 +19,7 @@ export function App() {
       loadingMessage={state.loadingMessage}
       connectionStatus={state.connectionStatus}
     >
-      <Router state={state} updateEvent={updateEvent} setSend={setSend} />
+      <Router state={state} updateGuiEvent={updateEvent} setSend={setSend} />
     </BaseLayout>
   );
 }

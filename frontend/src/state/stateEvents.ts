@@ -1,5 +1,12 @@
 import { StateUpdater } from "preact/compat";
-import { AppState, GameState, Message, User, Views } from "./stateTypes";
+import {
+  AppState,
+  GameState,
+  Message,
+  OpenGame,
+  User,
+  Views,
+} from "./stateTypes";
 import { ConnectionStatus, SendToServer } from "../api/ClientEventTypes";
 import { Keys, ClientEventTypes, UpdateClientEvent } from "../api/ClientEvents";
 import { startNewSessionOnClient, UUID } from "./session";
@@ -14,6 +21,7 @@ export enum GuiEvents {
   GoToView,
   StartNewGame,
   SetUserId,
+  UpdateOpenGames,
 }
 
 export type AllGuiStateEvents = [GuiEvents, unknown] &
@@ -27,6 +35,7 @@ export type AllGuiStateEvents = [GuiEvents, unknown] &
     | GoToViewEvent
     | StartNewGameEvent
     | SetUserIdEvent
+    | UpdateOpenGamesEvent
   );
 
 export type UpdateGuiEvent = (event: AllGuiStateEvents) => true;
@@ -161,6 +170,19 @@ export const setUserId: UpdaterGuiFunction<SetUserIdEvent> = (
 ) => {
   setState((prevState): AppState => {
     return { ...prevState, user: { ...prevState.user, id: userId } };
+  });
+  return true;
+};
+
+type UpdateOpenGamesEvent = [GuiEvents.UpdateOpenGames, OpenGame[]];
+
+export const updateOpenGames: UpdaterGuiFunction<UpdateOpenGamesEvent> = (
+  setState,
+  updateClientEvent,
+  openGames
+) => {
+  setState((prevState): AppState => {
+    return { ...prevState, openGames };
   });
   return true;
 };

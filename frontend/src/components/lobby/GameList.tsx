@@ -23,8 +23,8 @@ export function GameList(props: Props): JSX.Element {
         </tr>
         {props.openGames.map((game) => (
           <tr>
-            <td class={"has-text-grey-light"}>{game.gameId}</td>
-            <td>{game.playerName}</td>
+            <td class={"has-text-grey-light"}>{game.id.value.slice(0, 4)}</td>
+            <td>{game.creator.name}</td>
             <td>
               <Button
                 label={"Beitreten"}

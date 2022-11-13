@@ -9,7 +9,7 @@ import { SendToServer } from "../../api/ClientEventTypes";
 import { User, Views } from "../../state/stateTypes";
 
 type Props = {
-  updateEvent: UpdateGuiEvent;
+  updateGuiEvent: UpdateGuiEvent;
   setSend: StateUpdater<SendToServer>;
   user: User;
 };
@@ -35,11 +35,11 @@ export function Login(props: Props): JSX.Element {
     e.preventDefault();
     const isValid = validateName();
     if (isValid) {
-      props.updateEvent([
+      props.updateGuiEvent([
         GuiEvents.StartNewSession,
-        [name, props.updateEvent, props.setSend],
+        [name, props.updateGuiEvent, props.setSend],
       ]);
-      props.updateEvent([GuiEvents.GoToView, Views.Lobby]);
+      props.updateGuiEvent([GuiEvents.GoToView, Views.Lobby]);
     }
   };
 

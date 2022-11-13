@@ -7,7 +7,7 @@ import { UpdateGuiEvent } from "../state/stateEvents";
 
 type Props = {
   state: AppState;
-  updateEvent: UpdateGuiEvent;
+  updateGuiEvent: UpdateGuiEvent;
 };
 
 export function GameView(props: Props): JSX.Element {
@@ -17,14 +17,14 @@ export function GameView(props: Props): JSX.Element {
         timer={props.state.activeGame.timer}
         tileMap={props.state.activeGame.level}
         characters={props.state.activeGame.characters}
-        updateEvent={props.updateEvent}
+        updateGuiEvent={props.updateGuiEvent}
       />
       <div style="background-color: lightgray; border-radius: 0.3rem; padding-inline: 1rem;">
         <Logs
           connectionStatus={props.state.connectionStatus}
           logs={props.state.messages}
         />
-        <Chat updateEvent={props.updateEvent} />
+        <Chat updateGuiEvent={props.updateGuiEvent} />
       </div>
     </>
   );

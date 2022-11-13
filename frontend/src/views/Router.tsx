@@ -10,7 +10,7 @@ import { GameConfigView } from "./GameConfigView";
 
 type Props = {
   state: AppState;
-  updateEvent: UpdateGuiEvent;
+  updateGuiEvent: UpdateGuiEvent;
   setSend: StateUpdater<SendToServer>;
 };
 
@@ -19,7 +19,7 @@ export function Router(props: Props): JSX.Element {
     case Views.Home:
       return (
         <HomeView
-          updateEvent={props.updateEvent}
+          updateGuiEvent={props.updateGuiEvent}
           setSend={props.setSend}
           user={props.state.user}
         />
@@ -27,7 +27,7 @@ export function Router(props: Props): JSX.Element {
     case Views.Lobby:
       return (
         <LobbyView
-          updateEvent={props.updateEvent}
+          updateGuiEvent={props.updateGuiEvent}
           openGames={props.state.openGames}
           user={props.state.user}
         />
@@ -35,12 +35,13 @@ export function Router(props: Props): JSX.Element {
     case Views.GameConfig:
       return (
         <GameConfigView
-          updateEvent={props.updateEvent}
-          openGames={props.state.openGames}
+          updateGuiEvent={props.updateGuiEvent}
           user={props.state.user}
         />
       );
     case Views.Game:
-      return <GameView state={props.state} updateEvent={props.updateEvent} />;
+      return (
+        <GameView state={props.state} updateGuiEvent={props.updateGuiEvent} />
+      );
   }
 }

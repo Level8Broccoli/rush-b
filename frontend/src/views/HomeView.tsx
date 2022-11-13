@@ -7,7 +7,7 @@ import { User } from "../state/stateTypes";
 
 type Props = {
   user: User;
-  updateEvent: UpdateGuiEvent;
+  updateGuiEvent: UpdateGuiEvent;
   setSend: StateUpdater<SendToServer>;
 };
 
@@ -15,7 +15,7 @@ export function HomeView(props: Props): JSX.Element {
   return (
     <>
       <Login
-        updateEvent={props.updateEvent}
+        updateGuiEvent={props.updateGuiEvent}
         setSend={props.setSend}
         user={props.user}
       />

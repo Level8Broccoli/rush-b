@@ -1,67 +1,11 @@
-import { ServerEvent, ServerEventTyp } from "./ServerEventTypes";
+import {
+  createFnOpenGamesServerEvent,
+  ServerEvent,
+  ServerEventTyp,
+} from "./ServerEventTypes";
 import { UpdateGuiEvent } from "../state/stateEvents";
-import {hasProp, isArray, isNonNullObject} from "../utils/parseUtils";
-
-function safeParseJSON(payload: string): unknown {
-  try {
-    return JSON.parse(payload) as unknown;
-  } catch (e) {
-    console.error(`Couldn't parse JSON: ${payload}, because ${e}`);
-    return null;
-  }
-}
-
-function toEnumServerEventTyp(s: string): ServerEventTyp | null {
-  switch (s) {
-    case ServerEventTyp.GAME:
-      return ServerEventTyp.GAME;
-    case ServerEventTyp.MESSAGE:
-      return ServerEventTyp.MESSAGE;
-    case ServerEventTyp.OPEN_GAMES:
-      return ServerEventTyp.OPEN_GAMES;
-    case ServerEventTyp.SESSION_CLOSED:
-      return ServerEventTyp.SESSION_CLOSED;
-  }
-  return null;
-}
-
-function initialParser(payload: unknown): {
-  type: ServerEventTyp;
-  data: object;
-} | null {
-  if (payload === null || typeof payload !== "string") {
-    return null;
-  }
-  const parsed = safeParseJSON(payload);
-  if (parsed === null) {
-    return null;
-  }
-  if (!isNonNullObject(parsed)) {
-    return null;
-  }
-  if (!(hasProp(parsed, "type") && hasProp(parsed, "data"))) {
-    return null;
-  }
-  const { type, data } = parsed;
-  if (!(typeof type === "string")) {
-    return null;
-  }
-  const serverEventType = toEnumServerEventTyp(type);
-  if (serverEventType === null) {
-    return null;
-  }
-  if (typeof data !== "string") {
-    return null;
-  }
-  const parsedData = safeParseJSON(data);
-  if (parsedData === null) {
-    return null;
-  }
-  if (!isNonNullObject(parsedData)) {
-    return null;
-  }
-  return { type: serverEventType, data: parsedData };
-}
+import { parseOpenGames } from "./ServerParserOpenGames";
+import { initialParser } from "./ServerParserInitial";
 
 function parseMessage(_data: object): ServerEvent | null {
   return null;
@@ -71,19 +15,12 @@ function parseGame(_data: object): ServerEvent | null {
   return null;
 }
 
-function parseOpenGames(data: object): ServerEvent | null {
-  if (!isArray(data)) {
-    return null;
-  }
-  return null;
-}
-
 function parseSessionClosed(_data: object): ServerEvent | null {
   return null;
 }
 
 export function parseFromServer(
-  updateEvent: UpdateGuiEvent,
+  updateGuiEvent: UpdateGuiEvent,
   payload: unknown
 ): ServerEvent | null {
   const initialParsed = initialParser(payload);
@@ -97,7 +34,7 @@ export function parseFromServer(
     case ServerEventTyp.GAME:
       return parseGame(data);
     case ServerEventTyp.OPEN_GAMES:
-      return parseOpenGames(data);
+      return parseOpenGames(data, createFnOpenGamesServerEvent(updateGuiEvent));
     case ServerEventTyp.SESSION_CLOSED:
       return parseSessionClosed(data);
   }

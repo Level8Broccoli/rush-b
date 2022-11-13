@@ -11,7 +11,7 @@ type Props = {
   timer: string;
   tileMap: TileMap;
   characters: Character[];
-  updateEvent: UpdateGuiEvent;
+  updateGuiEvent: UpdateGuiEvent;
 };
 
 export function GameUI(props: Props): JSX.Element {
@@ -48,7 +48,7 @@ export function GameUI(props: Props): JSX.Element {
       setMessage((prev) => [...prev, key]);
     }
     if (message.length) {
-      props.updateEvent([GuiEvents.SendKeys, message]);
+      props.updateGuiEvent([GuiEvents.SendKeys, message]);
     }
   };
 
@@ -59,7 +59,7 @@ export function GameUI(props: Props): JSX.Element {
       setMessage((prev) => [...prev].filter((item) => item !== key));
     }
     if (message.length) {
-      props.updateEvent([GuiEvents.SendKeys, message]);
+      props.updateGuiEvent([GuiEvents.SendKeys, message]);
     }
   };
 

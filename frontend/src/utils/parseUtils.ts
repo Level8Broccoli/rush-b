@@ -19,3 +19,13 @@ export function isTypedArrayOf<T>(
 export function isNonNullObject(u: unknown): u is object {
   return typeof u === "object" && u !== null;
 }
+
+export function mapNonNull<O, N>(
+  list: O[],
+  converter: (element: O) => N | null
+): N[] {
+  return list.flatMap((e) => {
+    const converted = converter(e);
+    return converted === null ? [] : [converted];
+  });
+}

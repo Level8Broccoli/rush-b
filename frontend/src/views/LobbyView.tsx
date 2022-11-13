@@ -5,15 +5,15 @@ import { OpenGame, User, Views } from "../state/stateTypes";
 import classes from "./LobbyView.module.css";
 
 type Props = {
-  updateEvent: UpdateGuiEvent;
+  updateGuiEvent: UpdateGuiEvent;
   openGames: OpenGame[];
   user: User;
 };
 
 export function LobbyView(props: Props): JSX.Element {
   const createNewGame = () => {
-    props.updateEvent([GuiEvents.StartNewGame, props.user.id]);
-    props.updateEvent([GuiEvents.GoToView, Views.GameConfig]);
+    props.updateGuiEvent([GuiEvents.StartNewGame, props.user.id]);
+    props.updateGuiEvent([GuiEvents.GoToView, Views.GameConfig]);
   };
 
   return (

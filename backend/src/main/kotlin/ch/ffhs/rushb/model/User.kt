@@ -7,7 +7,7 @@ data class User(override val id: String, var name: String) : Serializable {
         return """
             {
                 "id": "$id" , 
-                "name": "$name" , 
+                "name": "$name"
             }
             """.trimIndent()
     }

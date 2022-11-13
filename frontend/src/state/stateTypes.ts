@@ -3,8 +3,9 @@ import { TileMap } from "./tileMap.enum";
 import { UUID } from "./session";
 
 export type OpenGame = {
-  playerName: string;
-  gameId: UUID;
+  id: UUID;
+  creator: User;
+  secondPlayer?: User;
 };
 
 export type Character = {
