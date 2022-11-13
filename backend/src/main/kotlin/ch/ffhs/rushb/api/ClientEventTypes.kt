@@ -131,8 +131,7 @@ data class CreateGameEvent(val user: User, val gameId: String) : ClientEvent {
     ) {
         val newGame = OpenGame(gameId, user)
         addToOpenGames(newGame)
-        println("Create Game Event")
-        println(newGame)
+        broadcast(Message(ServerEventTypes.OPEN_GAMES, listToJSON(openGames)))
     }
 
     override val event: ClientEventType
