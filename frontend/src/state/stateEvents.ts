@@ -99,7 +99,7 @@ export const sendMessages: UpdaterGuiFunction<SendMessagesEvent> = (
   return true;
 };
 
-type SendKeysEvent = [GuiEvents.SendKeys, Keys[]];
+type SendKeysEvent = [GuiEvents.SendKeys, typeof Keys];
 export const sendKeys: UpdaterGuiFunction<SendKeysEvent> = (
   setState,
   updateClientEvent,

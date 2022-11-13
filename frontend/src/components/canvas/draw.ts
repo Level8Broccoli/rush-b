@@ -37,7 +37,7 @@ async function drawCharacters(context: CanvasContext, characters: Character[]) {
 
   const { ctx, scale } = context;
 
-  await characters.forEach(async (c) => {
+  for (const c of characters) {
     const dx = scale(c.x / NORM_FACTOR);
     const dy = scale(c.y / NORM_FACTOR);
     const dWidth = scale(c.width / NORM_FACTOR);
@@ -50,7 +50,7 @@ async function drawCharacters(context: CanvasContext, characters: Character[]) {
     if (c.score !== undefined) {
       drawScore(context, "" + c.score, 20, 380); // TODO: do not draw all scores over each other
     }
-  });
+  }
 }
 
 function drawScore(context: CanvasContext, text: string, x: number, y: number) {

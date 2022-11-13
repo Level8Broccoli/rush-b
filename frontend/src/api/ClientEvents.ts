@@ -63,7 +63,14 @@ export const subscribe: UpdaterClientFunction<SubscribeEvent> = (
   return true;
 };
 
-export const Keys = ["ArrowLeft", "ArrowRight", "ArrowUp", "Space", "KeyE", "KeyQ"];
+export const Keys = [
+  "ArrowLeft",
+  "ArrowRight",
+  "ArrowUp",
+  "Space",
+  "KeyE",
+  "KeyQ",
+];
 
 type MessageEvent = [ClientEventTypes.Message, string[]];
 export const message: UpdaterClientFunction<MessageEvent> = (
