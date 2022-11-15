@@ -7,7 +7,7 @@ Die Kommunikationsströme werden dabei in mehrere, domänenspezifische Streams (
 ## Inhalt
 
 1. [Webservice-Verbindung](#webservice-verbindung)
-2. [Topic: User](#topic-user)
+2. [Topic: Game betreten](#game-betreten)
 3. [Topic: GameRequest](#topic-gamerequest)
 4. [Topic: Game](#topic-game)
 
@@ -37,7 +37,7 @@ Der Client macht eine Subscribe-Anfrage an den Server
 
 ```
 [
-  "{"type":"subscribe","data":"10"}"
+  "{"type":"subscribe","data":["13f5bf22-931c-4c42-ace4-e00da7dfd452","playerName"]}"
 ]
 ```
 
@@ -51,7 +51,7 @@ Der Server antwortet dem Client enstprechend mit einer CONNECTED-Nachricht.
 
 ```
 [
-    "{"msgType":"subscriber","data":[{"id":0,"player":null}]}"
+    "{"msgType":"subscriber","data":["13f5bf22-931c-4c42-ace4-e00da7dfd452","test"]}
 ]
 ```
 
@@ -60,11 +60,69 @@ Der Server antwortet dem Client enstprechend mit einer CONNECTED-Nachricht.
 Das Beenden einer Verbindung wird über das Framework verwaltet. Dies, weil eine Verbindung durch explizites Beenden,
 aber auch durch sonstige Verbindungsabbrüche (z.B. Schliessen des Clients) geschlossen werden kann.
 
-## Topic: User
+## Topic: Game betreten
+Mit diesem Topic kann ein Spiel erstellt werden oder einem Spiel beigtreten werden.
 
-Mit diesem Topic wird kommuniziert, welche User sich auf der Seite befinden und ob diese bereit für ein Spiel sind.  
-Es handelt sich hier also um Broadcasting.
-// TODO
+### 1. Game eröffnen
+
+Der User fragt an, welche Spiele offen sind.
+
+| Sender    | Receiver | Event   |
+|-----------|----------|---------|
+| Client[1] | Server   | CONNECT |
+
+```
+[
+  {"type":"createOpenGame","data":["167fb8db-88f1-4f11-b8b5-a03bd6d482a9"]}
+]
+```
+
+### 2. Gameliste erhalten
+
+Der User hat einsicht in die aktuellen Spiele.
+
+| Sender    | Receiver | Event   |
+|-----------|----------|---------|
+| Server | Client[1]   | CONNECT |
+
+```
+[
+  {"type":"openGames","data":"[
+    {"id": "167fb8db-88f1-4f11-b8b5-a03bd6d482a9","creator": 
+    {"id": "13f5bf22-931c-4c42-ace4-e00da7dfd452" ,"name": "test"},
+    "secondPlayer": null }
+    ]"}
+]
+```
+
+### 3. Der Spieler startet ein Spiel mit einer KI
+
+Der User wählt "Spiel mit AI starten".
+
+| Sender    | Receiver | Event   |
+|-----------|----------|---------|
+| Client[1] | Server   | CONNECT |
+
+```
+[
+  {"type":"startGame","data":[]}
+]
+```
+
+### 4. Server sendet Signal zum Spielstart
+
+Der Server informiert die teilnehmenden Spieler über den Spielstart und startet sogleich das Spiel.
+
+| Sender    | Receiver | Event   |
+|-----------|----------|---------|
+| Server | Client[n]   | CONNECT |
+
+```
+[
+  {"type":"openGames","data":"[]"}
+]
+```
+
 
 ## Topic: Game
 
@@ -81,10 +139,10 @@ Die Websocket wird «abonniert», der Client wird somit automatisch vom Server �
 ```
 a[
     {
-        "msgType":"game",
+        "msgType":"runningGame",
         "data":
             {
-                "id": "game 0" ,
+                "id": "167fb8db-88f1-4f11-b8b5-a03bd6d482a9" ,
                  "level": "ONE" ,
                   "characters": [
                     {
@@ -123,6 +181,7 @@ a[
             }
     }
 ]
+
 ```
 
 ### 2. Client sendet Tastaturbefehle zur Spielsteuerung

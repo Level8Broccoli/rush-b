@@ -103,7 +103,7 @@ class RunningGame(
         val period = 100L
         timer.schedule(100, period) {
             millis += period
-            if (millis >= limit) {
+            if (!isActive()) {
                 timer.cancel()
             }
         }
@@ -164,10 +164,14 @@ class RunningGame(
     }
 
     fun setVelocityX(player: Movable, d: Double) {
-        player.setVelocityX(d)
+        if (isActive()) {
+            player.setVelocityX(d)
+        }
     }
 
     fun setVelocityY(player: Movable) {
-        player.setVelocityY(level)
+        if (isActive()) {
+            player.setVelocityY(level)
+        }
     }
 }
