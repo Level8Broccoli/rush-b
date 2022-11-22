@@ -28,9 +28,9 @@ Error-Handling wird sinnvoll umgesetzt (Backend und Frontend).	-> was passiert w
 Anzeige Score / Timer
 
 Lena
-Die Spieler sehen in der Lobby, welcher Spieler gerade verfügbar ist oder bereits spielt. -> Wording, in Dokumentation erklären
+done -> Die Spieler sehen in der Lobby, welcher Spieler gerade verfügbar ist oder bereits spielt. -> Wording, in Dokumentation erklären
 done -> Die Spielfiguren werden animiert (z.B. bewegte Beinchen wenn ein Spieler geht).
-Deployments werden bei jedem Commit automatisiert gemacht.	-> wenn Release gemacht wird mit prod als Präfix, wird automatisch deployt
+done -> Deployments werden bei jedem Commit automatisiert gemacht.	-> wenn Release gemacht wird mit prod als Präfix, wird automatisch deployt
 done -> 2 neue Level
-Dokumentation
+WIP -> Dokumentation
 Präsi vorbereiten
