@@ -1,6 +1,6 @@
 import { TILES } from "../../state/tileMap.enum";
 import { CanvasContext } from "./Canvas";
-import { drawSprite, SPRITES } from "./Sprite";
+import {drawCharacterSprite, drawSprite, SPRITES} from "./Sprite";
 import { Character } from "../../state/stateTypes";
 
 function drawBackground(
@@ -32,7 +32,7 @@ function drawBackground(
   });
 }
 
-async function drawCharacters(context: CanvasContext, characters: Character[]) {
+async function drawCharacters(context: CanvasContext, characters: Character[], counter: number) {
   const NORM_FACTOR = 16; // TODO: Refactor on backend
 
   const { ctx, scale } = context;
@@ -43,10 +43,9 @@ async function drawCharacters(context: CanvasContext, characters: Character[]) {
     const dWidth = scale(c.width / NORM_FACTOR);
     const dHeight = scale(c.height / NORM_FACTOR);
     ctx.fillStyle = c.color;
-    ctx.fillRect(dx, dy, dWidth, dHeight);
     const sprite = SPRITES[c.id as keyof typeof SPRITES];
 
-    await drawSprite(ctx, sprite, dx, dy, dWidth, dHeight);
+    await drawCharacterSprite(ctx, sprite, dx, dy, dWidth, dHeight, c, counter);
     if (c.score !== undefined) {
       drawScore(context, "" + c.score, 20, 380); // TODO: do not draw all scores over each other
     }

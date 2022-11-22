@@ -1,3 +1,5 @@
+import {Character} from "../../state/stateTypes";
+
 type Sprite = {
   path: string;
   image: string;
@@ -38,7 +40,7 @@ export const SPRITES: SpriteCollection = {
   },
   MASK_DUDE: {
     path: "/assets/pixel-adventure-1/Main Characters/Mask Dude/",
-    image: "Fall (32x32).png",
+    image: "Idle (32x32).png",
     x: 0,
     y: 0,
     width: 32,
@@ -46,7 +48,7 @@ export const SPRITES: SpriteCollection = {
   },
   PINK_MAN: {
     path: "/assets/pixel-adventure-1/Main Characters/Pink Man/",
-    image: "Fall (32x32).png",
+    image: "Idle (32x32).png",
     x: 0,
     y: 0,
     width: 32,
@@ -119,4 +121,40 @@ export async function drawSprite(
     dWidth,
     dHeight
   );
+}
+
+export async function drawCharacterSprite(
+    ctx: CanvasRenderingContext2D,
+    sprite: Sprite,
+    dx: number,
+    dy: number,
+    dWidth: number,
+    dHeight: number,
+    c: Character,
+    counter: number
+) {
+
+  sprite.image = c.state + "_" + c.orientation + ".png"
+  const path = [
+    ...sprite.path.split("/").filter((s) => s.length > 0),
+    sprite.image,
+  ].join("/");
+  const image = await getImage(path);
+  const imgWidth = sprite.width // 32
+  const imgStates = image.width / imgWidth
+  const offset = counter % imgStates * 32
+
+  ctx.drawImage(
+      image,
+      sprite.x + offset,
+      sprite.y,
+      sprite.width,
+      sprite.height,
+      dx,
+      dy,
+      dWidth,
+      dHeight
+  );
+
+
 }

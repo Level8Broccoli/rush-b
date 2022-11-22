@@ -49,9 +49,8 @@ class RunningGame(
         gameObjects.add(player1)
         gameObjects.add(player2)
 
-        val numberOfBrushes = 10
-        val numberOfBots = 4
-        val numberOfNPCs = 5
+        val numberOfBrushes = 5
+        val numberOfNPCs = 8
 
 
         // add brush
@@ -61,18 +60,6 @@ class RunningGame(
                     VIRTUAL_GUY.name,
                     PINK,
                     Vector(Random.nextInt(gridStart, gridEnd).toDouble(), 0.0)
-                )
-            )
-        }
-
-        // add additional bots
-        for (i in 0 until numberOfBots) {
-            gameObjects.add(
-                RandomBot(
-                    PINK_MAN.name,
-                    PURPLE,
-                    Vector(Random.nextInt(gridStart, gridEnd).toDouble(), 0.0),
-                    110 + 1
                 )
             )
         }
