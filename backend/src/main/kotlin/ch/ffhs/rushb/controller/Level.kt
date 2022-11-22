@@ -8,7 +8,7 @@ import java.lang.Double.MAX_VALUE
 class Level(tileMap: TileMap) {
 
     private val tileSize = tileMap.tileSize
-    var tiles = tileMap.tiles.copyOf()
+    var tiles = tileMap.tiles.map { it.clone() }.toTypedArray()
 
     // ---------------- COLLISION DETECTION ----------------
 
