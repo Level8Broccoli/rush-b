@@ -6,6 +6,7 @@ import ch.ffhs.rushb.enums.CharacterState
 import ch.ffhs.rushb.enums.Color
 import ch.ffhs.rushb.enums.Orientation
 import ch.kaiki.nn.neuralnet.NeuralNetwork
+import kotlin.random.Random
 
 class DeepBot(
     override val id: String,
@@ -14,7 +15,7 @@ class DeepBot(
     override var paintId: Int,
     override var neuralNetwork: NeuralNetwork
 ) : Movable, Scorable, Paintable, AIable {
-    override var orientation = Orientation.FACE
+    override var orientation = Orientation.RIGHT
     override var width = 14.0
     override var height = 28.0
     override var velocity = Vector(0.0, INITIAL_VELOCITY.y)
@@ -26,6 +27,12 @@ class DeepBot(
     override var brush: Brush? = null
     override var fitness = 0L
     override var visitedTiles: MutableList<String> = mutableListOf()
+
+    init {
+        if (Random.nextBoolean()) {
+            orientation = Orientation.LEFT
+        }
+    }
 
     override fun applyGameLoop(level: Level, gameObjects: MutableList<Movable>) {
         predict(level, gameObjects)

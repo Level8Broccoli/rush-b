@@ -55,9 +55,6 @@ fun gameLoop(level: Level, character: Movable) {
         character.state = CharacterState.WALKING
     } else {
         character.state = CharacterState.IDLE
-        character.orientation = Orientation.FACE
     }
-
-    // TODO: implement painting / punching state if not to be indicated otherwise
 
 }

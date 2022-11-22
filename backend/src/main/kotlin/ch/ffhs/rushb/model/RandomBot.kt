@@ -13,7 +13,7 @@ class RandomBot(
     override var position: Vector,
     override var paintId: Int
 ) : Movable, Scorable, Paintable {
-    override var orientation = Orientation.FACE
+    override var orientation = Orientation.RIGHT
     override var width = 14.0
     override var height = 28.0
     override var velocity = Vector(0.0, INITIAL_VELOCITY.y)
@@ -23,6 +23,12 @@ class RandomBot(
     override var state = CharacterState.IDLE
     override var score = 0
     override var brush: Brush? = null
+
+    init {
+        if (Random.nextBoolean()) {
+            orientation = Orientation.LEFT
+        }
+    }
 
     override fun applyGameLoop(level: Level, gameObjects: MutableList<Movable>) {
         if (Random.nextBoolean()) {

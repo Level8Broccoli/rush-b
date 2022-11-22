@@ -5,6 +5,7 @@ import ch.ffhs.rushb.controller.Level
 import ch.ffhs.rushb.enums.CharacterState
 import ch.ffhs.rushb.enums.Color
 import ch.ffhs.rushb.enums.Orientation
+import kotlin.random.Random
 
 class Character(
     override val id: String,
@@ -13,7 +14,7 @@ class Character(
     override var paintId: Int,
     val user: User,
 ) : Movable, Scorable, Paintable {
-    override var orientation = Orientation.FACE
+    override var orientation = Orientation.RIGHT
     override var width = 14.0
     override var height = 28.0
     override var velocity = Vector(0.0, INITIAL_VELOCITY.y)
@@ -23,6 +24,12 @@ class Character(
     override var state = CharacterState.IDLE
     override var score = 0
     override var brush: Brush? = null
+
+    init {
+        if (Random.nextBoolean()) {
+            orientation = Orientation.LEFT
+        }
+    }
 
     override fun applyGameLoop(level: Level, gameObjects: MutableList<Movable>) {
         gameLoop(level, this)

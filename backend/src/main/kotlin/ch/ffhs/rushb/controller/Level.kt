@@ -1,7 +1,7 @@
 package ch.ffhs.rushb.controller
 
 import ch.ffhs.rushb.behavior.Movable
-import ch.ffhs.rushb.model.TileMap
+import ch.ffhs.rushb.enums.TileMap
 import java.lang.Double.MAX_VALUE
 
 

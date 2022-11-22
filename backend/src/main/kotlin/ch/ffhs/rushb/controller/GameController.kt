@@ -2,7 +2,6 @@ package ch.ffhs.rushb.controller
 
 import ch.ffhs.rushb.api.*
 import ch.ffhs.rushb.enums.Role
-import ch.ffhs.rushb.model.OpenGame
 import ch.ffhs.rushb.model.User
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.scheduling.annotation.EnableScheduling
@@ -25,11 +24,10 @@ class GameController : TextWebSocketHandler() {
     val sessionList = HashMap<WebSocketSession, User>()
     val userList = mutableListOf<User>()
     val openGameList = mutableListOf<OpenGame>()
-    val runningGameList = mutableListOf<RunningGame>()
+    var runningGameList = mutableListOf<RunningGame>()
     private final val emit: Emit
     private final val broadcast: Broadcast
     private final val broadcastToOthers: BroadcastToOthers
-//    private var game = Game("game 0", User("0", "DemoPlayer"), Level(TileMap.ONE))
 
     init {
         if (instance == null) {
@@ -63,6 +61,10 @@ class GameController : TextWebSocketHandler() {
 
     @Scheduled(fixedRate = 200)
     fun sendRunningGameStatus() {
+        if (this != instance) {         // avoid speeding up game loop when more than 1 user interacts with application
+            return
+        }
+        instance!!.runningGameList = instance!!.runningGameList.filter{ it.isActive() }.toMutableList()
         instance!!.runningGameList.forEach { runningGame ->
             runningGame.applyGameLoop()
             val gameData = runningGame.toJSON()
@@ -74,7 +76,6 @@ class GameController : TextWebSocketHandler() {
             }
         }
 
-        // TODO: remove inactive games
     }
 
 

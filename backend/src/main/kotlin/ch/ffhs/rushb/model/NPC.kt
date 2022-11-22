@@ -14,7 +14,7 @@ class NPC(
     override val color: Color,
     override var position: Vector,
 ) : Movable {
-    override var orientation = Orientation.FACE
+    override var orientation = Orientation.RIGHT
     override var velocity = Vector(0.0, INITIAL_VELOCITY.y)
     override var width = 12.0
     override var height = 12.0
@@ -23,6 +23,12 @@ class NPC(
     override var speed = 4.0
     override var state = CharacterState.IDLE
     var isChaser = Random.nextBoolean()
+
+    init {
+        if (Random.nextBoolean()) {
+            orientation = Orientation.LEFT
+        }
+    }
 
     override fun applyGameLoop(level: Level, gameObjects: MutableList<Movable>) {
         var distance = Double.MAX_VALUE

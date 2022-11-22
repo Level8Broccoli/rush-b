@@ -1,7 +1,7 @@
 package ch.ffhs.rushb.api
 
 import ch.ffhs.rushb.controller.RunningGame
-import ch.ffhs.rushb.model.OpenGame
+import ch.ffhs.rushb.controller.OpenGame
 import ch.ffhs.rushb.model.User
 import org.springframework.web.socket.WebSocketSession
 

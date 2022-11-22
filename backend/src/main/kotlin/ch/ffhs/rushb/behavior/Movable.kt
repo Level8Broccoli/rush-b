@@ -53,10 +53,8 @@ interface Movable : Serializable {
         velocity.x = x
         orientation = if (x > 0) {
             Orientation.RIGHT
-        } else if (x < 0) {
-            Orientation.LEFT
         } else {
-            Orientation.FACE
+            Orientation.LEFT
         }
     }
 

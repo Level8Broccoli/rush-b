@@ -3,7 +3,6 @@ package ch.ffhs.rushb.api
 import ch.ffhs.rushb.behavior.listToJSON
 import ch.ffhs.rushb.behavior.stringListToJSON
 import ch.ffhs.rushb.controller.*
-import ch.ffhs.rushb.model.OpenGame
 import ch.ffhs.rushb.model.User
 import org.springframework.web.socket.WebSocketSession
 

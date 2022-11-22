@@ -7,6 +7,7 @@ import ch.ffhs.rushb.enums.Color
 import ch.kaiki.nn.genetic.GeneticObject
 import ch.kaiki.nn.neuralnet.NeuralNetwork
 import ch.ffhs.rushb.model.*
+import ch.ffhs.rushb.enums.TileMap
 import kotlin.random.Random
 
 /**

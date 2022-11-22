@@ -17,3 +17,20 @@ evaluation von ki ist gefordert, zb mit zufalls-bot als ground truth
 
 - lobby, mehrere spiele gleichzeitig möglich
 - statt flag wird brush gecaptured, punkte werden geholt indem die wände in der eigenen farbe bemalt werden, nicht die ganze fläche muss bemalt werden können. malen nach grid, nicht nach pixel
+
+
+***
+
+Oli
+Das Spiel wird nach Ablauf des Timers automatisch beendet. -> danach Anzeige für Spieler, dass Spiel Beendet ist. Möglichkeit in Lobby zurückzukehren
+Das Spiel ist über das Internet gegen menschliche Gegner spielbar.
+Error-Handling wird sinnvoll umgesetzt (Backend und Frontend).	-> was passiert wenn Spieler während Spiel austritt? ähnlicher Mechanismus, wie wenn Spiel beendet wird. Browser refresh wird als neuer User interpretiert
+Anzeige Score / Timer
+
+Lena
+Die Spieler sehen in der Lobby, welcher Spieler gerade verfügbar ist oder bereits spielt. -> Wording, in Dokumentation erklären
+Die Spielfiguren werden animiert (z.B. bewegte Beinchen wenn ein Spieler geht).
+Deployments werden bei jedem Commit automatisiert gemacht.	-> wenn Release gemacht wird mit prod als Präfix, wird automatisch deployt
+done -> 2 neue Level
+Dokumentation
+Präsi vorbereiten

@@ -41,17 +41,6 @@ class RunningGame(
             101,
         )
 
-    /*
-    private val player2 =
-    DeepBot(
-            CharacterType.PINK_MAN.name,
-            Color.PURPLE,
-            Vector(Random.nextInt(gridStart,gridEnd).toDouble(), 0.0),
-            101,
-            SeedUtil().load()
-        )
-     */
-
     private val gameObjects = mutableListOf<Movable>()
 
     init {
@@ -115,7 +104,7 @@ class RunningGame(
         }
     }
 
-    private fun isActive(): Boolean {
+    fun isActive(): Boolean {
         return (limit - millis) >= 0
     }
 
@@ -136,14 +125,14 @@ class RunningGame(
         }
     }
 
+    // TODO: remove or provide another function for player 2
     fun getPlayer1(): Movable {
         return player1
     }
 
     override fun toJSON(): String {
         val characterJSON = gameObjects.map { it.toJSON() }.joinToString(",")
-        val levelJSON =
-            "[" + level.tiles.joinToString(",") { "[" + it.joinToString(",") + "]" } + "]"
+        val levelJSON = "[" +level.tiles.map { "[" +it.map{it -> it}.joinToString(",") +"]"}.joinToString(",")+"]"
         val out = """
             {
                 "id": "$id" , 
