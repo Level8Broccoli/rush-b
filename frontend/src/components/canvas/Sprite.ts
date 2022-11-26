@@ -1,4 +1,4 @@
-import {Character} from "../../state/stateTypes";
+import { Character } from "../../state/stateTypes";
 
 type Sprite = {
   path: string;
@@ -9,12 +9,22 @@ type Sprite = {
   height: number;
 };
 
+export enum SpriteType {
+  BACKGROUND = "BACKGROUND",
+  TERRAIN = "TERRAIN",
+  BOX = "BOX",
+  MASK_DUDE = "MASK_DUDE",
+  PINK_MAN = "PINK_MAN",
+  NINJA_FROG = "NINJA_FROG",
+  VIRTUAL_GUY = "VIRTUAL_GUY",
+}
+
 type SpriteCollection = {
-  [K: string]: Sprite;
+  [K in SpriteType]: Sprite;
 };
 
 export const SPRITES: SpriteCollection = {
-  BACKGROUND: {
+  [SpriteType.BACKGROUND]: {
     path: "/assets/pixel-adventure-1/Background",
     image: "Yellow.png",
     x: 0,
@@ -22,7 +32,7 @@ export const SPRITES: SpriteCollection = {
     width: 64,
     height: 64,
   },
-  TERRAIN: {
+  [SpriteType.TERRAIN]: {
     path: "/assets/pixel-adventure-1/Terrain",
     image: "Terrain (16x16).png",
     x: 0,
@@ -30,7 +40,7 @@ export const SPRITES: SpriteCollection = {
     width: 16,
     height: 16,
   },
-  BOX: {
+  [SpriteType.BOX]: {
     path: "/assets/pixel-adventure-1/Items/Boxes/Box2",
     image: "Idle.png",
     x: 4,
@@ -38,7 +48,7 @@ export const SPRITES: SpriteCollection = {
     width: 20,
     height: 20,
   },
-  MASK_DUDE: {
+  [SpriteType.MASK_DUDE]: {
     path: "/assets/pixel-adventure-1/Main Characters/Mask Dude/",
     image: "Idle (32x32).png",
     x: 0,
@@ -46,7 +56,7 @@ export const SPRITES: SpriteCollection = {
     width: 32,
     height: 32,
   },
-  PINK_MAN: {
+  [SpriteType.PINK_MAN]: {
     path: "/assets/pixel-adventure-1/Main Characters/Pink Man/",
     image: "Idle (32x32).png",
     x: 0,
@@ -54,7 +64,7 @@ export const SPRITES: SpriteCollection = {
     width: 32,
     height: 32,
   },
-  NINJA_FROG: {
+  [SpriteType.NINJA_FROG]: {
     path: "/assets/pixel-adventure-1/Main Characters/Ninja Frog/",
     image: "Fall (32x32).png",
     x: 0,
@@ -62,7 +72,7 @@ export const SPRITES: SpriteCollection = {
     width: 32,
     height: 32,
   },
-  VIRTUAL_GUY: {
+  [SpriteType.VIRTUAL_GUY]: {
     path: "/assets/pixel-adventure-1/Main Characters/Virtual Guy/",
     image: "Fall (32x32).png",
     x: 0,
@@ -124,37 +134,34 @@ export async function drawSprite(
 }
 
 export async function drawCharacterSprite(
-    ctx: CanvasRenderingContext2D,
-    sprite: Sprite,
-    dx: number,
-    dy: number,
-    dWidth: number,
-    dHeight: number,
-    c: Character,
-    counter: number
+  ctx: CanvasRenderingContext2D,
+  sprite: Sprite,
+  dx: number,
+  dy: number,
+  dWidth: number,
+  dHeight: number,
+  c: Character,
+  counter: number
 ) {
-
-  sprite.image = c.state + "_" + c.orientation + ".png"
+  sprite.image = c.state + "_" + c.orientation + ".png";
   const path = [
     ...sprite.path.split("/").filter((s) => s.length > 0),
     sprite.image,
   ].join("/");
   const image = await getImage(path);
-  const imgWidth = sprite.width // 32
-  const imgStates = image.width / imgWidth
-  const offset = counter % imgStates * 32
+  const imgWidth = sprite.width; // 32
+  const imgStates = image.width / imgWidth;
+  const offset = (counter % imgStates) * 32;
 
   ctx.drawImage(
-      image,
-      sprite.x + offset,
-      sprite.y,
-      sprite.width,
-      sprite.height,
-      dx,
-      dy,
-      dWidth,
-      dHeight
+    image,
+    sprite.x + offset,
+    sprite.y,
+    sprite.width,
+    sprite.height,
+    dx,
+    dy,
+    dWidth,
+    dHeight
   );
-
-
 }

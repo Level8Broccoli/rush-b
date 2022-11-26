@@ -17,17 +17,21 @@ type Props = {
 export function GameUI(props: Props): JSX.Element {
   const contextRef = useRef<CanvasContext>();
   const [message, setMessage] = useState<typeof Keys>([]);
-  const counterRef = useRef(0)
+  const counterRef = useRef(0);
 
   useEffect(() => {
     requestAnimationFrame(async () => {
       if (contextRef.current === undefined) {
         return;
       }
-      counterRef.current += 1
+      counterRef.current += 1;
       contextRef.current.clear();
       drawBackground(contextRef.current, props.tileMap.tiles, props.characters);
-      await drawCharacters(contextRef.current, props.characters, counterRef.current);
+      await drawCharacters(
+        contextRef.current,
+        props.characters,
+        counterRef.current
+      );
       const ctx = contextRef.current.ctx;
 
       const text = props.timer;

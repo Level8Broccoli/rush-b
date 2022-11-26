@@ -1,6 +1,7 @@
 import { ConnectionStatus } from "../api/ClientEventTypes";
 import { TileMap } from "./tileMap.enum";
 import { UUID } from "./session";
+import { SpriteType } from "../components/canvas/Sprite";
 
 export type OpenGame = {
   id: UUID;
@@ -9,7 +10,7 @@ export type OpenGame = {
 };
 
 export type Character = {
-  id: string;
+  id: SpriteType;
   paintId: number;
   color: string;
   width: number;

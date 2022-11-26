@@ -7,6 +7,7 @@ import {
   isTypedArrayOf,
   safeParseJSON,
 } from "../utils/parseUtils";
+import { SpriteType } from "../components/canvas/Sprite";
 
 export function parseRunningGame(
   data: object,
@@ -112,7 +113,7 @@ function validateCharacter(e: unknown): boolean {
     return false;
   }
   const { id, color, width, height, x, y, state, orientation } = e;
-  if (typeof id !== "string") {
+  if (typeof id !== "string" || !(id in SpriteType)) {
     console.error(`Expected id prop to be of type string: ${id}`);
     return false;
   }
