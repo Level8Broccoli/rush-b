@@ -20,12 +20,12 @@ class RunningGame(
 ) : Game {
     private val timer = Timer()
     private var millis = 0L
-    private val limit = 100 * 60 * 2
+    private val limit = 1000 * 60 * 2
 
     private val gridStart = 32
     private val gridEnd = level.tiles.size * 16 - 32
 
-    private val player1 =
+    val player1 =
         Character(
             MASK_DUDE.name,
             RED,
@@ -33,7 +33,7 @@ class RunningGame(
             100,
             creator,
         )
-    private var player2: Scorable =
+    var player2: Scorable =
         RandomBot(
             PINK_MAN.name,
             PURPLE,
@@ -46,10 +46,10 @@ class RunningGame(
     init {
         if (secondPlayer != null) {
             player2 = Character(
-                MASK_DUDE.name,
-                RED,
+                PINK_MAN.name,
+                PURPLE,
                 Vector(Random.nextInt(gridStart, gridEnd).toDouble(), 0.0),
-                100,
+                101,
                 secondPlayer,
             )
         }
@@ -122,11 +122,6 @@ class RunningGame(
         }
     }
 
-    // TODO: remove or provide another function for player 2
-    fun getPlayer1(): Movable {
-        return player1
-    }
-
     override fun toJSON(): String {
         val characterJSON = gameObjects.joinToString(",") { it.toJSON() }
         val levelJSON =
@@ -165,4 +160,5 @@ class RunningGame(
     fun finishGame(): FinishedGame {
         return FinishedGame(id, creator, secondPlayer, player1, player2)
     }
+
 }

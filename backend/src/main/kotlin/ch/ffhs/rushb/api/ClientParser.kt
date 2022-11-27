@@ -48,7 +48,7 @@ private fun parseKeypressEvent(data: List<String>, ctx: RequestContext?): Client
         return null
     }
     val keys = data.mapNotNull { s -> Key.fromString(s) }
-    return KeyPressEvent(keys, ctx.runningGame)
+    return KeyPressEvent(keys, ctx)
 }
 
 private fun parseMessageEvent(data: List<String>): ClientEvent {

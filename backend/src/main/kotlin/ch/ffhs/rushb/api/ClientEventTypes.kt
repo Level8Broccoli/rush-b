@@ -3,6 +3,7 @@ package ch.ffhs.rushb.api
 import ch.ffhs.rushb.behavior.listToJSON
 import ch.ffhs.rushb.behavior.stringListToJSON
 import ch.ffhs.rushb.controller.*
+import ch.ffhs.rushb.enums.Role
 import ch.ffhs.rushb.model.User
 import org.springframework.web.socket.WebSocketSession
 
@@ -97,7 +98,7 @@ data class MessageEvent(val messages: List<String>) : ClientEvent {
         get() = ClientEventType.Message
 }
 
-data class KeyPressEvent(val keys: List<Key>, val runningGame: RunningGame) : ClientEvent {
+data class KeyPressEvent(val keys: List<Key>, val ctx: RequestContext) : ClientEvent {
     override fun execute(
         session: WebSocketSession,
         addToSessions: AddToSessions,
@@ -110,15 +111,17 @@ data class KeyPressEvent(val keys: List<Key>, val runningGame: RunningGame) : Cl
         broadcast: Broadcast,
         broadcastToOthers: BroadcastToOthers
     ) {
+        val runningGame = ctx.runningGame ?: return
+        val player = if (ctx.role == Role.CREATOR) runningGame.player1 else runningGame.player2
         for (key in keys) {
             if (key == Key.ARROW_LEFT) {
-                runningGame.setVelocityX(runningGame.getPlayer1(), -1.0)
+                runningGame.setVelocityX(player, -1.0)
             } else if (key == Key.ARROW_RIGHT) {
-                runningGame.setVelocityX(runningGame.getPlayer1(), 1.0)
+                runningGame.setVelocityX(player, 1.0)
             } else if (key == Key.ARROW_UP || key == Key.SPACE) {
-                runningGame.setVelocityY(runningGame.getPlayer1())
+                runningGame.setVelocityY(player)
             } else if (key == Key.KEY_E) {
-                runningGame.paint(runningGame.getPlayer1())
+                runningGame.paint(player)
             } else if (key == Key.KEY_Q) {
                 // TODO: quit
             }
