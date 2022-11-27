@@ -3,34 +3,31 @@ import { ConnectionStatus, SendToServer } from "../api/ClientEventTypes";
 import { AppState, Views } from "./stateTypes";
 import {
   addMessages,
+  createOpenGame,
+  deleteOpenGame,
+  finishGame,
   goToView,
   GuiEvents,
+  joinOpenGame,
   sendKeys,
   sendMessages,
   setGame,
   setUserId,
-  createOpenGame,
+  startGame,
   startNewSession,
   updateConnectionStatus,
-  deleteOpenGame,
   UpdateGuiEvent,
   updateOpenGames,
-  joinOpenGame,
-  startGame,
 } from "./stateEvents";
 import { serverEvent } from "../api/server";
 import { UpdateClientEvent } from "../api/ClientEvents";
 
 const initalGameState: AppState = {
+  finishedGame: null,
   view: Views.Home,
   connectionStatus: ConnectionStatus.CLOSED,
   messages: [],
-  activeGame: {
-    level: { tiles: [[]] },
-    timer: "",
-    id: "",
-    characters: [],
-  },
+  activeGame: null,
   user: { id: { value: "" }, name: "" },
   openGames: [],
   loadingMessage: "",
@@ -68,6 +65,8 @@ const updateEvent: (
       return joinOpenGame(setState, updateServerEvent, payload);
     case GuiEvents.StartGame:
       return startGame(setState, updateServerEvent, payload);
+    case GuiEvents.FinishGame:
+      return finishGame(setState, updateServerEvent, payload);
   }
 };
 

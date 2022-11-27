@@ -28,7 +28,6 @@ export function parseFromServer(
     return null;
   }
   const { type, data } = initialParsed;
-  console.log({ type, data });
   switch (type) {
     case ServerEventTyp.MESSAGE:
       return parseMessage(data);

@@ -42,7 +42,6 @@ export function parseFinishedGame(
     player1: parsedPlayer1,
     player2: parsedPlayer2,
   };
-  console.log({ gameState });
   return createFinishGameServerEvent(gameState);
 }
 

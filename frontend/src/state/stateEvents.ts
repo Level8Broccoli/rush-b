@@ -226,6 +226,13 @@ export const finishGame: UpdaterGuiFunction<FinishGameEvent> = (
   updateClientEvent,
   game
 ) => {
-  setState((prevState): AppState => ({ ...prevState, finishedGame: game }));
+  setState(
+    (prevState): AppState => ({
+      ...prevState,
+      finishedGame: game,
+      activeGame: null,
+      view: prevState.view === Views.Game ? Views.FinishedGame : prevState.view,
+    })
+  );
   return true;
 };

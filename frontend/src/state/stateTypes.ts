@@ -48,6 +48,7 @@ export enum Views {
   YourGame,
   Game,
   JoinedGame,
+  FinishedGame,
 }
 
 export type User = {
@@ -59,8 +60,8 @@ export type AppState = {
   view: Views;
   connectionStatus: ConnectionStatus;
   messages: Message[];
-  activeGame: RunningGameState;
-  finishedGame: FinishedGameState;
+  activeGame: RunningGameState | null;
+  finishedGame: FinishedGameState | null;
   user: User;
   openGames: OpenGame[];
   currentOpenGameId?: UUID;

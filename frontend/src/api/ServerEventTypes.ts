@@ -1,8 +1,7 @@
 import {
-  RunningGameState,
-  OpenGame,
-  Views,
   FinishedGameState,
+  OpenGame,
+  RunningGameState,
 } from "../state/stateTypes";
 import { GuiEvents, UpdateGuiEvent } from "../state/stateEvents";
 
@@ -44,7 +43,6 @@ export const createFnFinishGameServerEvent =
     return {
       execute() {
         updateGuiEvent([GuiEvents.FinishGame, gameState]);
-        updateGuiEvent([GuiEvents.GoToView, Views.Home]);
       },
     };
   };
