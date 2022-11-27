@@ -6,5 +6,5 @@ import ch.ffhs.rushb.model.User
 interface Game
     : Serializable {
     val creator: User
-    var secondPlayer: User?
+    val secondPlayer: User?
 }

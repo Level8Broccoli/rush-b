@@ -3,6 +3,7 @@ package ch.ffhs.rushb.controller
 import ch.ffhs.rushb.behavior.AIable
 import ch.ffhs.rushb.behavior.Movable
 import ch.ffhs.rushb.behavior.Paintable
+import ch.ffhs.rushb.behavior.Scorable
 import ch.ffhs.rushb.enums.CharacterType.*
 import ch.ffhs.rushb.enums.Color.*
 import ch.ffhs.rushb.model.*
@@ -14,7 +15,7 @@ import kotlin.random.Random
 class RunningGame(
     override val id: String,
     override val creator: User,
-    override var secondPlayer: User?,
+    override val secondPlayer: User?,
     private val level: Level,
 ) : Game {
     private val timer = Timer()
@@ -32,7 +33,7 @@ class RunningGame(
             100,
             creator,
         )
-    private val player2 =
+    private var player2: Scorable =
         RandomBot(
             PINK_MAN.name,
             PURPLE,
@@ -43,6 +44,16 @@ class RunningGame(
     private val gameObjects = mutableListOf<Movable>()
 
     init {
+        if (secondPlayer != null) {
+            player2 = Character(
+                MASK_DUDE.name,
+                RED,
+                Vector(Random.nextInt(gridStart, gridEnd).toDouble(), 0.0),
+                100,
+                secondPlayer,
+            )
+        }
+
 
         // add players
         gameObjects.add(player1)

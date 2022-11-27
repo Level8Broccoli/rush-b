@@ -9,6 +9,10 @@ class OpenGame(
     override var secondPlayer: User? = null
 ) : Game {
     fun startGameVsAi(): RunningGame {
+        return RunningGame(id, creator, null, Level(TileMap.values().toList().shuffled().first()))
+    }
+
+    fun startGameVsPlayer(): RunningGame {
         return RunningGame(id, creator, secondPlayer, Level(TileMap.values().toList().shuffled().first()))
     }
 
@@ -21,4 +25,5 @@ class OpenGame(
             }
             """.trimIndent()
     }
+
 }

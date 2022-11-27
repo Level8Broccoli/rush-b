@@ -6,7 +6,7 @@ import ch.ffhs.rushb.model.User
 data class FinishedGame(
     override val id: String,
     override val creator: User,
-    override var secondPlayer: User?,
+    override val secondPlayer: User?,
     val player1: Scorable,
     val player2: Scorable,
 ) : Game {

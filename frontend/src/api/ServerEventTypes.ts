@@ -2,6 +2,7 @@ import {
   FinishedGameState,
   OpenGame,
   RunningGameState,
+  Views,
 } from "../state/stateTypes";
 import { GuiEvents, UpdateGuiEvent } from "../state/stateEvents";
 
@@ -32,6 +33,7 @@ export const createFnRunningGameServerEvent =
   (gameState: RunningGameState): ServerEvent => {
     return {
       execute() {
+        updateGuiEvent([GuiEvents.GoToView, Views.Game]);
         updateGuiEvent([GuiEvents.SetGame, gameState]);
       },
     };

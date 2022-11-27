@@ -13,6 +13,7 @@ import {
   keyPress,
   message,
   startGameVsAi,
+  startGameVsPlayer,
   subscribe,
   UpdateClientEvent,
 } from "./ClientEvents";
@@ -92,5 +93,7 @@ export const serverEvent: (sendMessage: SendToServer) => UpdateClientEvent =
         return joinOpenGame(sendMessage, payload);
       case ClientEventTypes.StartGameVsAi:
         return startGameVsAi(sendMessage, payload);
+      case ClientEventTypes.StartGameVsPlayer:
+        return startGameVsPlayer(sendMessage, payload);
     }
   };

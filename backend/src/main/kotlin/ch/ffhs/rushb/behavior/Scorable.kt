@@ -2,7 +2,7 @@ package ch.ffhs.rushb.behavior
 
 import ch.ffhs.rushb.controller.Level
 
-interface Scorable : Paintable, Serializable {
+interface Scorable : Movable, Paintable, Serializable {
     var score: Int
 
     fun score(level: Level) {

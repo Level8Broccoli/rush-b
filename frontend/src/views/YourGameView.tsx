@@ -21,6 +21,11 @@ export function YourGameView(props: Props): JSX.Element {
     props.updateGuiEvent([GuiEvents.GoToView, Views.Game]);
   };
 
+  const startGameVsPlayer = () => {
+    props.updateGuiEvent([GuiEvents.StartGameVsPlayer, null]);
+    props.updateGuiEvent([GuiEvents.GoToView, Views.Game]);
+  };
+
   return (
     <div class={`card ${classes.customCard}`}>
       <header class="card-header">
@@ -48,6 +53,7 @@ export function YourGameView(props: Props): JSX.Element {
               label={
                 "Spiel gegen " + props.openGame?.secondPlayer?.name + " starten"
               }
+              onClick={startGameVsPlayer}
             />
           )}
         </div>

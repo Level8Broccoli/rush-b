@@ -21,6 +21,7 @@ export enum MessageType {
   DeleteOpenGame = "deleteOpenGame",
   JoinOpenGame = "joinOpenGame",
   StartGameVsAi = "startGameVsAi",
+  StartGameVsPlayer = "startGameVsPlayer",
 }
 
 export type SendToServer = {
