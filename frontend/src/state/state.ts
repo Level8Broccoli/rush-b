@@ -14,7 +14,7 @@ import {
   sendMessages,
   setGame,
   setUserId,
-  startGame,
+  startGameVsAi,
   startNewSession,
   updateConnectionStatus,
   UpdateGuiEvent,
@@ -64,8 +64,8 @@ const updateEvent: (
       return deleteOpenGame(setState, updateServerEvent, payload);
     case GuiEvents.JoinOpenGame:
       return joinOpenGame(setState, updateServerEvent, payload);
-    case GuiEvents.StartGame:
-      return startGame(setState, updateServerEvent, payload);
+    case GuiEvents.StartGameVsAi:
+      return startGameVsAi(setState, updateServerEvent, payload);
     case GuiEvents.FinishGame:
       return finishGame(setState, updateServerEvent, payload);
     case GuiEvents.DeleteFinishedGame:

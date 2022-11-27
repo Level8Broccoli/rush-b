@@ -16,8 +16,8 @@ export function YourGameView(props: Props): JSX.Element {
     props.updateGuiEvent([GuiEvents.GoToView, Views.Lobby]);
   };
 
-  const startGame = () => {
-    props.updateGuiEvent([GuiEvents.StartGame, null]);
+  const startGameVsAi = () => {
+    props.updateGuiEvent([GuiEvents.StartGameVsAi, null]);
     props.updateGuiEvent([GuiEvents.GoToView, Views.Game]);
   };
 
@@ -41,7 +41,7 @@ export function YourGameView(props: Props): JSX.Element {
           <Button
             label={"Spiel mit AI starten"}
             variant={"black"}
-            onClick={startGame}
+            onClick={startGameVsAi}
           />
           {props.openGame?.secondPlayer?.name && (
             <Button

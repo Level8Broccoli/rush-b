@@ -25,7 +25,7 @@ export enum GuiEvents {
   UpdateOpenGames,
   DeleteOpenGame,
   JoinOpenGame,
-  StartGame,
+  StartGameVsAi,
   FinishGame,
   DeleteFinishedGame,
 }
@@ -44,7 +44,7 @@ export type AllGuiStateEvents = [GuiEvents, unknown] &
     | UpdateOpenGamesEvent
     | DeleteOpenGameEvent
     | JoinOpenGameEvent
-    | StartGameEvent
+    | StartGameVsAiEvent
     | FinishGameEvent
     | DeleteFinishGameEvent
   );
@@ -213,12 +213,12 @@ export const joinOpenGame: UpdaterGuiFunction<JoinOpenGameEvent> = (
   return true;
 };
 
-type StartGameEvent = [GuiEvents.StartGame, null];
-export const startGame: UpdaterGuiFunction<StartGameEvent> = (
+type StartGameVsAiEvent = [GuiEvents.StartGameVsAi, null];
+export const startGameVsAi: UpdaterGuiFunction<StartGameVsAiEvent> = (
   setState,
   updateClientEvent
 ) => {
-  updateClientEvent([ClientEventTypes.StartGame, null]);
+  updateClientEvent([ClientEventTypes.StartGameVsAi, null]);
   return true;
 };
 

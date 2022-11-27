@@ -8,7 +8,7 @@ class OpenGame(
     override val creator: User,
     override var secondPlayer: User? = null
 ) : Game {
-    fun startGame(): RunningGame {
+    fun startGameVsAi(): RunningGame {
         return RunningGame(id, creator, secondPlayer, Level(TileMap.values().toList().shuffled().first()))
     }
 
