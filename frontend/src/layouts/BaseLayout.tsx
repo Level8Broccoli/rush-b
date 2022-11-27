@@ -50,7 +50,7 @@ export function BaseLayout(props: Props): JSX.Element {
       </nav>
       <main style={`--bgImg: url(${backgroundImg})`}>{props.children}</main>
       <footer class="has-background-danger-dark has-text-white p-5">
-        <small>2022 @ FFHS</small>
+        <small>2022 @ FFHS <span class="has-text-danger">v6.1</span></small>
       </footer>
       {props.loadingMessage && <Loader label={props.loadingMessage} />}
     </>
