@@ -138,12 +138,6 @@ class GameController : TextWebSocketHandler() {
             broadcast,
             broadcastToOthers
         )
-
-        println("****")
-        println(instance!!.sessionList)
-        println(instance!!.userList)
-        println(instance!!.openGameList)
-        println("****")
     }
 
     private fun getRequestContext(session: WebSocketSession): RequestContext? {

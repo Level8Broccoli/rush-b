@@ -71,8 +71,6 @@ data class SubscribeEvent(val user: User) : ClientEvent {
         addToSessions(session, user)
         addToUsers(user)
         emit(session, Message(ServerEventTypes.OPEN_GAMES, listToJSON(openGames)))
-        println("Subscribe Event")
-        println(user)
     }
 
     override val event: ClientEventType
