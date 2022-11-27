@@ -62,6 +62,8 @@ function toEnumServerEventTyp(s: string): ServerEventTyp | null {
       return ServerEventTyp.OPEN_GAMES;
     case ServerEventTyp.SESSION_CLOSED:
       return ServerEventTyp.SESSION_CLOSED;
+    case ServerEventTyp.FINISHED_GAME:
+      return ServerEventTyp.FINISHED_GAME;
   }
   return null;
 }

@@ -24,7 +24,18 @@ export type Character = {
 
 export type Message = string;
 
-export type GameState = {
+export type Player = {
+  score: number;
+  user: User | null;
+};
+
+export type FinishedGameState = {
+  id: UUID;
+  player1: Player;
+  player2: Player;
+};
+
+export type RunningGameState = {
   id: string;
   timer: string;
   level: TileMap;
@@ -48,7 +59,8 @@ export type AppState = {
   view: Views;
   connectionStatus: ConnectionStatus;
   messages: Message[];
-  activeGame: GameState;
+  activeGame: RunningGameState;
+  finishedGame: FinishedGameState;
   user: User;
   openGames: OpenGame[];
   currentOpenGameId?: UUID;

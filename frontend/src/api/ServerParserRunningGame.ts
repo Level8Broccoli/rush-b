@@ -1,5 +1,5 @@
 import { ServerEvent } from "./ServerEventTypes";
-import { Character, GameState } from "../state/stateTypes";
+import { Character, RunningGameState } from "../state/stateTypes";
 import {
   hasProp,
   isArray,
@@ -11,7 +11,7 @@ import { SpriteType } from "../components/canvas/Sprite";
 
 export function parseRunningGame(
   data: object,
-  createRunningGameServerEvent: (gameState: GameState) => ServerEvent
+  createRunningGameServerEvent: (gameState: RunningGameState) => ServerEvent
 ): ServerEvent | null {
   if (
     !(
@@ -67,7 +67,7 @@ export function parseRunningGame(
   if (!isTypedArrayOf<Character>(characters, validateCharacter)) {
     return null;
   }
-  const gameState: GameState = {
+  const gameState: RunningGameState = {
     id,
     characters,
     level: { tiles: parsedLevel },

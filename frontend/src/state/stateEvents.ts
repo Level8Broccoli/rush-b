@@ -1,11 +1,12 @@
 import { StateUpdater } from "preact/compat";
 import {
   AppState,
-  GameState,
+  RunningGameState,
   Message,
   OpenGame,
   User,
   Views,
+  FinishedGameState,
 } from "./stateTypes";
 import { ConnectionStatus, SendToServer } from "../api/ClientEventTypes";
 import { ClientEventTypes, Keys, UpdateClientEvent } from "../api/ClientEvents";
@@ -25,6 +26,7 @@ export enum GuiEvents {
   DeleteOpenGame,
   JoinOpenGame,
   StartGame,
+  FinishGame,
 }
 
 export type AllGuiStateEvents = [GuiEvents, unknown] &
@@ -42,6 +44,7 @@ export type AllGuiStateEvents = [GuiEvents, unknown] &
     | DeleteOpenGameEvent
     | JoinOpenGameEvent
     | StartGameEvent
+    | FinishGameEvent
   );
 
 export type UpdateGuiEvent = (event: AllGuiStateEvents) => true;
@@ -122,7 +125,7 @@ export const updateConnectionStatus: UpdaterGuiFunction<
   return true;
 };
 
-type SetGameEvent = [GuiEvents.SetGame, GameState];
+type SetGameEvent = [GuiEvents.SetGame, RunningGameState];
 export const setGame: UpdaterGuiFunction<SetGameEvent> = (
   setState,
   updateClientEvent,
@@ -214,5 +217,15 @@ export const startGame: UpdaterGuiFunction<StartGameEvent> = (
   updateClientEvent
 ) => {
   updateClientEvent([ClientEventTypes.StartGame, null]);
+  return true;
+};
+
+type FinishGameEvent = [GuiEvents.FinishGame, FinishedGameState];
+export const finishGame: UpdaterGuiFunction<FinishGameEvent> = (
+  setState,
+  updateClientEvent,
+  game
+) => {
+  setState((prevState): AppState => ({ ...prevState, finishedGame: game }));
   return true;
 };

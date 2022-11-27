@@ -3,7 +3,6 @@ package ch.ffhs.rushb.controller
 import ch.ffhs.rushb.behavior.AIable
 import ch.ffhs.rushb.behavior.Movable
 import ch.ffhs.rushb.behavior.Paintable
-import ch.ffhs.rushb.behavior.Serializable
 import ch.ffhs.rushb.enums.CharacterType.*
 import ch.ffhs.rushb.enums.Color.*
 import ch.ffhs.rushb.model.*
@@ -14,13 +13,13 @@ import kotlin.random.Random
 
 class RunningGame(
     override val id: String,
-    val creator: User,
+    override val creator: User,
+    override var secondPlayer: User?,
     private val level: Level,
-
-    ) : Serializable {
+) : Game {
     private val timer = Timer()
     private var millis = 0L
-    private val limit = 1000 * 60 * 2
+    private val limit = 100 * 60 * 2
 
     private val gridStart = 32
     private val gridEnd = level.tiles.size * 16 - 32
@@ -118,8 +117,9 @@ class RunningGame(
     }
 
     override fun toJSON(): String {
-        val characterJSON = gameObjects.map { it.toJSON() }.joinToString(",")
-        val levelJSON = "[" +level.tiles.map { "[" +it.map{it -> it}.joinToString(",") +"]"}.joinToString(",")+"]"
+        val characterJSON = gameObjects.joinToString(",") { it.toJSON() }
+        val levelJSON =
+            "[" + level.tiles.joinToString(",") { "[" + it.joinToString(",") + "]" } + "]"
         val out = """
             {
                 "id": "$id" , 
@@ -149,5 +149,9 @@ class RunningGame(
         if (isActive()) {
             player.setVelocityY(level)
         }
+    }
+
+    fun finishGame(): FinishedGame {
+        return FinishedGame(id, creator, secondPlayer, player1, player2)
     }
 }

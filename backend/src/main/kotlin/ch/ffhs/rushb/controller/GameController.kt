@@ -25,6 +25,7 @@ class GameController : TextWebSocketHandler() {
     val userList = mutableListOf<User>()
     val openGameList = mutableListOf<OpenGame>()
     var runningGameList = mutableListOf<RunningGame>()
+    var finishedGameList = mutableListOf<FinishedGame>()
     private final val emit: Emit
     private final val broadcast: Broadcast
     private final val broadcastToOthers: BroadcastToOthers
@@ -64,18 +65,36 @@ class GameController : TextWebSocketHandler() {
         if (this != instance) {         // avoid speeding up game loop when more than 1 user interacts with application
             return
         }
-        instance!!.runningGameList = instance!!.runningGameList.filter{ it.isActive() }.toMutableList()
+        instance!!.runningGameList.forEach { runningGame ->
+            if (!runningGame.isActive()) {
+                instance!!.finishedGameList += runningGame.finishGame()
+            }
+        }
+        instance!!.runningGameList = instance!!.runningGameList.filter { it.isActive() }.toMutableList()
         instance!!.runningGameList.forEach { runningGame ->
             runningGame.applyGameLoop()
-            val gameData = runningGame.toJSON()
-            val creator = runningGame.creator
+            val (gameData, creator, secondPlayer) = extractFrom(runningGame)
             instance!!.sessionList.forEach { (session, user) ->
-                if (user.id == creator.id) {
+                if (user.id == creator.id || user.id == secondPlayer?.id) {
                     emit(session, Message(ServerEventTypes.RUNNING_GAME, gameData))
                 }
             }
         }
+        instance!!.finishedGameList.forEach { finishedGame ->
+            val (gameData, creator, secondPlayer) = extractFrom(finishedGame)
+            instance!!.sessionList.forEach { (session, user) ->
+                if (user.id == creator.id || user.id == secondPlayer?.id) {
+                    emit(session, Message(ServerEventTypes.FINISHED_GAME, gameData))
+                }
+            }
+        }
+    }
 
+    private fun extractFrom(game: Game): Triple<String, User, User?> {
+        val gameData = game.toJSON()
+        val creator = game.creator
+        val secondPlayer = game.secondPlayer
+        return Triple(gameData, creator, secondPlayer)
     }
 
 
