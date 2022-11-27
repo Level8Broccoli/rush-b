@@ -9,6 +9,7 @@ import {
   ClientEventTypes,
   createOpenGame,
   deleteOpenGame,
+  exitJoinedGame,
   joinOpenGame,
   keyPress,
   message,
@@ -95,5 +96,7 @@ export const serverEvent: (sendMessage: SendToServer) => UpdateClientEvent =
         return startGameVsAi(sendMessage, payload);
       case ClientEventTypes.StartGameVsPlayer:
         return startGameVsPlayer(sendMessage, payload);
+      case ClientEventTypes.ExitJoinedGame:
+        return exitJoinedGame(sendMessage, payload);
     }
   };

@@ -17,7 +17,8 @@ enum class ClientEventType(val value: String) {
     DeleteOpenGame("deleteOpenGame"),
     JoinOpenGame("joinOpenGame"),
     StartGameVsAi("startGameVsAi"),
-    StartGameVsPlayer("startGameVsPlayer");
+    StartGameVsPlayer("startGameVsPlayer"),
+    ExitJoinedGame("exitJoinedGame");
 
     companion object {
         fun fromString(value: String): ClientEventType? {
@@ -245,10 +246,29 @@ data class StartGameVsPlayerEvent(val openGame: OpenGame) : ClientEvent {
             val runningGame = openGame.startGameVsPlayer()
             addToGames(runningGame)
             removeFromOpenGames(openGame)
-            broadcast(Message(ServerEventTypes.OPEN_GAMES, listToJSON(openGames)))
         }
     }
 
     override val event: ClientEventType
         get() = ClientEventType.StartGameVsPlayer
+}
+
+data class ExitJoinedGameEvent(val openGame: OpenGame) : ClientEvent {
+    override fun execute(
+        session: WebSocketSession,
+        addToSessions: AddToSessions,
+        addToUsers: AddToUsers,
+        addToOpenGames: AddToOpenGames,
+        removeFromOpenGames: RemoveFromOpenGames,
+        addToGames: AddToGames,
+        openGames: List<OpenGame>,
+        emit: Emit,
+        broadcast: Broadcast,
+        broadcastToOthers: BroadcastToOthers
+    ) {
+        openGame.secondPlayer = null
+    }
+
+    override val event: ClientEventType
+        get() = ClientEventType.ExitJoinedGame
 }

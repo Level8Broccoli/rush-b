@@ -6,6 +6,7 @@ import {
   createOpenGame,
   deleteFinishGame,
   deleteOpenGame,
+  exitJoinedGame,
   finishGame,
   goToView,
   GuiEvents,
@@ -73,6 +74,8 @@ const updateEvent: (
       return finishGame(setState, updateServerEvent, payload);
     case GuiEvents.DeleteFinishedGame:
       return deleteFinishGame(setState, updateServerEvent, payload);
+    case GuiEvents.ExitJoinedGame:
+      return exitJoinedGame(setState, updateServerEvent, payload);
   }
 };
 

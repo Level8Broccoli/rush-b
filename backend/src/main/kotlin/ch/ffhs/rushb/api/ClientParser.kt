@@ -29,6 +29,7 @@ fun parseFromClient(
         ClientEventType.JoinOpenGame -> parseJoinOpenGameEvent(data, ctx)
         ClientEventType.StartGameVsAi -> parseStartGameVsAiEvent(data, ctx)
         ClientEventType.StartGameVsPlayer -> parseStartGameVsPlayerEvent(data, ctx)
+        ClientEventType.ExitJoinedGame -> parseExitJoinedGame(data, ctx)
     }
 }
 
@@ -127,6 +128,21 @@ private fun parseStartGameVsPlayerEvent(
         return null
     }
     return StartGameVsPlayerEvent(ctx.openGame)
+}
+
+private fun parseExitJoinedGame(
+    data: List<String>,
+    ctx: RequestContext?,
+): ClientEvent? {
+    if (data.isNotEmpty()) {
+        println("Data didn't match expected form: $data")
+        return null
+    }
+    if (ctx?.openGame == null) {
+        println("Missing or false request context: $data")
+        return null
+    }
+    return ExitJoinedGameEvent(ctx.openGame)
 }
 
 private fun nodeToString(nodes: List<JsonNode>): List<String> {

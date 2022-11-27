@@ -17,6 +17,7 @@ export enum ClientEventTypes {
   JoinOpenGame,
   StartGameVsAi,
   StartGameVsPlayer,
+  ExitJoinedGame,
 }
 
 export type AllClientEvents = [ClientEventTypes, unknown] &
@@ -29,6 +30,7 @@ export type AllClientEvents = [ClientEventTypes, unknown] &
     | JoinOpenGameEvent
     | StartGameVsAiEvent
     | StartGameVsPlayerEvent
+    | ExitJoinedGameEvent
   );
 
 export type UpdateClientEvent = (event: AllClientEvents) => boolean;
@@ -129,4 +131,11 @@ export const startGameVsPlayer: UpdaterClientFunction<
   StartGameVsPlayerEvent
 > = (server) => {
   return server.send(MessageType.StartGameVsPlayer, []);
+};
+
+type ExitJoinedGameEvent = [ClientEventTypes.ExitJoinedGame, null];
+export const exitJoinedGame: UpdaterClientFunction<ExitJoinedGameEvent> = (
+  server
+) => {
+  return server.send(MessageType.ExitJoinedGame, []);
 };

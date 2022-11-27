@@ -1,12 +1,12 @@
 import { StateUpdater } from "preact/compat";
 import {
   AppState,
-  RunningGameState,
+  FinishedGameState,
   Message,
   OpenGame,
+  RunningGameState,
   User,
   Views,
-  FinishedGameState,
 } from "./stateTypes";
 import { ConnectionStatus, SendToServer } from "../api/ClientEventTypes";
 import { ClientEventTypes, Keys, UpdateClientEvent } from "../api/ClientEvents";
@@ -29,6 +29,7 @@ export enum GuiEvents {
   StartGameVsPlayer,
   FinishGame,
   DeleteFinishedGame,
+  ExitJoinedGame,
 }
 
 export type AllGuiStateEvents = [GuiEvents, unknown] &
@@ -49,6 +50,7 @@ export type AllGuiStateEvents = [GuiEvents, unknown] &
     | StartGameVsPlayerEvent
     | FinishGameEvent
     | DeleteFinishGameEvent
+    | ExitJoinedGameEvent
   );
 
 export type UpdateGuiEvent = (event: AllGuiStateEvents) => true;
@@ -183,7 +185,33 @@ export const updateOpenGames: UpdaterGuiFunction<UpdateOpenGamesEvent> = (
   updateClientEvent,
   openGames
 ) => {
-  setState((prevState): AppState => ({ ...prevState, openGames }));
+  setState((prevState): AppState => {
+    function loadView(): Views {
+      const openGame = prevState.openGames.find(
+        (g) => g.id.value === prevState.currentOpenGameId?.value
+      );
+
+      if (openGame === undefined) {
+        if (prevState.view === Views.JoinedGame) {
+          return Views.Lobby;
+        }
+        return prevState.view;
+      }
+
+      if (openGame.creator.id.value === prevState.user.id.value) {
+        return Views.YourGame;
+      } else {
+        return Views.JoinedGame;
+      }
+    }
+
+    const view = loadView();
+    return {
+      ...prevState,
+      openGames,
+      view,
+    };
+  });
   return true;
 };
 
@@ -264,5 +292,20 @@ export const deleteFinishGame: UpdaterGuiFunction<DeleteFinishGameEvent> = (
       finishedGame: null,
     })
   );
+  return true;
+};
+
+type ExitJoinedGameEvent = [GuiEvents.ExitJoinedGame, null];
+export const exitJoinedGame: UpdaterGuiFunction<ExitJoinedGameEvent> = (
+  setState,
+  updateClientEvent
+) => {
+  setState(
+    (prevState): AppState => ({
+      ...prevState,
+      currentOpenGameId: undefined,
+    })
+  );
+  updateClientEvent([ClientEventTypes.ExitJoinedGame, null]);
   return true;
 };
