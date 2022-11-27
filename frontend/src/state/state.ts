@@ -4,6 +4,7 @@ import { AppState, Views } from "./stateTypes";
 import {
   addMessages,
   createOpenGame,
+  deleteFinishGame,
   deleteOpenGame,
   finishGame,
   goToView,
@@ -67,6 +68,8 @@ const updateEvent: (
       return startGame(setState, updateServerEvent, payload);
     case GuiEvents.FinishGame:
       return finishGame(setState, updateServerEvent, payload);
+    case GuiEvents.DeleteFinishedGame:
+      return deleteFinishGame(setState, updateServerEvent, payload);
   }
 };
 

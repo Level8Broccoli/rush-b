@@ -27,6 +27,7 @@ export enum GuiEvents {
   JoinOpenGame,
   StartGame,
   FinishGame,
+  DeleteFinishedGame,
 }
 
 export type AllGuiStateEvents = [GuiEvents, unknown] &
@@ -45,6 +46,7 @@ export type AllGuiStateEvents = [GuiEvents, unknown] &
     | JoinOpenGameEvent
     | StartGameEvent
     | FinishGameEvent
+    | DeleteFinishGameEvent
   );
 
 export type UpdateGuiEvent = (event: AllGuiStateEvents) => true;
@@ -226,12 +228,29 @@ export const finishGame: UpdaterGuiFunction<FinishGameEvent> = (
   updateClientEvent,
   game
 ) => {
+  setState((prevState): AppState => {
+    if (prevState.activeGame?.id.value === game.id.value) {
+      return {
+        ...prevState,
+        finishedGame: game,
+        activeGame: null,
+        view:
+          prevState.view === Views.Game ? Views.FinishedGame : prevState.view,
+      };
+    }
+    return prevState;
+  });
+  return true;
+};
+
+type DeleteFinishGameEvent = [GuiEvents.DeleteFinishedGame, null];
+export const deleteFinishGame: UpdaterGuiFunction<DeleteFinishGameEvent> = (
+  setState
+) => {
   setState(
     (prevState): AppState => ({
       ...prevState,
-      finishedGame: game,
-      activeGame: null,
-      view: prevState.view === Views.Game ? Views.FinishedGame : prevState.view,
+      finishedGame: null,
     })
   );
   return true;

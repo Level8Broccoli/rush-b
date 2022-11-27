@@ -36,7 +36,7 @@ export type FinishedGameState = {
 };
 
 export type RunningGameState = {
-  id: string;
+  id: UUID;
   timer: string;
   level: TileMap;
   characters: Character[];

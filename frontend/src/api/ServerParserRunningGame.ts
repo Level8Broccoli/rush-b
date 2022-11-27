@@ -68,7 +68,7 @@ export function parseRunningGame(
     return null;
   }
   const gameState: RunningGameState = {
-    id,
+    id: { value: id },
     characters,
     level: { tiles: parsedLevel },
     timer,
