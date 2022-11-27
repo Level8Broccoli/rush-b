@@ -64,19 +64,7 @@ async function drawCharacters(
     const sprite = SPRITES[c.id];
 
     await drawCharacterSprite(ctx, sprite, dx, dy, dWidth, dHeight, c, counter);
-    if (c.score !== undefined) {
-      drawScore(context, "" + c.score, 20, 380); // TODO: do not draw all scores over each other
-    }
   }
-}
-
-function drawScore(context: CanvasContext, text: string, x: number, y: number) {
-  const { ctx, scale } = context;
-  ctx.fillStyle = "white";
-  ctx.font = "30px Arial";
-  ctx?.fillText(text, x, y);
-  ctx.fillStyle = "black";
-  ctx.strokeText(text, x, y);
 }
 
 export { drawBackground, drawCharacters };

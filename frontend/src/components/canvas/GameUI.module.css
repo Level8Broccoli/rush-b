@@ -1,0 +1,9 @@
+.ui {
+    display: grid;
+}
+
+.uiFooter {
+    display: flex;
+    justify-content: space-between;
+    background-color: #0a0a0a;
+}
