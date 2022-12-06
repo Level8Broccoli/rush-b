@@ -27,7 +27,9 @@ fun parseFromClient(
         ClientEventType.CreateOpenGame -> parseCreateOpenGameEvent(data, ctx)
         ClientEventType.DeleteOpenGame -> parseDeleteOpenGameEvent(data, ctx)
         ClientEventType.JoinOpenGame -> parseJoinOpenGameEvent(data, ctx)
-        ClientEventType.StartGame -> parseStartGameEvent(data, ctx)
+        ClientEventType.StartGameVsAi -> parseStartGameVsAiEvent(data, ctx)
+        ClientEventType.StartGameVsPlayer -> parseStartGameVsPlayerEvent(data, ctx)
+        ClientEventType.ExitJoinedGame -> parseExitJoinedGame(data, ctx)
     }
 }
 
@@ -47,7 +49,7 @@ private fun parseKeypressEvent(data: List<String>, ctx: RequestContext?): Client
         return null
     }
     val keys = data.mapNotNull { s -> Key.fromString(s) }
-    return KeyPressEvent(keys, ctx.runningGame)
+    return KeyPressEvent(keys, ctx)
 }
 
 private fun parseMessageEvent(data: List<String>): ClientEvent {
@@ -98,7 +100,7 @@ private fun parseJoinOpenGameEvent(
     return JoinOpenGameEvent(ctx.user, openGameId)
 }
 
-private fun parseStartGameEvent(
+private fun parseStartGameVsAiEvent(
     data: List<String>,
     ctx: RequestContext?,
 ): ClientEvent? {
@@ -110,7 +112,37 @@ private fun parseStartGameEvent(
         println("Missing or false request context: $data")
         return null
     }
-    return StartGameEvent(ctx.openGame)
+    return StartGameVsAiEvent(ctx.openGame)
+}
+
+private fun parseStartGameVsPlayerEvent(
+    data: List<String>,
+    ctx: RequestContext?,
+): ClientEvent? {
+    if (data.isNotEmpty()) {
+        println("Data didn't match expected form: $data")
+        return null
+    }
+    if (ctx?.openGame == null) {
+        println("Missing or false request context: $data")
+        return null
+    }
+    return StartGameVsPlayerEvent(ctx.openGame)
+}
+
+private fun parseExitJoinedGame(
+    data: List<String>,
+    ctx: RequestContext?,
+): ClientEvent? {
+    if (data.isNotEmpty()) {
+        println("Data didn't match expected form: $data")
+        return null
+    }
+    if (ctx?.openGame == null) {
+        println("Missing or false request context: $data")
+        return null
+    }
+    return ExitJoinedGameEvent(ctx.openGame)
 }
 
 private fun nodeToString(nodes: List<JsonNode>): List<String> {

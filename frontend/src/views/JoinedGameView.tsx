@@ -1,6 +1,6 @@
 import { h } from "preact";
 import { GuiEvents, UpdateGuiEvent } from "../state/stateEvents";
-import { OpenGame, User, Views } from "../state/stateTypes";
+import { OpenGame, User } from "../state/stateTypes";
 import classes from "./View.module.css";
 
 type Props = {
@@ -11,9 +11,8 @@ type Props = {
 
 export function JoinedGameView(props: Props): JSX.Element {
   const abort = () => {
-    props.updateGuiEvent([GuiEvents.GoToView, Views.Lobby]);
+    props.updateGuiEvent([GuiEvents.ExitJoinedGame, null]);
   };
-
   return (
     <div class={`card ${classes.customCard}`}>
       <header class="card-header">

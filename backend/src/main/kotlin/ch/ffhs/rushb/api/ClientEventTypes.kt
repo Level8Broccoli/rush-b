@@ -3,6 +3,7 @@ package ch.ffhs.rushb.api
 import ch.ffhs.rushb.behavior.listToJSON
 import ch.ffhs.rushb.behavior.stringListToJSON
 import ch.ffhs.rushb.controller.*
+import ch.ffhs.rushb.enums.Role
 import ch.ffhs.rushb.model.User
 import org.springframework.web.socket.WebSocketSession
 
@@ -15,7 +16,9 @@ enum class ClientEventType(val value: String) {
     CreateOpenGame("createOpenGame"),
     DeleteOpenGame("deleteOpenGame"),
     JoinOpenGame("joinOpenGame"),
-    StartGame("startGame");
+    StartGameVsAi("startGameVsAi"),
+    StartGameVsPlayer("startGameVsPlayer"),
+    ExitJoinedGame("exitJoinedGame");
 
     companion object {
         fun fromString(value: String): ClientEventType? {
@@ -68,8 +71,6 @@ data class SubscribeEvent(val user: User) : ClientEvent {
         addToSessions(session, user)
         addToUsers(user)
         emit(session, Message(ServerEventTypes.OPEN_GAMES, listToJSON(openGames)))
-        println("Subscribe Event")
-        println(user)
     }
 
     override val event: ClientEventType
@@ -96,7 +97,7 @@ data class MessageEvent(val messages: List<String>) : ClientEvent {
         get() = ClientEventType.Message
 }
 
-data class KeyPressEvent(val keys: List<Key>, val runningGame: RunningGame) : ClientEvent {
+data class KeyPressEvent(val keys: List<Key>, val ctx: RequestContext) : ClientEvent {
     override fun execute(
         session: WebSocketSession,
         addToSessions: AddToSessions,
@@ -109,15 +110,17 @@ data class KeyPressEvent(val keys: List<Key>, val runningGame: RunningGame) : Cl
         broadcast: Broadcast,
         broadcastToOthers: BroadcastToOthers
     ) {
+        val runningGame = ctx.runningGame ?: return
+        val player = if (ctx.role == Role.CREATOR) runningGame.player1 else runningGame.player2
         for (key in keys) {
             if (key == Key.ARROW_LEFT) {
-                runningGame.setVelocityX(runningGame.getPlayer1(), -1.0)
+                runningGame.setVelocityX(player, -1.0)
             } else if (key == Key.ARROW_RIGHT) {
-                runningGame.setVelocityX(runningGame.getPlayer1(), 1.0)
+                runningGame.setVelocityX(player, 1.0)
             } else if (key == Key.ARROW_UP || key == Key.SPACE) {
-                runningGame.setVelocityY(runningGame.getPlayer1())
+                runningGame.setVelocityY(player)
             } else if (key == Key.KEY_E) {
-                runningGame.paint(runningGame.getPlayer1())
+                runningGame.paint(player)
             } else if (key == Key.KEY_Q) {
                 // TODO: quit
             }
@@ -201,7 +204,7 @@ data class JoinOpenGameEvent(val user: User, val openGameId: String) : ClientEve
         get() = ClientEventType.JoinOpenGame
 }
 
-data class StartGameEvent(val openGame: OpenGame) : ClientEvent {
+data class StartGameVsAiEvent(val openGame: OpenGame) : ClientEvent {
     override fun execute(
         session: WebSocketSession,
         addToSessions: AddToSessions,
@@ -214,12 +217,56 @@ data class StartGameEvent(val openGame: OpenGame) : ClientEvent {
         broadcast: Broadcast,
         broadcastToOthers: BroadcastToOthers
     ) {
-        val runningGame = openGame.startGame()
+        val runningGame = openGame.startGameVsAi()
         addToGames(runningGame)
         removeFromOpenGames(openGame)
         broadcast(Message(ServerEventTypes.OPEN_GAMES, listToJSON(openGames)))
     }
 
     override val event: ClientEventType
-        get() = ClientEventType.StartGame
+        get() = ClientEventType.StartGameVsAi
+}
+
+data class StartGameVsPlayerEvent(val openGame: OpenGame) : ClientEvent {
+    override fun execute(
+        session: WebSocketSession,
+        addToSessions: AddToSessions,
+        addToUsers: AddToUsers,
+        addToOpenGames: AddToOpenGames,
+        removeFromOpenGames: RemoveFromOpenGames,
+        addToGames: AddToGames,
+        openGames: List<OpenGame>,
+        emit: Emit,
+        broadcast: Broadcast,
+        broadcastToOthers: BroadcastToOthers
+    ) {
+        if (openGame.secondPlayer != null) {
+            val runningGame = openGame.startGameVsPlayer()
+            addToGames(runningGame)
+            removeFromOpenGames(openGame)
+        }
+    }
+
+    override val event: ClientEventType
+        get() = ClientEventType.StartGameVsPlayer
+}
+
+data class ExitJoinedGameEvent(val openGame: OpenGame) : ClientEvent {
+    override fun execute(
+        session: WebSocketSession,
+        addToSessions: AddToSessions,
+        addToUsers: AddToUsers,
+        addToOpenGames: AddToOpenGames,
+        removeFromOpenGames: RemoveFromOpenGames,
+        addToGames: AddToGames,
+        openGames: List<OpenGame>,
+        emit: Emit,
+        broadcast: Broadcast,
+        broadcastToOthers: BroadcastToOthers
+    ) {
+        openGame.secondPlayer = null
+    }
+
+    override val event: ClientEventType
+        get() = ClientEventType.ExitJoinedGame
 }

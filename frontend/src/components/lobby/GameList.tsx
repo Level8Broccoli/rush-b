@@ -1,5 +1,5 @@
 import { h } from "preact";
-import { OpenGame, Views } from "../../state/stateTypes";
+import { OpenGame } from "../../state/stateTypes";
 import { Button } from "../general/Button";
 import { UUID } from "../../state/session";
 import { GuiEvents, UpdateGuiEvent } from "../../state/stateEvents";
@@ -16,7 +16,6 @@ export function GameList(props: Props): JSX.Element {
 
   const joinOpenGame = (id: UUID) => () => {
     props.updateGuiEvent([GuiEvents.JoinOpenGame, id]);
-    props.updateGuiEvent([GuiEvents.GoToView, Views.JoinedGame]);
   };
 
   return (

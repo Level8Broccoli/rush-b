@@ -1,9 +1,10 @@
 import { StateUpdater } from "preact/compat";
 import {
   AppState,
-  GameState,
+  FinishedGameState,
   Message,
   OpenGame,
+  RunningGameState,
   User,
   Views,
 } from "./stateTypes";
@@ -24,7 +25,11 @@ export enum GuiEvents {
   UpdateOpenGames,
   DeleteOpenGame,
   JoinOpenGame,
-  StartGame,
+  StartGameVsAi,
+  StartGameVsPlayer,
+  FinishGame,
+  DeleteFinishedGame,
+  ExitJoinedGame,
 }
 
 export type AllGuiStateEvents = [GuiEvents, unknown] &
@@ -41,7 +46,11 @@ export type AllGuiStateEvents = [GuiEvents, unknown] &
     | UpdateOpenGamesEvent
     | DeleteOpenGameEvent
     | JoinOpenGameEvent
-    | StartGameEvent
+    | StartGameVsAiEvent
+    | StartGameVsPlayerEvent
+    | FinishGameEvent
+    | DeleteFinishGameEvent
+    | ExitJoinedGameEvent
   );
 
 export type UpdateGuiEvent = (event: AllGuiStateEvents) => true;
@@ -122,7 +131,7 @@ export const updateConnectionStatus: UpdaterGuiFunction<
   return true;
 };
 
-type SetGameEvent = [GuiEvents.SetGame, GameState];
+type SetGameEvent = [GuiEvents.SetGame, RunningGameState];
 export const setGame: UpdaterGuiFunction<SetGameEvent> = (
   setState,
   updateClientEvent,
@@ -176,7 +185,33 @@ export const updateOpenGames: UpdaterGuiFunction<UpdateOpenGamesEvent> = (
   updateClientEvent,
   openGames
 ) => {
-  setState((prevState): AppState => ({ ...prevState, openGames }));
+  setState((prevState): AppState => {
+    function loadView(): Views {
+      const openGame = prevState.openGames.find(
+        (g) => g.id.value === prevState.currentOpenGameId?.value
+      );
+
+      if (openGame === undefined) {
+        if (prevState.view === Views.JoinedGame) {
+          return Views.Lobby;
+        }
+        return prevState.view;
+      }
+
+      if (openGame.creator.id.value === prevState.user.id.value) {
+        return Views.YourGame;
+      } else {
+        return Views.JoinedGame;
+      }
+    }
+
+    const view = loadView();
+    return {
+      ...prevState,
+      openGames,
+      view,
+    };
+  });
   return true;
 };
 
@@ -208,11 +243,69 @@ export const joinOpenGame: UpdaterGuiFunction<JoinOpenGameEvent> = (
   return true;
 };
 
-type StartGameEvent = [GuiEvents.StartGame, null];
-export const startGame: UpdaterGuiFunction<StartGameEvent> = (
+type StartGameVsAiEvent = [GuiEvents.StartGameVsAi, null];
+export const startGameVsAi: UpdaterGuiFunction<StartGameVsPlayerEvent> = (
   setState,
   updateClientEvent
 ) => {
-  updateClientEvent([ClientEventTypes.StartGame, null]);
+  updateClientEvent([ClientEventTypes.StartGameVsAi, null]);
+  return true;
+};
+
+type StartGameVsPlayerEvent = [GuiEvents.StartGameVsPlayer, null];
+export const startGameVsPlayer: UpdaterGuiFunction<StartGameVsPlayerEvent> = (
+  setState,
+  updateClientEvent
+) => {
+  updateClientEvent([ClientEventTypes.StartGameVsPlayer, null]);
+  return true;
+};
+
+type FinishGameEvent = [GuiEvents.FinishGame, FinishedGameState];
+export const finishGame: UpdaterGuiFunction<FinishGameEvent> = (
+  setState,
+  updateClientEvent,
+  game
+) => {
+  setState((prevState): AppState => {
+    if (prevState.activeGame?.id.value === game.id.value) {
+      return {
+        ...prevState,
+        finishedGame: game,
+        activeGame: null,
+        view:
+          prevState.view === Views.Game ? Views.FinishedGame : prevState.view,
+      };
+    }
+    return prevState;
+  });
+  return true;
+};
+
+type DeleteFinishGameEvent = [GuiEvents.DeleteFinishedGame, null];
+export const deleteFinishGame: UpdaterGuiFunction<DeleteFinishGameEvent> = (
+  setState
+) => {
+  setState(
+    (prevState): AppState => ({
+      ...prevState,
+      finishedGame: null,
+    })
+  );
+  return true;
+};
+
+type ExitJoinedGameEvent = [GuiEvents.ExitJoinedGame, null];
+export const exitJoinedGame: UpdaterGuiFunction<ExitJoinedGameEvent> = (
+  setState,
+  updateClientEvent
+) => {
+  setState(
+    (prevState): AppState => ({
+      ...prevState,
+      currentOpenGameId: undefined,
+    })
+  );
+  updateClientEvent([ClientEventTypes.ExitJoinedGame, null]);
   return true;
 };

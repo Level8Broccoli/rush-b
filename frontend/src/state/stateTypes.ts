@@ -1,6 +1,7 @@
 import { ConnectionStatus } from "../api/ClientEventTypes";
 import { TileMap } from "./tileMap.enum";
 import { UUID } from "./session";
+import { SpriteType } from "../components/canvas/Sprite";
 
 export type OpenGame = {
   id: UUID;
@@ -9,7 +10,7 @@ export type OpenGame = {
 };
 
 export type Character = {
-  id: string;
+  id: SpriteType;
   paintId: number;
   color: string;
   width: number;
@@ -23,8 +24,19 @@ export type Character = {
 
 export type Message = string;
 
-export type GameState = {
-  id: string;
+export type Player = {
+  score: number;
+  user: User | null;
+};
+
+export type FinishedGameState = {
+  id: UUID;
+  player1: Player;
+  player2: Player;
+};
+
+export type RunningGameState = {
+  id: UUID;
   timer: string;
   level: TileMap;
   characters: Character[];
@@ -36,6 +48,7 @@ export enum Views {
   YourGame,
   Game,
   JoinedGame,
+  FinishedGame,
 }
 
 export type User = {
@@ -47,7 +60,8 @@ export type AppState = {
   view: Views;
   connectionStatus: ConnectionStatus;
   messages: Message[];
-  activeGame: GameState;
+  activeGame: RunningGameState | null;
+  finishedGame: FinishedGameState | null;
   user: User;
   openGames: OpenGame[];
   currentOpenGameId?: UUID;

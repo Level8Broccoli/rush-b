@@ -13,19 +13,14 @@ export function GameView(props: Props): JSX.Element {
   return (
     <div class={`card ${classes.customCard}`}>
       <div class={`card-content ${classes.centerChild}`}>
-        <GameUI
-          timer={props.state.activeGame.timer}
-          tileMap={props.state.activeGame.level}
-          characters={props.state.activeGame.characters}
-          updateGuiEvent={props.updateGuiEvent}
-        />
-        {/*<div style="background-color: lightgray; border-radius: 0.3rem; padding-inline: 1rem;">*/}
-        {/*  <Logs*/}
-        {/*    connectionStatus={props.state.connectionStatus}*/}
-        {/*    logs={props.state.messages}*/}
-        {/*  />*/}
-        {/*  <Chat updateGuiEvent={props.updateGuiEvent} />*/}
-        {/*</div>*/}
+        {props.state.activeGame && (
+          <GameUI
+            timer={props.state.activeGame.timer}
+            tileMap={props.state.activeGame.level}
+            characters={props.state.activeGame.characters}
+            updateGuiEvent={props.updateGuiEvent}
+          />
+        )}
       </div>
     </div>
   );

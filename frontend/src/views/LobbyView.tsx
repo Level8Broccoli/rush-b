@@ -1,7 +1,7 @@
 import { h } from "preact";
 import { GuiEvents, UpdateGuiEvent } from "../state/stateEvents";
 import { GameList } from "../components/lobby/GameList";
-import { OpenGame, User, Views } from "../state/stateTypes";
+import { OpenGame, User } from "../state/stateTypes";
 import classes from "./View.module.css";
 
 type Props = {
@@ -13,7 +13,6 @@ type Props = {
 export function LobbyView(props: Props): JSX.Element {
   const createOpenGame = () => {
     props.updateGuiEvent([GuiEvents.CreateOpenGame, null]);
-    props.updateGuiEvent([GuiEvents.GoToView, Views.YourGame]);
   };
 
   return (

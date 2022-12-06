@@ -1,4 +1,5 @@
 import {
+  createFnFinishGameServerEvent,
   createFnOpenGamesServerEvent,
   createFnRunningGameServerEvent,
   ServerEvent,
@@ -8,6 +9,7 @@ import { UpdateGuiEvent } from "../state/stateEvents";
 import { parseOpenGames } from "./ServerParserOpenGames";
 import { initialParser } from "./ServerParserInitial";
 import { parseRunningGame } from "./ServerParserRunningGame";
+import { parseFinishedGame } from "./ServerParseFinishedGame";
 
 function parseMessage(_data: object): ServerEvent | null {
   return null;
@@ -38,5 +40,10 @@ export function parseFromServer(
       return parseOpenGames(data, createFnOpenGamesServerEvent(updateGuiEvent));
     case ServerEventTyp.SESSION_CLOSED:
       return parseSessionClosed(data);
+    case ServerEventTyp.FINISHED_GAME:
+      return parseFinishedGame(
+        data,
+        createFnFinishGameServerEvent(updateGuiEvent)
+      );
   }
 }

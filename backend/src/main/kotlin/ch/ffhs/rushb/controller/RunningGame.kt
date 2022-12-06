@@ -3,7 +3,7 @@ package ch.ffhs.rushb.controller
 import ch.ffhs.rushb.behavior.AIable
 import ch.ffhs.rushb.behavior.Movable
 import ch.ffhs.rushb.behavior.Paintable
-import ch.ffhs.rushb.behavior.Serializable
+import ch.ffhs.rushb.behavior.Scorable
 import ch.ffhs.rushb.enums.CharacterType.*
 import ch.ffhs.rushb.enums.Color.*
 import ch.ffhs.rushb.model.*
@@ -14,10 +14,10 @@ import kotlin.random.Random
 
 class RunningGame(
     override val id: String,
-    val creator: User,
+    override val creator: User,
+    override val secondPlayer: User?,
     private val level: Level,
-
-    ) : Serializable {
+) : Game {
     private val timer = Timer()
     private var millis = 0L
     private val limit = 1000 * 60 * 2
@@ -25,7 +25,7 @@ class RunningGame(
     private val gridStart = 32
     private val gridEnd = level.tiles.size * 16 - 32
 
-    private val player1 =
+    val player1 =
         Character(
             MASK_DUDE.name,
             RED,
@@ -33,7 +33,7 @@ class RunningGame(
             100,
             creator,
         )
-    private val player2 =
+    var player2: Scorable =
         RandomBot(
             PINK_MAN.name,
             PURPLE,
@@ -44,6 +44,16 @@ class RunningGame(
     private val gameObjects = mutableListOf<Movable>()
 
     init {
+        if (secondPlayer != null) {
+            player2 = Character(
+                PINK_MAN.name,
+                PURPLE,
+                Vector(Random.nextInt(gridStart, gridEnd).toDouble(), 0.0),
+                101,
+                secondPlayer,
+            )
+        }
+
 
         // add players
         gameObjects.add(player1)
@@ -112,14 +122,10 @@ class RunningGame(
         }
     }
 
-    // TODO: remove or provide another function for player 2
-    fun getPlayer1(): Movable {
-        return player1
-    }
-
     override fun toJSON(): String {
-        val characterJSON = gameObjects.map { it.toJSON() }.joinToString(",")
-        val levelJSON = "[" +level.tiles.map { "[" +it.map{it -> it}.joinToString(",") +"]"}.joinToString(",")+"]"
+        val characterJSON = gameObjects.joinToString(",") { it.toJSON() }
+        val levelJSON =
+            "[" + level.tiles.joinToString(",") { "[" + it.joinToString(",") + "]" } + "]"
         val out = """
             {
                 "id": "$id" , 
@@ -150,4 +156,9 @@ class RunningGame(
             player.setVelocityY(level)
         }
     }
+
+    fun finishGame(): FinishedGame {
+        return FinishedGame(id, creator, secondPlayer, player1, player2)
+    }
+
 }

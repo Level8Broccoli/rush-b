@@ -1,6 +1,7 @@
 package ch.ffhs.rushb.controller
 
 import ch.ffhs.rushb.api.*
+import ch.ffhs.rushb.behavior.listToJSON
 import ch.ffhs.rushb.enums.Role
 import ch.ffhs.rushb.model.User
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -25,6 +26,7 @@ class GameController : TextWebSocketHandler() {
     val userList = mutableListOf<User>()
     val openGameList = mutableListOf<OpenGame>()
     var runningGameList = mutableListOf<RunningGame>()
+    var finishedGameList = mutableListOf<FinishedGame>()
     private final val emit: Emit
     private final val broadcast: Broadcast
     private final val broadcastToOthers: BroadcastToOthers
@@ -53,10 +55,22 @@ class GameController : TextWebSocketHandler() {
 
 
     override fun afterConnectionClosed(session: WebSocketSession, status: CloseStatus) {
-        val subscriber = instance!!.sessionList[session]
-        println("Left: $subscriber")
-        broadcastToOthers(session, Message(ServerEventTypes.SESSION_CLOSED, session.toString()))
+        val ctx = getRequestContext(session)
         instance!!.sessionList -= session
+
+        if (ctx?.openGame != null) {
+            if (ctx.role == Role.CREATOR) {
+                instance!!.openGameList -= ctx.openGame
+            }
+            if (ctx.role == Role.SECOND_PLAYER) {
+                ctx.openGame.secondPlayer = null
+            }
+        }
+
+        if (ctx?.runningGame != null) {
+            instance!!.finishedGameList += ctx.runningGame.finishGame()
+            instance!!.runningGameList -= ctx.runningGame
+        }
     }
 
     @Scheduled(fixedRate = 200)
@@ -64,18 +78,37 @@ class GameController : TextWebSocketHandler() {
         if (this != instance) {         // avoid speeding up game loop when more than 1 user interacts with application
             return
         }
-        instance!!.runningGameList = instance!!.runningGameList.filter{ it.isActive() }.toMutableList()
+        broadcast(Message(ServerEventTypes.OPEN_GAMES, listToJSON(instance!!.openGameList)))
+        instance!!.runningGameList.forEach { runningGame ->
+            if (!runningGame.isActive()) {
+                instance!!.finishedGameList += runningGame.finishGame()
+            }
+        }
+        instance!!.runningGameList = instance!!.runningGameList.filter { it.isActive() }.toMutableList()
         instance!!.runningGameList.forEach { runningGame ->
             runningGame.applyGameLoop()
-            val gameData = runningGame.toJSON()
-            val creator = runningGame.creator
+            val (gameData, creator, secondPlayer) = extractFrom(runningGame)
             instance!!.sessionList.forEach { (session, user) ->
-                if (user.id == creator.id) {
+                if (user.id == creator.id || user.id == secondPlayer?.id) {
                     emit(session, Message(ServerEventTypes.RUNNING_GAME, gameData))
                 }
             }
         }
+        instance!!.finishedGameList.forEach { finishedGame ->
+            val (gameData, creator, secondPlayer) = extractFrom(finishedGame)
+            instance!!.sessionList.forEach { (session, user) ->
+                if (user.id == creator.id || user.id == secondPlayer?.id) {
+                    emit(session, Message(ServerEventTypes.FINISHED_GAME, gameData))
+                }
+            }
+        }
+    }
 
+    private fun extractFrom(game: Game): Triple<String, User, User?> {
+        val gameData = game.toJSON()
+        val creator = game.creator
+        val secondPlayer = game.secondPlayer
+        return Triple(gameData, creator, secondPlayer)
     }
 
 
@@ -105,12 +138,6 @@ class GameController : TextWebSocketHandler() {
             broadcast,
             broadcastToOthers
         )
-
-        println("****")
-        println(instance!!.sessionList)
-        println(instance!!.userList)
-        println(instance!!.openGameList)
-        println("****")
     }
 
     private fun getRequestContext(session: WebSocketSession): RequestContext? {
@@ -127,7 +154,10 @@ class GameController : TextWebSocketHandler() {
         if (creatorOfRunningGame != null) {
             return RequestContext(session, user, null, creatorOfRunningGame, Role.CREATOR)
         }
-        // TODO: Implement secondPlayer in running Game
+        val secondPlayerOfRunningGame = instance!!.runningGameList.find { g -> g.secondPlayer == user }
+        if (secondPlayerOfRunningGame != null) {
+            return RequestContext(session, user, null, secondPlayerOfRunningGame, Role.SECOND_PLAYER)
+        }
         return RequestContext(session, user, null, null, null)
     }
 }
